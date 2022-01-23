@@ -1,6 +1,16 @@
 {
+<<<<<<< HEAD
     "name" : "zlemei",
     "appid" : "",
+=======
+<<<<<<< HEAD
+    "name" : "addressPart",
+    "appid" : "__UNI__C96AE51",
+=======
+    "name" : "zlemei",
+    "appid" : "",
+>>>>>>> detail
+>>>>>>> master
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -50,7 +60,15 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
+<<<<<<< HEAD
         "appid" : "",
+=======
+<<<<<<< HEAD
+        "appid" : "wx462bc4b528a13c96",
+=======
+        "appid" : "",
+>>>>>>> detail
+>>>>>>> master
         "setting" : {
             "urlCheck" : false
         },

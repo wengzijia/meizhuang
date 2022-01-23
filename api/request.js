@@ -1,3 +1,24 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+module.exports = function(options) {
+	return new Promise((reslove, reject) => {
+		uni.request({
+			...options,
+			success:(res)=>{
+				reslove(res.data)
+			},
+			fail: reject,
+			complete: (res) => {
+				// 无论成功与失败，我都触发
+				// console.log(res)
+			}
+		})
+	})
+}
+=======
+>>>>>>> master
 module.exports = function  request(options) {
     return new Promise((resolve,reject)=>{
       wx.showLoading({
@@ -20,3 +41,7 @@ module.exports = function  request(options) {
 
 
 	
+<<<<<<< HEAD
+=======
+>>>>>>> detail
+>>>>>>> master

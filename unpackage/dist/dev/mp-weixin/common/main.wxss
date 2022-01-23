@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+@font-face {
+  font-family: "iconfont"; /* Project id 3154632 */
+  src: url('//at.alicdn.com/t/font_3154632_y244ox429gb.woff2?t=1642691349440') format('woff2'),
+       url('//at.alicdn.com/t/font_3154632_y244ox429gb.woff?t=1642691349440') format('woff'),
+       url('//at.alicdn.com/t/font_3154632_y244ox429gb.ttf?t=1642691349440') format('truetype');
+=======
+>>>>>>> master
 
 
 
@@ -19,6 +29,10 @@
   src: url('//at.alicdn.com/t/font_3152755_b7aga5k2fh.woff2?t=1642831932449') format('woff2'),
        url('//at.alicdn.com/t/font_3152755_b7aga5k2fh.woff?t=1642831932449') format('woff'),
        url('//at.alicdn.com/t/font_3152755_b7aga5k2fh.ttf?t=1642831932449') format('truetype');
+<<<<<<< HEAD
+=======
+>>>>>>> detail
+>>>>>>> master
 }
 .iconfont {
   font-family: "iconfont" !important;
@@ -27,6 +41,19 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+.icon-zhankai:before {
+  content: "\e68b";
+}
+.icon-wenbenshuru:before {
+  content: "\e600";
+}
+
+/*每个页面公共css */
+=======
+>>>>>>> master
 .icon-yiguoqi:before {
   content: "\e67d";
 }
@@ -51,4 +78,8 @@
 .icon-kefu:before {
   content: "\e6dc";
 }
+<<<<<<< HEAD
+=======
+>>>>>>> detail
+>>>>>>> master
 

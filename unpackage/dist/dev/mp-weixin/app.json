@@ -1,7 +1,18 @@
 {
   "pages": [
+<<<<<<< HEAD
     "pages/test/test",
     "pages/goodsDetail/goodsDetail"
+=======
+<<<<<<< HEAD
+    "pages/address/addressList",
+    "pages/address/addressSubmit",
+    "pages/login/login"
+=======
+    "pages/test/test",
+    "pages/goodsDetail/goodsDetail"
+>>>>>>> detail
+>>>>>>> master
   ],
   "subPackages": [],
   "window": {
@@ -10,5 +21,18 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
+<<<<<<< HEAD
   "usingComponents": {}
+=======
+<<<<<<< HEAD
+  "usingComponents": {
+    "van-field": "/wxcomponents/vant/field/index",
+    "van-area": "/wxcomponents/vant/area/index",
+    "van-toast": "/wxcomponents/vant/toast/index"
+  },
+  "sitemapLocation": "sitemap.json"
+=======
+  "usingComponents": {}
+>>>>>>> detail
+>>>>>>> master
 }

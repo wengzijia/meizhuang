@@ -1,5 +1,38 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	  {
+            "path" : "pages/address/addressList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+            "path" : "pages/address/addressSubmit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/login/login",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+    ],
+=======
+>>>>>>> master
 		{
 			"path":"pages/test/test"
 		},
@@ -23,10 +56,25 @@
 		}
 
 	],
+<<<<<<< HEAD
+=======
+>>>>>>> detail
+>>>>>>> master
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+		"backgroundColor": "#F8F8F8",
+		"usingComponents": {
+		  "van-field": "/wxcomponents/vant/field/index",
+		  "van-area": "/wxcomponents/vant/area/index",
+		  "van-toast": "/wxcomponents/vant/toast/index"
+		}
+=======
+>>>>>>> master
 		"backgroundColor": "#F8F8F8"
 	},
 	"easycom": {
@@ -34,5 +82,9 @@
 	  "custom": {
 	    "van-(.*)": "@/wxcomponents/vant/$1/index.vue" // 匹配components目录内的vue文件
 	  }
+<<<<<<< HEAD
+=======
+>>>>>>> detail
+>>>>>>> master
 	}
 }

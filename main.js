@@ -2,6 +2,13 @@ import App from './App'
 
 // #ifndef VUE3
 import Vue from 'vue'
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> detail
+>>>>>>> master
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
@@ -11,7 +18,17 @@ app.$mount()
 // #endif
 
 // #ifdef VUE3
+<<<<<<< HEAD
 import { createSSRApp } from 'vue'
+=======
+<<<<<<< HEAD
+
+import { createSSRApp } from 'vue'
+
+=======
+import { createSSRApp } from 'vue'
+>>>>>>> detail
+>>>>>>> master
 export function createApp() {
   const app = createSSRApp(App)
   return {
