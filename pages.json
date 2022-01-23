@@ -1,0 +1,78 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+<<<<<<< HEAD
+	  {
+            "path" : "pages/address/addressList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+            "path" : "pages/address/addressSubmit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        },
+		{
+		    "path" : "pages/login/login",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
+		}
+    ],
+=======
+		{
+			"path":"pages/test/test"
+		},
+		{
+			"path": "pages/goodsDetail/goodsDetail",
+			"style": {
+				"navigationStyle":"custom",
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+				          "bounce": "none", //关闭窗口回弹效果
+				          "titleNView": {
+				              "buttons": [ //原生标题栏按钮配置,
+				                  {
+				           		    "type":"back",
+				           		    "float":"left"
+				                  }
+				               ]
+				           }
+				       }
+			}
+		}
+
+	],
+>>>>>>> detail
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+<<<<<<< HEAD
+		"backgroundColor": "#F8F8F8",
+		"usingComponents": {
+		  "van-field": "/wxcomponents/vant/field/index",
+		  "van-area": "/wxcomponents/vant/area/index",
+		  "van-toast": "/wxcomponents/vant/toast/index"
+		}
+=======
+		"backgroundColor": "#F8F8F8"
+	},
+	"easycom": {
+	  "autoscan": true,
+	  "custom": {
+	    "van-(.*)": "@/wxcomponents/vant/$1/index.vue" // 匹配components目录内的vue文件
+	  }
+>>>>>>> detail
+	}
+}
