@@ -1,5 +1,8 @@
 {
   "pages": [
+    "pages/login/login",
+    "pages/address/addressSubmit",
+    "pages/address/addressList",
     "pages/goodsDetail/goodsDetail",
     "pages/test/test"
   ],
