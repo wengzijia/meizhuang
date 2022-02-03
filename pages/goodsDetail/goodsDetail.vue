@@ -6,9 +6,14 @@
 			<view v-show="!isShow" class="particulars">
 				商品详情
 			</view>
-			<view v-show="isShow" class="navigationInfo">
-				<text :class="activeindex==index?'border':''" v-for="(item,index) in infoContent" :key="item.id"
-					:data-id="item.jx" @click="jumpTo($event,index)">{{item.data}}</text>
+			<view v-show="isShow" class="navigationInfo flex">
+				<!-- <text :class="activeindex==index?'border':''" v-for="(item,index) in infoContent" :key="item.id"
+					:data-id="item.jx" @click="jumpTo($event,index)">{{item.data}}</text> -->
+					<view class="item" v-for="(item,index) in infoContent" :key="item.id"
+					:data-id="item.jx" @click="jumpTo($event,index)">
+						<view>{{item.data}}</view>
+						<view :class="activeindex==index?'border':''"></view>
+					</view>
 			</view>
 		</view>
 		<scroll-view scroll-y style="height:100vh" :scroll-into-view="toView" @scroll="gun" scroll-with-animation>
@@ -38,6 +43,7 @@
 									<text class="price">.00</text>
 								</view>
 								<view class="soldOut size">{{stock}}件已售</view>
+								<view class="" v-if="isShowMoney">佣金:{{brokeragePrice}}</view>
 							</view>
 							<view class="getCouponWrap flexC">
 								<text class="iconfont icon-lingquanzhongxin getCoupon size" @click="open">领券 ></text>
@@ -64,7 +70,7 @@
 						</view>
 						<view class="specification flex_l_r">
 							<text class="select fs">选择规格</text>
-							<text class="unselected fs" @click="openSkuPopup()">未选择></text>
+							<text class="unselected fs" @click="openSkuPopup()">{{skuName}}></text>
 						</view>
 					</view>
 				</view>
@@ -135,7 +141,7 @@
 
 <script>
 	const {
-		fetchDetailData
+		fetchDetailData,fetchAddCart
 	} = require("../../api/detail.js")
 	var that;
 	export default {
@@ -167,7 +173,7 @@
 					}
 				],
 				activeindex: 0,
-				border: 'border',
+				// border: 'border',
 				isShow: false, // 是否显示导航栏     
 				data:{},  // 详情数据
 				gallery:[], //轮播图
@@ -175,7 +181,12 @@
 				detail:"", // 富文本详情
 				sku_list:[], // 商品对应的sku列表的字段名   
 				spec_list:[], //  商品规格名称的字段名
-				skuData:[]    // sku每一项的数据
+				skuData:[],    // sku每一项的数据
+				brokerageType:"",  // 是否需要给佣金
+				brokeragePrice:"",// 佣金金额
+				isShowMoney:false,   // 是否显示佣金金额
+				skuName:"未选择",
+				number:0   // 商品数量
 			}
 		},
 		methods: {
@@ -206,6 +217,9 @@
 			async detailData() {
 				let { result} = await fetchDetailData()
 				this.data = result.goods[0]
+				let {brokerageType,brokeragePrice} = result.goods[0]
+				this.brokerageType = brokerageType  // 是否需要佣金
+				this.brokeragePrice = brokeragePrice   // 佣金金额
 				this.gallery = result.goods[0].gallery 
 				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,'<img style="width:100%;height:100%"')
 				this.stock = result.goods[0].sku_list[0].stock 
@@ -258,33 +272,44 @@
 				console.log("监听 - 关闭sku组件");
 			},
 			// 加入购物车前的判断
-			addCartFn(obj) {
-				let {
-					selectShop
-				} = obj;
-				// 模拟添加到购物车,请替换成你自己的添加到购物车逻辑
-				let res = {};
-				let name = selectShop.goods_name;
-				if (selectShop.sku_name != "默认") {
-					name += "-" + selectShop.sku_name_arr;
-				}
-				res.msg = `${name} 已添加到购物车`;
-				if (typeof obj.success == "function") obj.success(res);
-			},
+			// addCartFn(obj) {
+			// 	let {
+			// 		selectShop
+			// 	} = obj;
+			// 	// 模拟添加到购物车,请替换成你自己的添加到购物车逻辑
+			// 	let res = {};
+			// 	let name = selectShop.goods_name;
+			// 	if (selectShop.sku_name != "默认") {
+			// 		name += "-" + selectShop.sku_name_arr;
+			// 	}
+			// 	res.msg = `${name} 已添加到购物车`;
+			// 	if (typeof obj.success == "function") obj.success(res);
+			// },
 			// 加入购物车按钮
-			addCart(selectShop) {
+			async addCart(selectShop) {
 				console.log("监听 - 加入购物车");
 				console.log('加入购物车',selectShop)
-				that.addCartFn({
-					selectShop: selectShop,
-					success: function(res) {
-						// 实际业务时,请替换自己的加入购物车逻辑
-						that.toast(res.msg);
-						setTimeout(function() {
-							that.skuKey = false;
-						}, 300);
-					}
-				});
+				this.skuName = selectShop.sku_name_arr[0]
+				// this._id = selectShop._id
+				// this.number = selectShop.buy_num
+				let token = uni.getStorageSync("token");
+				console.log(token)
+				if(selectShop.goods_name === selectShop.goods_name){
+					this.number  +=  selectShop.buy_num
+				}
+				let result = await  fetchAddCart(token,selectShop._id,this.number)
+				console.log('2332',result)
+				// that.addCartFn({
+				// 	selectShop: selectShop,
+				// 	success: function(res) {
+				// 		// // 实际业务时,请替换自己的加入购物车逻辑
+				// 		// that.toast(res.msg);
+				// 		// setTimeout(function() {
+				// 		// 	that.skuKey = false;
+				// 		// }, 300);
+						
+				// 	}
+				// });
 			},
 			// 立即购买
 			buyNow(selectShop) {
@@ -309,6 +334,24 @@
 			that = this;
 			that.init(options);
 			this.detailData()
+			
+			let token = uni.getStorageSync("token");
+			let userInfo = uni.getStorageSync("userInfo");
+			// #ifdef H5
+			// 用户等级
+				let {userLevel} = JSON.parse(uni.getStorageSync("userInfo"));
+			// #endif
+			// #ifdef MP-WEIXIN
+			// 用户等级
+				let {userLevel} = userInfo;
+			// #endif
+			// token和用户信息都为真  
+			if(token&&userInfo){
+				// 是否需要佣金为1并且用户等级为2,才显示佣金金额 
+				if(this.brokerageType === 1 && userLevel === 2){
+					this.isShowMoney = true
+				}
+			}
 		},
 	}
 </script>
@@ -351,21 +394,23 @@
 
 	.border {
 		/* #ifdef MP-WEIXIN */
-		border-bottom: 4rpx solid #2b2e3d;
+		// border-bottom: 6rpx solid #2b2e3d;
 		/* #endif */
 
 		::v-deep span {
-			border-bottom: 4rpx solid #2b2e3d;
+			// border-bottom: 4rpx solid #2b2e3d;
 		}
 	}
-
-	.red {
-		border-bottom: 4rpx solid #f95c20;
+	
+	.border:after{
+		display:block;
+		content: "";
+		width: 40rpx;
+		margin-top: 12rpx;
+		margin-left: 12rpx;
+		border-bottom: 8rpx solid #000000;
 	}
 
-	.blue {
-		border-bottom: 4rpx solid #007AFF;
-	}
 
 	//自定义导航栏
 	.particularsWrap {
@@ -394,15 +439,14 @@
 		.navigationInfo {
 			margin: auto;
 
-			text {
-				padding: 0 30rpx;
+			.item{
+				margin: 0 20rpx;
 			}
 		}
 	}
 
 	.goodsDetailContainer {
 		background-color: #f7f7f7;
-		border: 1px solid red;
 		/* #ifdef H5 */
 		margin-top: 80rpx;
 		/* #endif */
@@ -412,8 +456,7 @@
 		/* #endif */
 		.header {
 			background-color: #FFFFFF;
-			border: 1px solid red;
-
+			height: 1200rpx;
 			//  轮播图
 			.multicastDiagramContainer {
 				.multicastDiagram {
@@ -431,13 +474,11 @@
 				.titleContainer {
 					padding: 30rpx;
 					height: 120rpx;
-					border: 1px solid red;
 				}
 
 				// 商品信息
 				.goodsInfo {
 					padding: 30rpx;
-					border: 1px solid red;
 
 					.priceWrap {
 						color: #dd524d;
@@ -501,8 +542,6 @@
 			background-color: #FFFFFF;
 			padding: 30rpx;
 			margin: 30rpx 0rpx;
-			border: 1px solid red;
-
 			.commentInfo {
 				padding: 30rpx 0rpx;
 

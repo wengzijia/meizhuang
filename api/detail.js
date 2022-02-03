@@ -6,3 +6,17 @@ exports.fetchDetailData = function(){
 		url
 	})
 }
+
+exports.fetchAddCart = function(token,_id,number){
+	console.log('js',_id,number)
+	return request({
+		method:"POST",
+		header:{
+			Authorization:token
+		},
+		url:`https://zlwh.jinghuanqiu.com/user/addshopcar`,
+		data:{
+			_id,number
+		}
+	})
+}

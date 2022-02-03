@@ -8,12 +8,13 @@ module.exports = function(options) {
 			fail: reject,
 			complete: (res) => {
 				// 无论成功与失败，我都触发
-				// console.log(res)
+				console.log('res',res)
 			}
 		})
 	})
 }
 module.exports = function  request(options) {
+	console.log(options)
     return new Promise((resolve,reject)=>{
       wx.showLoading({
         title: 'loading...',

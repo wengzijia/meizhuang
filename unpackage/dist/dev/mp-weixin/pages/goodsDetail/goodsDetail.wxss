@@ -51,17 +51,13 @@
 .size {
   font-size: 24rpx;
 }
-.border {
-  border-bottom: 4rpx solid #2b2e3d;
-}
-.border  ._span {
-  border-bottom: 4rpx solid #2b2e3d;
-}
-.red {
-  border-bottom: 4rpx solid #f95c20;
-}
-.blue {
-  border-bottom: 4rpx solid #007AFF;
+.border:after {
+  display: block;
+  content: "";
+  width: 40rpx;
+  margin-top: 12rpx;
+  margin-left: 12rpx;
+  border-bottom: 8rpx solid #000000;
 }
 .particularsWrap {
   padding: 10rpx;
@@ -82,17 +78,16 @@
 .particularsWrap .navigationInfo {
   margin: auto;
 }
-.particularsWrap .navigationInfo text {
-  padding: 0 30rpx;
+.particularsWrap .navigationInfo .item {
+  margin: 0 20rpx;
 }
 .goodsDetailContainer {
   background-color: #f7f7f7;
-  border: 1px solid red;
   margin-top: 140rpx;
 }
 .goodsDetailContainer .header {
   background-color: #FFFFFF;
-  border: 1px solid red;
+  height: 1200rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .multicastDiagram {
   height: 600rpx;
@@ -104,11 +99,9 @@
 .goodsDetailContainer .header .multicastDiagramContainer .titleContainer {
   padding: 30rpx;
   height: 120rpx;
-  border: 1px solid red;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo {
   padding: 30rpx;
-  border: 1px solid red;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .priceWrap {
   color: #dd524d;
@@ -155,7 +148,6 @@
   background-color: #FFFFFF;
   padding: 30rpx;
   margin: 30rpx 0rpx;
-  border: 1px solid red;
 }
 .goodsDetailContainer .commentContainer .commentInfo {
   padding: 30rpx 0rpx;
