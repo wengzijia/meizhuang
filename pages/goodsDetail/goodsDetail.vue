@@ -299,6 +299,7 @@
 				}
 				let result = await  fetchAddCart(token,selectShop._id,this.number)
 				console.log('2332',result)
+				this.skuKey = false
 				// that.addCartFn({
 				// 	selectShop: selectShop,
 				// 	success: function(res) {
@@ -409,6 +410,7 @@
 		margin-top: 12rpx;
 		margin-left: 12rpx;
 		border-bottom: 8rpx solid #000000;
+		border-radius: 20rpx;
 	}
 
 
