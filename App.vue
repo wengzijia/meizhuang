@@ -14,4 +14,9 @@
 
 <style>
 	/*每个页面公共css */
+	/* 引入vant组件里的css样式,不然vant组件样式会失效 */
+ /* #ifdef H5 */
+@import 'vant/lib/index.css';
+ /* #endif */
+
 </style>

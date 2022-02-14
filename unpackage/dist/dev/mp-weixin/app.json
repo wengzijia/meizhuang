@@ -1,0 +1,21 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/address/addressSubmit",
+    "pages/address/addressList",
+    "pages/login/h5login"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "usingComponents": {
+    "van-area": "wxcomponents/vant/area/index",
+    "van-toast": "wxcomponents/vant/toast/index",
+    "van-field": "wxcomponents/vant/field/index"
+  },
+  "sitemapLocation": "sitemap.json"
+}
