@@ -68,8 +68,11 @@
 
 <script>
 		import { areaList } from 'wxcomponents/vant/area-data';
+<<<<<<< HEAD
 		import Toast from 'wxcomponents/vant/toast/toast.js';
 		
+=======
+>>>>>>> detail
 		export default {
 			
 			data(){
@@ -103,7 +106,11 @@
 				console.log(this.detailed)
 			}
 			
+<<<<<<< HEAD
 			},
+=======
+			}
+>>>>>>> detail
 		};
 </script>
 

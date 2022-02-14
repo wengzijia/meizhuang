@@ -2,10 +2,65 @@
 
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+<<<<<<< HEAD
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
+=======
+			"path": "pages/goodsDetail/goodsDetail",
+			"style": {
+				"navigationStyle":"custom",
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+				          "bounce": "none", //关闭窗口回弹效果
+				          "titleNView": {
+				              "buttons": [ //原生标题栏按钮配置,
+				                  {
+				           		    "type":"back",
+				           		    "float":"left"
+				                  }
+				               ]
+				           }
+				       }
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/address/addressSubmit",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/address/addressList",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/test/test",
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"buttons": [ //原生标题栏按钮配置,
+							{
+								"type": "back",
+								"float": "left"
+							}
+						]
+					}
+				}
+>>>>>>> detail
 			}
 
 		},
@@ -34,6 +89,7 @@
 
 
 		}
+
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -1,8 +1,12 @@
 const request = require('./request.js')
 
+<<<<<<< HEAD
 // 小程序
 // 自动登录 (用来获取token)
 
+=======
+// 自动登录 (用来获取token)
+>>>>>>> detail
 export function autologin(wxCode){
 	return request({
 		url:`https://zlwh.jinghuanqiu.com/wxlogin`,
@@ -38,6 +42,7 @@ export function phoneNumber(code,token){
 		data:{code}
 		
 	})
+<<<<<<< HEAD
 }
 
 
@@ -75,3 +80,6 @@ export function h5login(tell,code){
 		
 	})
 }
+=======
+}
+>>>>>>> detail

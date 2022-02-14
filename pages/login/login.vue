@@ -1,7 +1,13 @@
 <template>
 	<view>
+<<<<<<< HEAD
 		<button class="loginBtn" @click="newloginBtn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信登录</button>
 
+=======
+		
+	  
+		<button class="loginBtn" @click="newloginBtn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信登录</button>
+>>>>>>> detail
 		<!-- 开启提示框 -->
 		<van-toast id="van-toast" />
 	</view>
@@ -10,13 +16,21 @@
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
 	import Toast from 'wxcomponents/vant/toast/toast.js';
+<<<<<<< HEAD
 
 
+=======
+	
+>>>>>>> detail
 	export default {
 		data() {
 			return {
 				token:'',
+<<<<<<< HEAD
 				userInfo:''
+=======
+				userInfo:'',
+>>>>>>> detail
 			};
 		},
 		methods:{
@@ -50,10 +64,15 @@
 				}
 			   
 			}
+<<<<<<< HEAD
 
 		},
 		mounted(){
 
+=======
+		},
+		mounted(){
+>>>>>>> detail
 			let _this = this;
 			wx.login({
 				
@@ -72,7 +91,10 @@
 							_this.userInfo = result.userInfo
 							
 						}else{
+<<<<<<< HEAD
 							// 如果不是第一次登陆,就直接保存token自动登录,不需要点击按钮登录
+=======
+>>>>>>> detail
 							Toast("不是第一次登录")
 							wx.setStorageSync("token",result.token)
 							wx.setStorageSync("userInfo",result.userInfo)
