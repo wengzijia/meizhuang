@@ -21,7 +21,7 @@
 		},
 		data() {
 			return {
-
+			searchData:[]
 			};
 		},
 		methods: {
