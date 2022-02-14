@@ -14,13 +14,11 @@
 
 <style>
 	/*每个页面公共css */
-<<<<<<< HEAD
 	/* 引入vant组件里的css样式,不然vant组件样式会失效 */
  /* #ifdef H5 */
 @import 'vant/lib/index.css';
  /* #endif */
 
-=======
 	@import "./static/iconfont.css";
->>>>>>> detail
+
 </style>

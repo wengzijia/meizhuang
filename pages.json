@@ -1,68 +1,22 @@
-{
-
+{	
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-<<<<<<< HEAD
-			"path": "pages/login/login",
+			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-=======
-			"path": "pages/goodsDetail/goodsDetail",
-			"style": {
-				"navigationStyle":"custom",
-				"navigationBarTitleText": "商品详情",
-				"app-plus": {
-				          "bounce": "none", //关闭窗口回弹效果
-				          "titleNView": {
-				              "buttons": [ //原生标题栏按钮配置,
-				                  {
-				           		    "type":"back",
-				           		    "float":"left"
-				                  }
-				               ]
-				           }
-				       }
+				"navigationBarTitleText": "搜索"
 			}
 		},
 		{
-			"path": "pages/login/login",
+			"path": "pages/index/classification",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "搜索列表"
 			}
 		},
 		{
-			"path": "pages/address/addressSubmit",
+			"path": "pages/search/search",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationBarTitleText": "搜索"
 			}
-		},
-		{
-			"path": "pages/address/addressList",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-
-		},
-		{
-			"path": "pages/test/test",
-			"style": {
-				"app-plus": {
-					"titleNView": {
-						"buttons": [ //原生标题栏按钮配置,
-							{
-								"type": "back",
-								"float": "left"
-							}
-						]
-					}
-				}
->>>>>>> detail
-			}
-
 		},
 		{
 			"path": "pages/address/addressSubmit",
@@ -88,7 +42,49 @@
 			}
 
 
-		}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/goodsDetail/goodsDetail",
+			"style": {
+				"navigationStyle":"custom",
+				"navigationBarTitleText": "商品详情",
+				"app-plus": {
+				          "bounce": "none", //关闭窗口回弹效果
+				          "titleNView": {
+				              "buttons": [ //原生标题栏按钮配置,
+				                  {
+				           		    "type":"back",
+				           		    "float":"left"
+				                  }
+				               ]
+				           }
+				       }
+			}
+		},
+		{
+			"path": "pages/test/test",
+			"style": {
+				"app-plus": {
+					"titleNView": {
+						"buttons": [ //原生标题栏按钮配置,
+							{
+								"type": "back",
+								"float": "left"
+							}
+						]
+					}
+				}
+
+			}
+
+		},
 
 	],
 	"globalStyle": {
@@ -105,4 +101,6 @@
 		}
 
 	}
+
 }
+

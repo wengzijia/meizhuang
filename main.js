@@ -13,6 +13,7 @@ app.$mount()
 // #endif
 
 // #ifdef VUE3
+
 import Vue from 'vue'
 
 export function createApp() {
