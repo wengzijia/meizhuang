@@ -1,7 +1,13 @@
 {
     "pages": [
-        "pages/index/index",
-        "pages/index/classification"
+        "pages/search/index",
+        "pages/search/classification",
+        "pages/address/addressSubmit",
+        "pages/address/addressList",
+        "pages/login/h5login",
+        "pages/login/login",
+        "pages/goodsDetail/goodsDetail",
+        "pages/test/test"
     ],
     "subPackages": [],
     "window": {
@@ -10,6 +16,10 @@
         "navigationBarBackgroundColor": "#F8F8F8",
         "backgroundColor": "#F8F8F8"
     },
-    "usingComponents": {},
+    "usingComponents": {
+        "van-area": "wxcomponents/vant/area/index",
+        "van-toast": "wxcomponents/vant/toast/index",
+        "van-field": "wxcomponents/vant/field/index"
+    },
     "sitemapLocation": "sitemap.json"
 }

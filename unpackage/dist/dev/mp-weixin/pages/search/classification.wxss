@@ -1,0 +1,8 @@
+
+.tab.data-v-ea334bf8 {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+	background-color: #f2f2f2;
+}
+

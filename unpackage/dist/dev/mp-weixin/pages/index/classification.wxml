@@ -1,1 +1,0 @@
-<view class="tab data-v-1646cd88"><block wx:for="{{searchData}}" wx:for-item="item" wx:for-index="index"><goods vue-id="{{'b291e16c-1-'+index}}" goodsList="{{item}}" class="data-v-1646cd88" bind:__l="__l"></goods></block></view>

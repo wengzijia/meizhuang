@@ -127,7 +127,7 @@
 			keywordsClick(item) {
 				console.log(item)
 				uni.navigateTo({
-					url: `../../pages/index/classification?keyWord=${item}`,
+					url: `../../pages/search/classification?keyWord=${item}`,
 					fail(error) {
 						console.log(error)
 					}

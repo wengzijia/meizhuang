@@ -46,16 +46,19 @@
 .s-block .list.data-v-c880309c {
   display: flex;
   flex-wrap: wrap;
+  width: 90%;
+  margin: auto;
 }
 .s-block .list view.data-v-c880309c {
-  width: 50%;
-  color: #8A8A8A;
+  margin-top: 8rpx;
+  margin-left: 10rpx;
   font-size: 28rpx;
   box-sizing: border-box;
   text-align: center;
-  padding: 20rpx 0;
+  padding: 16rpx 20rpx;
   border-top: 2rpx solid #FFF;
   border-left: 2rpx solid #FFF;
+  border-radius: 50rpx;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -103,17 +106,15 @@
 .wanted-block .list.data-v-c880309c {
   display: flex;
   flex-wrap: wrap;
+  margin-left: 48rpx;
 }
 .wanted-block .list view.data-v-c880309c {
   width: 50%;
-  color: #8A8A8A;
   font-size: 28rpx;
   box-sizing: border-box;
-  text-align: center;
   padding: 20rpx 0;
   border-top: 2rpx solid #FFF;
   border-left: 2rpx solid #FFF;
-  background-color: #F7F7F7;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
