@@ -55,6 +55,7 @@
             "urlCheck" : false,
             "minified" : true,
             "es6" : false
+
         },
         "usingComponents" : true
     },

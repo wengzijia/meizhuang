@@ -9,6 +9,7 @@
 
 <script>
 	import zySearch from '../../components/zy-search/zy-search.vue'
+	import {fetchSearch} from '../../api/index.js'
 	export default {
 		components: {
 			zySearch
@@ -18,7 +19,7 @@
 				title: 'Hello',
 				themeClass: 'block',
 				speechEngine: 'baidu', //语音识别引擎
-				hotList: ['蒋雪峰', '施华蔻', '欧朗雅', '德邦'] //初始化推荐列表
+				hotList: ['口红', '洗面奶', '身体乳'] //初始化推荐列表
 			}
 		},
 		methods: {
@@ -26,7 +27,9 @@
 				uni.showToast({
 					title: '搜索信息: ' + e,
 					icon: "none"
-				})
+				}),
+				console.log(e);
+				
 			}
 			
 		}

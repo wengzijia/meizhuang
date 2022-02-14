@@ -2,15 +2,20 @@
 	<view>
 		<view class="search">
 			<!-- #ifdef APP-PLUS -->
-				<image src="../../static/zy-search/voice.svg" mode="aspectFit" @click="startRecognize()" class="voice-icon"></image>
+			<image src="../../static/zy-search/voice.svg" mode="aspectFit" @click="startRecognize()" class="voice-icon">
+			</image>
 			<!-- #endif -->
 			<template v-if="isFocus">
-				<input maxlength="20" focus type="text" value="" confirm-type="search" @confirm="searchStart()" placeholder="请输入关键词搜索" v-model.trim="searchText"/>
+				<input maxlength="20" focus type="text" value="" confirm-type="search" @confirm="searchStart()"
+					placeholder="请输入关键词搜索" v-model.trim="searchText" />
 			</template>
 			<template v-else>
-				<input maxlength="20" type="text" value="" confirm-type="search" @confirm="searchStart()" placeholder="请输入关键词搜索" v-model.trim="searchText"/>
+				<input maxlength="20" type="text" value="" confirm-type="search" @confirm="searchStart()"
+					placeholder="请输入关键词搜索" v-model.trim="searchText" />
 			</template>
-			<image src="../../static/zy-search/search.svg" mode="aspectFit" @click="searchStart()" class="search-icon"></image>
+			<image src="../../static/zy-search/search.svg" mode="aspectFit" @click="searchStart()" class="search-icon">
+			</image>
+
 		</view>
 		<view :class="'s-' + theme" v-if="hList.length > 0">
 			<view class="header">
@@ -24,25 +29,27 @@
 		<view :class="'wanted-' + theme" v-if="showWant">
 			<view class="header">搜索推荐</view>
 			<view class="list">
-				<view v-for="(item,index) in hotList" :key="index" @click="keywordsClick(item)">{{item}}</view>
+
+				<view v-for="(item,index) in hotList" :key="index" @click="keywordsClick(item)">· {{item}}</view>
 			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	export default{
-		name:"zy-search",
-		props:{
-			isFocus:{	//是否自动获取焦点
+	export default {
+		name: "zy-search",
+		props: {
+			isFocus: { //是否自动获取焦点
 				type: Boolean,
 				default: false
 			},
-			theme:{	//选择块级显示还是圆形显示
+			theme: { //选择块级显示还是圆形显示
 				type: String,
 				default: 'block'
 			},
-			showWant:{	//是否展示推荐菜单
+			showWant: { //是否展示推荐菜单
+
 				type: Boolean,
 				default: false
 			},
@@ -59,13 +66,12 @@
 		},
 		data() {
 			return {
-				
 				searchText:'',								//搜索关键词
 				hList:uni.getStorageSync('search_cache')		//历史记录
 			};
 		},
 		methods: {
-			searchStart: function() {	//触发搜索
+			searchStart: function() { //触发搜索
 				let _this = this;
 				if (_this.searchText == '') {
 					uni.showToast({
@@ -73,23 +79,26 @@
 						icon: 'none',
 						duration: 1000
 					});
-				}else{
+			} else {
 					_this.$emit('getSearchText', _this.searchText);
+					uni.navigateTo({
+						url: `classification?keyWord=${_this.searchText}`
+					});
 					uni.getStorage({
-						key:'search_cache',
-						success(res){
+						key: 'search_cache',
+						success(res) {
 							let list = res.data;
-							if(list.length > 5){
-								for(let item of list){
-									if(item == _this.searchText){
+							if (list.length > 5) {
+								for (let item of list) {
+									if (item == _this.searchText) {
 										return;
 									}
 								}
 								list.pop();
 								list.unshift(_this.searchText);
-							}else{
-								for(let item of list){
-									if(item == _this.searchText){
+							}else {
+								for (let item of list) {
+									if (item == _this.searchText) {
 										return;
 									}
 								}
@@ -114,24 +123,27 @@
 				}
 			},
 			//关键词搜索与历史搜索
-			keywordsClick (item) {
+
+			keywordsClick(item) {
+				console.log(item)
 				uni.navigateTo({
-					url:`../../pages/index/classification?id='${item}'`,
-					 fail (error) {
-					        console.log(error)
-					    }
+					url: `../../pages/index/classification?keyWord=${item}`,
+					fail(error) {
+						console.log(error)
+					}
 				})
 				this.searchText = item;
 				// this.searchStart();
 			},
-			delhistory () {		//清空历史记录
+			delhistory() { //清空历史记录
+
 				this.hList = [];
 				uni.setStorage({
 					key: 'search_cache',
 					data: []
 				});
 			},
-			startRecognize: function() {	//语音输入
+			startRecognize: function() { //语音输入
 				let _this = this;
 				let options = {};
 				options.engine = _this.speechEngine;
@@ -146,17 +158,19 @@
 </script>
 
 <style lang="less" scoped>
-	.search{
+	.search {
 		width: 640upx;
 		margin: 30upx auto 0;
 		position: relative;
-		input{
+		input {
 			background-color: #F7F7F7;
 			padding: 10upx 74upx;
 			font-size: 28upx;
 			border-radius: 50upx;
 		}
-		.voice-icon{
+
+		.voice-icon {
+
 			width: 36upx;
 			height: 36upx;
 			padding: 16upx 20upx 16upx 0;
@@ -165,7 +179,7 @@
 			top: 4upx;
 			z-index: 10;
 		}
-		.search-icon{
+		.search-icon {
 			width: 36upx;
 			height: 36upx;
 			padding: 16upx 20upx 16upx 0;
@@ -175,13 +189,17 @@
 			z-index: 10;
 		}
 	}
-	.s-block{
+	
+	.s-block {
 		margin-top: 30upx;
-		.header{
+
+		.header {
 			font-size: 32upx;
 			padding: 30upx;
 			position: relative;
-			image{
+
+			image {
+
 				width: 36upx;
 				height: 36upx;
 				padding: 10upx;
@@ -190,18 +208,25 @@
 				top: 24upx;
 			}
 		}
-		.list{
+
+
+		.list {
 			display: flex;
 			flex-wrap: wrap;
-			view{
-				width: 50%;
-				color: #8A8A8A;
+			width: 90%;
+			// border: 2px solid black;
+			margin: auto;
+
+			view {
+				margin-top: 8upx;
+				margin-left: 10upx;
 				font-size: 28upx;
 				box-sizing: border-box;
 				text-align: center;
-				padding: 20upx 0;
+				padding: 16upx 20upx;
 				border-top: 2upx solid #FFF;
-    			border-left: 2upx solid #FFF;
+				border-left: 2upx solid #FFF;
+				border-radius: 50upx;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
@@ -209,14 +234,20 @@
 			}
 		}
 	}
-	.s-circle{
+
+
+	.s-circle {
 		margin-top: 30upx;
-		.header{
+
+		.header {
+
 			font-size: 32upx;
 			padding: 30upx;
 			border-bottom: 2upx solid #F9F9F9;
 			position: relative;
-			image{
+
+			image {
+
 				width: 36upx;
 				height: 36upx;
 				padding: 10upx;
@@ -225,11 +256,15 @@
 				top: 24upx;
 			}
 		}
-		.list{
+
+
+		.list {
 			display: flex;
 			flex-wrap: wrap;
 			padding: 0 30upx 20upx;
-			view{
+
+			view {
+
 				padding: 8upx 30upx;
 				margin: 20upx 30upx 0 0;
 				font-size: 28upx;
@@ -241,42 +276,52 @@
 			}
 		}
 	}
-	.wanted-block{
+
+
+	.wanted-block {
 		margin-top: 30upx;
-		.header{
+
+		.header {
 			font-size: 32upx;
 			padding: 30upx;
 		}
-		.list{
+
+		.list {
 			display: flex;
 			flex-wrap: wrap;
-			view{
+			margin-left: 48rpx;
+
+			view {
 				width: 50%;
-				color: #8A8A8A;
+				// color: #8A8A8A;
 				font-size: 28upx;
 				box-sizing: border-box;
-				text-align: center;
+				// text-align: center;
 				padding: 20upx 0;
 				border-top: 2upx solid #FFF;
 				border-left: 2upx solid #FFF;
-				background-color: #F7F7F7;
+				// background-color: #F7F7F7;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
 		}
 	}
-	.wanted-circle{
+
+	.wanted-circle {
 		margin-top: 30upx;
-		.header{
+
+		.header {
 			font-size: 32upx;
 			padding: 30upx;
 		}
-		.list{
+
+		.list {
 			display: flex;
 			flex-wrap: wrap;
 			padding: 0 30upx 20upx;
-			view{
+
+			view {
 				padding: 8upx 30upx;
 				margin: 20upx 30upx 0 0;
 				font-size: 28upx;
