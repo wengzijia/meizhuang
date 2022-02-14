@@ -8,7 +8,6 @@ exports.fetchDetailData = function(){
 }
 
 exports.fetchAddCart = function(token,_id,number){
-	console.log('js',_id,number)
 	return request({
 		method:"POST",
 		header:{
