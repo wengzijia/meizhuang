@@ -1,12 +1,11 @@
 import App from './App'
 
 // #ifndef VUE3
+
 import Vue from 'vue'
 Vue.config.productionTip = false
 App.mpType = 'app'
-import { Toast } from 'vant';
 
-Vue.use(Toast);
 
 const app = new Vue({
     ...App

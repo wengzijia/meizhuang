@@ -53,7 +53,7 @@ export function captcha(){
 		
 	})
 }
-
+// 校验图形验证码
 export function checkImgYzm(tell,captchaId,verifyCode){
 	return request({
 		url:`https://zlwh.jinghuanqiu.com/h5login/sentcapcha`,
@@ -66,7 +66,7 @@ export function checkImgYzm(tell,captchaId,verifyCode){
 		
 	})
 }
-
+// 登录
 export function h5login(tell,code){
 	return request({
 		url:`https://zlwh.jinghuanqiu.com/h5login`,

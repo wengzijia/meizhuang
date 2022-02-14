@@ -10,7 +10,8 @@
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
 	import Toast from 'wxcomponents/vant/toast/toast.js';
-	
+
+
 	export default {
 		data() {
 			return {
@@ -71,6 +72,7 @@
 							_this.userInfo = result.userInfo
 							
 						}else{
+							// 如果不是第一次登陆,就直接保存token自动登录,不需要点击按钮登录
 							Toast("不是第一次登录")
 							wx.setStorageSync("token",result.token)
 							wx.setStorageSync("userInfo",result.userInfo)

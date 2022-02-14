@@ -8,7 +8,7 @@
 	
 		<view class="han">
 		<input v-model="imgYzm" type="text" placeholder="请填写图片验证码" />
-		<view v-html="yzmData" style="background-color:black;"></view>
+		<view v-html="yzmData" style="background-color:black;" @click="obtainYzm()"></view>
 		</view>
 		
 		<view class="han">
@@ -19,12 +19,15 @@
 		<button @click="login" class="loginBtn">登录</button>
 		
 		</view>
+		
 	
 	</view>
 </template>
 
 <script>
 	import {captcha,checkImgYzm,h5login} from "api/login.js"
+	import Toast from 'wxcomponents/vant/toast/toast.js';
+	
 	
 	export default {
 		data() {
@@ -85,6 +88,7 @@
 				}
 				
 			},
+			// 登录
 			async login(){
 				if(this.phone != '' && this.phoneYzm != ''){
 					let {result} = await h5login(this.phone,this.phoneYzm)
@@ -102,13 +106,16 @@
 					this.$toast('手机号或手机验证码错误');
 				}
 				
+			},
+			// 获取图形验证码
+			async obtainYzm(){
+				let {data} = await captcha()
+				this.captchaId = data.captchaId
+				this.yzmData = data.data
 			}
 		},
-		async created(){
-			
-			let {data} = await captcha()
-			this.captchaId = data.captchaId
-			this.yzmData = data.data
+		created(){
+			this.obtainYzm()
 			
 		},
 	}
@@ -149,7 +156,7 @@
 			font-size: 14px;
 			height: 40px;
 			line-height: 40px;
-			margin: 0;
+			margin-left: 10px;
 		}
 	}
 	
@@ -162,5 +169,8 @@
 		margin: 30px auto;
 	}
 }
+
+
+
 
 </style>

@@ -68,6 +68,8 @@
 
 <script>
 		import { areaList } from 'wxcomponents/vant/area-data';
+		import Toast from 'wxcomponents/vant/toast/toast.js';
+		
 		export default {
 			
 			data(){
