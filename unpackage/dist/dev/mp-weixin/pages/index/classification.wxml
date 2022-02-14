@@ -1,0 +1,1 @@
+<view class="tab data-v-1646cd88"><tab vue-id="b291e16c-1" lists="{{lists}}" tab_color="{{tab_color}}" gauge="{{gauge}}" data-event-opts="{{[['^switchover',[['switchover']]]]}}" bind:switchover="__e" class="data-v-1646cd88" bind:__l="__l"></tab><goods vue-id="b291e16c-2" class="data-v-1646cd88" bind:__l="__l"></goods></view>

@@ -1,0 +1,1 @@
+<view class="content"><view class="imgWpar"><image src="{{goodsList.picUrl}}" mode></image></view><view class="content_desc"><text>{{goodsList.name}}</text></view><view class="bottom"><view class="price"><text class="price_item1">¥</text><text class="price_item2">{{goodsList.retailPrice}}</text><text class="price_item3">.00</text></view></view></view>
