@@ -12,7 +12,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 
 	/*每个页面公共css */
 	/* 引入vant组件里的css样式,不然vant组件样式会失效 */
@@ -21,6 +21,7 @@
  /* #endif */
 
 	@import "./static/iconfont.css";
+	@import "@/uni_modules/uview-ui/index.scss";
 
 
 </style>
