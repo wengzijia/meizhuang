@@ -6,10 +6,7 @@ module.exports = function(options) {
 				reslove(res.data)
 			},
 			fail: reject,
-			complete: (res) => {
-				// 无论成功与失败，我都触发
-				console.log('res',res)
-			}
+			complete: (res) => {}
 		})
 	})
 }

@@ -1,8 +1,41 @@
+{
+	"easycom": {
 
-{	
-
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		
+		{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "酷卖",
+				"navigationBarBackgroundColor": "#2b2e3f",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/sort/sort",
+			"style": {
+				"navigationBarTitleText": "分类",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/shopCar/car",
+			"style": {
+				"navigationBarTitleText": "购物车",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/user/user",
+			"style": {
+				"navigationBarTitleText": "个人中心",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#2b2e3f",
+				"navigationBarTextStyle": "white"
+			}
+		},
+
 		{
 			"path": "pages/search/index",
 			"style": {
@@ -16,7 +49,6 @@
 				"navigationBarTitleText": "搜索列表"
 			}
 		},
-		
 		{
 			"path": "pages/address/addressSubmit",
 			"style": {
@@ -30,17 +62,13 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
 		},
-
 		{
 			"path": "pages/login/h5login",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
-
 		},
 		{
 			"path": "pages/login/login",
@@ -52,25 +80,10 @@
 		{
 			"path": "pages/goodsDetail/goodsDetail",
 			"style": {
-				"navigationStyle":"custom",
+				"navigationStyle": "custom",
 				"navigationBarTitleText": "商品详情",
 				"app-plus": {
-				          "bounce": "none", //关闭窗口回弹效果
-				          "titleNView": {
-				              "buttons": [ //原生标题栏按钮配置,
-				                  {
-				           		    "type":"back",
-				           		    "float":"left"
-				                  }
-				               ]
-				           }
-				       }
-			}
-		},
-		{
-			"path": "pages/test/test",
-			"style": {
-				"app-plus": {
+					"bounce": "none", //关闭窗口回弹效果
 					"titleNView": {
 						"buttons": [ //原生标题栏按钮配置,
 							{
@@ -80,11 +93,32 @@
 						]
 					}
 				}
-
 			}
-
 		}
 	],
+	"tabBar": {
+		"list": [{
+				"pagePath": "pages/home/home",
+				"iconPath": "static/tabbar/index.png",
+				"selectedIconPath": "static/tabbar/index-select.png"
+			},
+			{
+				"pagePath": "pages/sort/sort",
+				"iconPath": "static/tabbar/classification.png",
+				"selectedIconPath": "static/tabbar/classification-select.png"
+			},
+			{
+				"pagePath": "pages/shopCar/car",
+				"iconPath": "static/tabbar/shoppingCart.png",
+				"selectedIconPath": "static/tabbar/shoppingCart-select.png"
+			},
+			{
+				"pagePath": "pages/user/user",
+				"iconPath": "static/tabbar/my.png",
+				"selectedIconPath": "static/tabbar/my-select.png"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -102,4 +136,3 @@
 	}
 
 }
-

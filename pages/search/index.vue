@@ -9,7 +9,7 @@
 
 <script>
 	import zySearch from '../../components/zy-search/zy-search.vue'
-	import {fetchSearch} from '../../api/index.js'
+	import {fetchSearch} from '../../api/search.js'
 	export default {
 		components: {
 			zySearch
@@ -29,7 +29,6 @@
 					icon: "none"
 				}),
 				console.log(e);
-				
 			}
 			
 		}

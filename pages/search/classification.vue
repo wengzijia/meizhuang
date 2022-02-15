@@ -1,20 +1,14 @@
 <template>
-
 	<view class="tab">
-
 		<Goods v-for="(item,index) in searchData" :goodsList="item"></Goods>
-
-
 	</view>
-
-
 </template>
 
 <script>
 	import Goods from '../../components/good.vue';
 	import {
 		fetchSearch
-	} from '../../api/index.js'
+	} from '../../api/search.js'
 	export default {
 		components: {
 			Goods
