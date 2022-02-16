@@ -157,7 +157,7 @@
 	}
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 	.search {
 		width: 640upx;
 		margin: 30upx auto 0;

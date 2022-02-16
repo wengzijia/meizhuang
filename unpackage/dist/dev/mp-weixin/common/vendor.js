@@ -805,15 +805,9 @@ var customize = cached(function (str) {
 
 function initTriggerEvent(mpInstance) {
   var oldTriggerEvent = mpInstance.triggerEvent;
-  var newTriggerEvent = function newTriggerEvent(event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
+  mpInstance.triggerEvent = function (event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
     return oldTriggerEvent.apply(mpInstance, [customize(event)].concat(args));
   };
-  try {
-    // 京东小程序 triggerEvent 为只读
-    mpInstance.triggerEvent = newTriggerEvent;
-  } catch (error) {
-    mpInstance._triggerEvent = newTriggerEvent;
-  }
 }
 
 function initHook(name, options, isComponent) {
@@ -1987,17 +1981,17 @@ function createPlugin(vm) {
   var appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow(function () {for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {args[_key7] = arguments[_key7];}
-      vm.__call_hook('onShow', args);
+      appOptions.onShow.apply(vm, args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide(function () {for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {args[_key8] = arguments[_key8];}
-      vm.__call_hook('onHide', args);
+      appOptions.onHide.apply(vm, args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     var args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    vm.__call_hook('onLaunch', args);
+    appOptions.onLaunch.call(vm, args);
   }
   return vm;
 }
@@ -7947,10 +7941,9 @@ function internalMixin(Vue) {
 
   Vue.prototype.$emit = function(event) {
     if (this.$scope && event) {
-      (this.$scope['_triggerEvent'] || this.$scope['triggerEvent'])
-        .call(this.$scope, event, {
-          __args__: toArray(arguments, 1)
-        })
+      this.$scope['triggerEvent'](event, {
+        __args__: toArray(arguments, 1)
+      });
     }
     return oldEmit.apply(this, arguments)
   };
@@ -8635,9 +8628,9 @@ function resolveLocaleChain(locale) {
 
 /***/ }),
 /* 5 */
-/*!************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/pages.json ***!
-  \************************************************/
+/*!***********************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/pages.json ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -8778,9 +8771,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 12 */
-/*!*******************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
-  \*******************************************************************/
+/*!******************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8867,9 +8860,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 13 */
-/*!******************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
-  \******************************************************************************/
+/*!*****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9032,9 +9025,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 14 */
-/*!********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
-  \********************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9047,9 +9040,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 15 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9060,9 +9053,9 @@ _Request.default;exports.default = _default;
 
 /***/ }),
 /* 16 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
-  \********************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9268,9 +9261,9 @@ Request = /*#__PURE__*/function () {
 
 /***/ }),
 /* 17 */
-/*!****************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
-  \****************************************************************************************************/
+/*!***************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9281,9 +9274,9 @@ function _default(config) {return (0, _index.default)(config);};exports.default 
 
 /***/ }),
 /* 18 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
-  \**********************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9389,9 +9382,9 @@ function _default(config) {return new Promise(function (resolve, reject) {
 
 /***/ }),
 /* 19 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
-  \************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9468,9 +9461,9 @@ function buildURL(url, params) {
 
 /***/ }),
 /* 20 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9609,9 +9602,9 @@ function isUndefined(val) {
 
 /***/ }),
 /* 21 */
-/*!**************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
-  \**************************************************************************************************/
+/*!*************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
+  \*************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9639,9 +9632,9 @@ function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 /* 22 */
-/*!*****************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
-  \*****************************************************************************************************/
+/*!****************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
+  \****************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9663,9 +9656,9 @@ function isAbsoluteURL(url) {
 
 /***/ }),
 /* 23 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
-  \***************************************************************************************************/
+/*!**************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
+  \**************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9687,9 +9680,9 @@ function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 /* 24 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9713,9 +9706,9 @@ function settle(resolve, reject, response) {var
 
 /***/ }),
 /* 25 */
-/*!*******************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
-  \*******************************************************************************************************/
+/*!******************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
+  \******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9773,9 +9766,9 @@ InterceptorManager;exports.default = _default;
 
 /***/ }),
 /* 26 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
-  \************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9886,9 +9879,9 @@ function _default(globalsConfig) {var config2 = arguments.length > 1 && argument
 
 /***/ }),
 /* 27 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
-  \*********************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9924,9 +9917,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 28 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10195,7 +10188,7 @@ var clone = function () {
 }();var _default =
 
 clone;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/buffer/index.js */ 29).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 29).Buffer))
 
 /***/ }),
 /* 29 */
@@ -12272,17 +12265,17 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 /* 33 */
-/*!*****************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
-  \*****************************************************************************/
+/*!****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * 并且带有路由拦截功能
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */var
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 并且带有路由拦截功能
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */var
 
 Router = /*#__PURE__*/function () {
   function Router() {_classCallCheck(this, Router);
@@ -13195,9 +13188,9 @@ if (hadRuntime) {
 
 /***/ }),
 /* 37 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13338,9 +13331,9 @@ function colorToRgba(color, alpha) {
 
 /***/ }),
 /* 38 */
-/*!********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
-  \********************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13634,9 +13627,9 @@ function regExp(o) {
 
 /***/ }),
 /* 39 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13673,9 +13666,9 @@ debounce;exports.default = _default;
 
 /***/ }),
 /* 40 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13713,9 +13706,9 @@ throttle;exports.default = _default;
 
 /***/ }),
 /* 41 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
-  \*********************************************************************************/
+/*!********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14411,9 +14404,9 @@ function setConfig(_ref)
 
 /***/ }),
 /* 42 */
-/*!********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
-  \********************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14454,9 +14447,9 @@ if (true) {
 
 /***/ }),
 /* 43 */
-/*!*******************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
-  \*******************************************************************************/
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14653,9 +14646,9 @@ _upload.default);exports.default = _default;
 
 /***/ }),
 /* 44 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14686,9 +14679,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 45 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14719,9 +14712,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 46 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14749,9 +14742,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 47 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14785,9 +14778,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 48 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14816,9 +14809,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 49 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14850,9 +14843,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 50 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14885,9 +14878,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 51 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14935,9 +14928,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 52 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14985,9 +14978,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 53 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15008,9 +15001,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 54 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15051,9 +15044,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 55 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15076,9 +15069,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 56 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15111,9 +15104,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 57 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
-  \*********************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15148,9 +15141,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 58 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
-  \**********************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15171,9 +15164,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 59 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15200,9 +15193,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 60 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15236,9 +15229,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 61 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
-  \***********************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15263,9 +15256,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 62 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15288,9 +15281,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 63 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
-  \********************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15321,9 +15314,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 64 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
-  \********************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15353,9 +15346,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 65 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15379,9 +15372,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 66 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15412,9 +15405,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 67 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
-  \**********************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15456,9 +15449,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 68 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15486,9 +15479,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 69 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15519,9 +15512,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 70 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15549,9 +15542,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 71 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15578,9 +15571,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 72 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
-  \***********************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15605,9 +15598,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 73 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15630,9 +15623,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 74 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15654,9 +15647,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 75 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15698,9 +15691,9 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
 
 /***/ }),
 /* 76 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15736,9 +15729,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 77 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15763,9 +15756,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 78 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15790,9 +15783,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 79 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15846,9 +15839,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 80 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15884,9 +15877,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 81 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15912,9 +15905,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 82 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
-  \********************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15939,9 +15932,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 83 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15973,9 +15966,9 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
 
 /***/ }),
 /* 84 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16009,9 +16002,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 85 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16032,9 +16025,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 86 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16070,9 +16063,9 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
 
 /***/ }),
 /* 87 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16100,9 +16093,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 88 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16137,9 +16130,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 89 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16175,9 +16168,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 90 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16214,9 +16207,9 @@ var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 91));fun
 
 /***/ }),
 /* 91 */
-/*!*******************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
-  \*******************************************************************************/
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16241,9 +16234,9 @@ color;exports.default = _default;
 
 /***/ }),
 /* 92 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16266,9 +16259,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 93 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16301,9 +16294,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 94 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16331,9 +16324,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 95 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16374,9 +16367,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 96 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
-  \**********************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16399,9 +16392,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 97 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16425,9 +16418,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 98 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16455,9 +16448,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 99 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16493,9 +16486,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 100 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16530,9 +16523,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 101 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16565,9 +16558,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 102 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
-  \******************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16603,9 +16596,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 103 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16637,9 +16630,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 104 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16667,9 +16660,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 105 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
-  \***********************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16692,9 +16685,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 106 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16721,9 +16714,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 107 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
-  \******************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16749,9 +16742,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 108 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16793,9 +16786,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 109 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16825,9 +16818,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 110 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16858,9 +16851,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 111 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16891,9 +16884,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 112 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16914,9 +16907,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 113 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16943,9 +16936,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 114 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
-  \*****************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16969,9 +16962,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 115 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16997,9 +16990,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 116 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
-  \******************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17028,9 +17021,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 117 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
-  \*******************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17051,9 +17044,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 118 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
-  \***********************************************************************************************/
+/*!**********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17080,9 +17073,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 119 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17126,9 +17119,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 120 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
-  \************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17153,9 +17146,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 121 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17185,9 +17178,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 122 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17215,9 +17208,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 123 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
-  \******************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17243,9 +17236,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 124 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17282,9 +17275,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 125 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
-  \***********************************************************************************/
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17319,9 +17312,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 126 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17364,9 +17357,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 127 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
-  \****************************************************************************************/
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17408,9 +17401,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 128 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
-  \*************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17445,9 +17438,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 129 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17473,9 +17466,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 130 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
-  \***************************************************************************************/
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17506,9 +17499,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 131 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
-  \******************************************************************************************/
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17532,9 +17525,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 132 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
-  \**************************************************************************************/
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17576,9 +17569,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 133 */
-/*!********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
-  \********************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17605,9 +17598,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 134 */
-/*!************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
-  \************************************************************************************/
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17696,9 +17689,9 @@ platform;exports.default = _default;
 /* 139 */,
 /* 140 */,
 /* 141 */
-/*!*************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/home.js ***!
-  \*************************************************/
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/home.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17712,9 +17705,9 @@ exports.fetchindexData = function () {
 
 /***/ }),
 /* 142 */
-/*!****************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/request.js ***!
-  \****************************************************/
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/request.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17742,9 +17735,9 @@ exports.fetchindexData = function () {
 /* 149 */,
 /* 150 */,
 /* 151 */
-/*!*************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/sort.js ***!
-  \*************************************************/
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/sort.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17759,9 +17752,9 @@ function fetch_sortData() {
 
 /***/ }),
 /* 152 */
-/*!****************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/util/window.js ***!
-  \****************************************************/
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/util/window.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17798,10 +17791,12 @@ function fetch_sortData() {
 /* 170 */,
 /* 171 */,
 /* 172 */,
-/* 173 */
-/*!***************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/search.js ***!
-  \***************************************************/
+/* 173 */,
+/* 174 */,
+/* 175 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/search.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17818,8 +17813,6 @@ exports.fetchSearch = function (page, size, keyWord) {
 };
 
 /***/ }),
-/* 174 */,
-/* 175 */,
 /* 176 */,
 /* 177 */,
 /* 178 */,
@@ -17834,10 +17827,12 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 187 */,
 /* 188 */,
 /* 189 */,
-/* 190 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
-  \***********************************************************************************/
+/* 190 */,
+/* 191 */,
+/* 192 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21731,15 +21726,15 @@ var areaList = {
     820204: "圣方济各堂区" } };exports.areaList = areaList;
 
 /***/ }),
-/* 191 */
-/*!**********************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
-  \**********************************************************************/
+/* 193 */
+/*!*********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
+  \*********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 192);
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 194);
 var defaultOptions = {
   type: 'text',
   mask: false,
@@ -21807,10 +21802,10 @@ Toast.resetDefaultOptions = function () {
 Toast;exports.default = _default;
 
 /***/ }),
-/* 192 */
-/*!***************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
-  \***************************************************************************/
+/* 194 */
+/*!**************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21848,8 +21843,6 @@ function isVideoUrl(url) {
 }
 
 /***/ }),
-/* 193 */,
-/* 194 */,
 /* 195 */,
 /* 196 */,
 /* 197 */,
@@ -21864,10 +21857,12 @@ function isVideoUrl(url) {
 /* 206 */,
 /* 207 */,
 /* 208 */,
-/* 209 */
-/*!**************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/login.js ***!
-  \**************************************************/
+/* 209 */,
+/* 210 */,
+/* 211 */
+/*!*************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/login.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21951,8 +21946,6 @@ function h5login(tell, code) {
 }
 
 /***/ }),
-/* 210 */,
-/* 211 */,
 /* 212 */,
 /* 213 */,
 /* 214 */,
@@ -21967,10 +21960,12 @@ function h5login(tell, code) {
 /* 223 */,
 /* 224 */,
 /* 225 */,
-/* 226 */
-/*!***************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/api/detail.js ***!
-  \***************************************************/
+/* 226 */,
+/* 227 */,
+/* 228 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/detail.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21997,17 +21992,17 @@ exports.fetchAddCart = function (token, _id, number) {
 };
 
 /***/ }),
-/* 227 */,
-/* 228 */,
 /* 229 */,
 /* 230 */,
 /* 231 */,
 /* 232 */,
 /* 233 */,
-/* 234 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
-  \***************************************************************************************/
+/* 234 */,
+/* 235 */,
+/* 236 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22052,17 +22047,17 @@ exports.fetchAddCart = function (token, _id, number) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 235 */,
-/* 236 */,
 /* 237 */,
 /* 238 */,
 /* 239 */,
 /* 240 */,
 /* 241 */,
-/* 242 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
-  \***************************************************************************************/
+/* 242 */,
+/* 243 */,
+/* 244 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22181,8 +22176,6 @@ exports.fetchAddCart = function (token, _id, number) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 243 */,
-/* 244 */,
 /* 245 */,
 /* 246 */,
 /* 247 */,
@@ -22209,10 +22202,12 @@ exports.fetchAddCart = function (token, _id, number) {
 /* 268 */,
 /* 269 */,
 /* 270 */,
-/* 271 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
-  \****************************************************************************************/
+/* 271 */,
+/* 272 */,
+/* 273 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22261,8 +22256,6 @@ exports.fetchAddCart = function (token, _id, number) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 272 */,
-/* 273 */,
 /* 274 */,
 /* 275 */,
 /* 276 */,
@@ -22298,534 +22291,10 @@ exports.fetchAddCart = function (token, _id, number) {
 /* 306 */,
 /* 307 */,
 /* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  'uicon-level': "\uE693",
-  'uicon-column-line': "\uE68E",
-  'uicon-checkbox-mark': "\uE807",
-  'uicon-folder': "\uE7F5",
-  'uicon-movie': "\uE7F6",
-  'uicon-star-fill': "\uE669",
-  'uicon-star': "\uE65F",
-  'uicon-phone-fill': "\uE64F",
-  'uicon-phone': "\uE622",
-  'uicon-apple-fill': "\uE881",
-  'uicon-chrome-circle-fill': "\uE885",
-  'uicon-backspace': "\uE67B",
-  'uicon-attach': "\uE632",
-  'uicon-cut': "\uE948",
-  'uicon-empty-car': "\uE602",
-  'uicon-empty-coupon': "\uE682",
-  'uicon-empty-address': "\uE646",
-  'uicon-empty-favor': "\uE67C",
-  'uicon-empty-permission': "\uE686",
-  'uicon-empty-news': "\uE687",
-  'uicon-empty-search': "\uE664",
-  'uicon-github-circle-fill': "\uE887",
-  'uicon-rmb': "\uE608",
-  'uicon-person-delete-fill': "\uE66A",
-  'uicon-reload': "\uE788",
-  'uicon-order': "\uE68F",
-  'uicon-server-man': "\uE6BC",
-  'uicon-search': "\uE62A",
-  'uicon-fingerprint': "\uE955",
-  'uicon-more-dot-fill': "\uE630",
-  'uicon-scan': "\uE662",
-  'uicon-share-square': "\uE60B",
-  'uicon-map': "\uE61D",
-  'uicon-map-fill': "\uE64E",
-  'uicon-tags': "\uE629",
-  'uicon-tags-fill': "\uE651",
-  'uicon-bookmark-fill': "\uE63B",
-  'uicon-bookmark': "\uE60A",
-  'uicon-eye': "\uE613",
-  'uicon-eye-fill': "\uE641",
-  'uicon-mic': "\uE64A",
-  'uicon-mic-off': "\uE649",
-  'uicon-calendar': "\uE66E",
-  'uicon-calendar-fill': "\uE634",
-  'uicon-trash': "\uE623",
-  'uicon-trash-fill': "\uE658",
-  'uicon-play-left': "\uE66D",
-  'uicon-play-right': "\uE610",
-  'uicon-minus': "\uE618",
-  'uicon-plus': "\uE62D",
-  'uicon-info': "\uE653",
-  'uicon-info-circle': "\uE7D2",
-  'uicon-info-circle-fill': "\uE64B",
-  'uicon-question': "\uE715",
-  'uicon-error': "\uE6D3",
-  'uicon-close': "\uE685",
-  'uicon-checkmark': "\uE6A8",
-  'uicon-android-circle-fill': "\uE67E",
-  'uicon-android-fill': "\uE67D",
-  'uicon-ie': "\uE87B",
-  'uicon-IE-circle-fill': "\uE889",
-  'uicon-google': "\uE87A",
-  'uicon-google-circle-fill': "\uE88A",
-  'uicon-setting-fill': "\uE872",
-  'uicon-setting': "\uE61F",
-  'uicon-minus-square-fill': "\uE855",
-  'uicon-plus-square-fill': "\uE856",
-  'uicon-heart': "\uE7DF",
-  'uicon-heart-fill': "\uE851",
-  'uicon-camera': "\uE7D7",
-  'uicon-camera-fill': "\uE870",
-  'uicon-more-circle': "\uE63E",
-  'uicon-more-circle-fill': "\uE645",
-  'uicon-chat': "\uE620",
-  'uicon-chat-fill': "\uE61E",
-  'uicon-bag-fill': "\uE617",
-  'uicon-bag': "\uE619",
-  'uicon-error-circle-fill': "\uE62C",
-  'uicon-error-circle': "\uE624",
-  'uicon-close-circle': "\uE63F",
-  'uicon-close-circle-fill': "\uE637",
-  'uicon-checkmark-circle': "\uE63D",
-  'uicon-checkmark-circle-fill': "\uE635",
-  'uicon-question-circle-fill': "\uE666",
-  'uicon-question-circle': "\uE625",
-  'uicon-share': "\uE631",
-  'uicon-share-fill': "\uE65E",
-  'uicon-shopping-cart': "\uE621",
-  'uicon-shopping-cart-fill': "\uE65D",
-  'uicon-bell': "\uE609",
-  'uicon-bell-fill': "\uE640",
-  'uicon-list': "\uE650",
-  'uicon-list-dot': "\uE616",
-  'uicon-zhihu': "\uE6BA",
-  'uicon-zhihu-circle-fill': "\uE709",
-  'uicon-zhifubao': "\uE6B9",
-  'uicon-zhifubao-circle-fill': "\uE6B8",
-  'uicon-weixin-circle-fill': "\uE6B1",
-  'uicon-weixin-fill': "\uE6B2",
-  'uicon-twitter-circle-fill': "\uE6AB",
-  'uicon-twitter': "\uE6AA",
-  'uicon-taobao-circle-fill': "\uE6A7",
-  'uicon-taobao': "\uE6A6",
-  'uicon-weibo-circle-fill': "\uE6A5",
-  'uicon-weibo': "\uE6A4",
-  'uicon-qq-fill': "\uE6A1",
-  'uicon-qq-circle-fill': "\uE6A0",
-  'uicon-moments-circel-fill': "\uE69A",
-  'uicon-moments': "\uE69B",
-  'uicon-qzone': "\uE695",
-  'uicon-qzone-circle-fill': "\uE696",
-  'uicon-baidu-circle-fill': "\uE680",
-  'uicon-baidu': "\uE681",
-  'uicon-facebook-circle-fill': "\uE68A",
-  'uicon-facebook': "\uE689",
-  'uicon-car': "\uE60C",
-  'uicon-car-fill': "\uE636",
-  'uicon-warning-fill': "\uE64D",
-  'uicon-warning': "\uE694",
-  'uicon-clock-fill': "\uE638",
-  'uicon-clock': "\uE60F",
-  'uicon-edit-pen': "\uE612",
-  'uicon-edit-pen-fill': "\uE66B",
-  'uicon-email': "\uE611",
-  'uicon-email-fill': "\uE642",
-  'uicon-minus-circle': "\uE61B",
-  'uicon-minus-circle-fill': "\uE652",
-  'uicon-plus-circle': "\uE62E",
-  'uicon-plus-circle-fill': "\uE661",
-  'uicon-file-text': "\uE663",
-  'uicon-file-text-fill': "\uE665",
-  'uicon-pushpin': "\uE7E3",
-  'uicon-pushpin-fill': "\uE86E",
-  'uicon-grid': "\uE673",
-  'uicon-grid-fill': "\uE678",
-  'uicon-play-circle': "\uE647",
-  'uicon-play-circle-fill': "\uE655",
-  'uicon-pause-circle-fill': "\uE654",
-  'uicon-pause': "\uE8FA",
-  'uicon-pause-circle': "\uE643",
-  'uicon-eye-off': "\uE648",
-  'uicon-eye-off-outline': "\uE62B",
-  'uicon-gift-fill': "\uE65C",
-  'uicon-gift': "\uE65B",
-  'uicon-rmb-circle-fill': "\uE657",
-  'uicon-rmb-circle': "\uE677",
-  'uicon-kefu-ermai': "\uE656",
-  'uicon-server-fill': "\uE751",
-  'uicon-coupon-fill': "\uE8C4",
-  'uicon-coupon': "\uE8AE",
-  'uicon-integral': "\uE704",
-  'uicon-integral-fill': "\uE703",
-  'uicon-home-fill': "\uE964",
-  'uicon-home': "\uE965",
-  'uicon-hourglass-half-fill': "\uE966",
-  'uicon-hourglass': "\uE967",
-  'uicon-account': "\uE628",
-  'uicon-plus-people-fill': "\uE626",
-  'uicon-minus-people-fill': "\uE615",
-  'uicon-account-fill': "\uE614",
-  'uicon-thumb-down-fill': "\uE726",
-  'uicon-thumb-down': "\uE727",
-  'uicon-thumb-up': "\uE733",
-  'uicon-thumb-up-fill': "\uE72F",
-  'uicon-lock-fill': "\uE979",
-  'uicon-lock-open': "\uE973",
-  'uicon-lock-opened-fill': "\uE974",
-  'uicon-lock': "\uE97A",
-  'uicon-red-packet-fill': "\uE690",
-  'uicon-photo-fill': "\uE98B",
-  'uicon-photo': "\uE98D",
-  'uicon-volume-off-fill': "\uE659",
-  'uicon-volume-off': "\uE644",
-  'uicon-volume-fill': "\uE670",
-  'uicon-volume': "\uE633",
-  'uicon-red-packet': "\uE691",
-  'uicon-download': "\uE63C",
-  'uicon-arrow-up-fill': "\uE6B0",
-  'uicon-arrow-down-fill': "\uE600",
-  'uicon-play-left-fill': "\uE675",
-  'uicon-play-right-fill': "\uE676",
-  'uicon-rewind-left-fill': "\uE679",
-  'uicon-rewind-right-fill': "\uE67A",
-  'uicon-arrow-downward': "\uE604",
-  'uicon-arrow-leftward': "\uE601",
-  'uicon-arrow-rightward': "\uE603",
-  'uicon-arrow-upward': "\uE607",
-  'uicon-arrow-down': "\uE60D",
-  'uicon-arrow-right': "\uE605",
-  'uicon-arrow-left': "\uE60E",
-  'uicon-arrow-up': "\uE606",
-  'uicon-skip-back-left': "\uE674",
-  'uicon-skip-forward-right': "\uE672",
-  'uicon-rewind-right': "\uE66F",
-  'uicon-rewind-left': "\uE671",
-  'uicon-arrow-right-double': "\uE68D",
-  'uicon-arrow-left-double': "\uE68C",
-  'uicon-wifi-off': "\uE668",
-  'uicon-wifi': "\uE667",
-  'uicon-empty-data': "\uE62F",
-  'uicon-empty-history': "\uE684",
-  'uicon-empty-list': "\uE68B",
-  'uicon-empty-page': "\uE627",
-  'uicon-empty-order': "\uE639",
-  'uicon-man': "\uE697",
-  'uicon-woman': "\uE69C",
-  'uicon-man-add': "\uE61C",
-  'uicon-man-add-fill': "\uE64C",
-  'uicon-man-delete': "\uE61A",
-  'uicon-man-delete-fill': "\uE66A",
-  'uicon-zh': "\uE70A",
-  'uicon-en': "\uE692" };exports.default = _default;
-
-/***/ }),
-/* 315 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 图标类名
-    name: {
-      type: String,
-      default: uni.$u.props.icon.name },
-
-    // 图标颜色，可接受主题色
-    color: {
-      type: String,
-      default: uni.$u.props.icon.color },
-
-    // 字体大小，单位px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.icon.size },
-
-    // 是否显示粗体
-    bold: {
-      type: Boolean,
-      default: uni.$u.props.icon.bold },
-
-    // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
-    index: {
-      type: [String, Number],
-      default: uni.$u.props.icon.index },
-
-    // 触摸图标时的类名
-    hoverClass: {
-      type: String,
-      default: uni.$u.props.icon.hoverClass },
-
-    // 自定义扩展前缀，方便用户扩展自己的图标库
-    customPrefix: {
-      type: String,
-      default: uni.$u.props.icon.customPrefix },
-
-    // 图标右边或者下面的文字
-    label: {
-      type: [String, Number],
-      default: uni.$u.props.icon.label },
-
-    // label的位置，只能右边或者下边
-    labelPos: {
-      type: String,
-      default: uni.$u.props.icon.labelPos },
-
-    // label的大小
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.icon.labelSize },
-
-    // label的颜色
-    labelColor: {
-      type: String,
-      default: uni.$u.props.icon.labelColor },
-
-    // label与图标的距离
-    space: {
-      type: [String, Number],
-      default: uni.$u.props.icon.space },
-
-    // 图片的mode
-    imgMode: {
-      type: String,
-      default: uni.$u.props.icon.imgMode },
-
-    // 用于显示图片小图标时，图片的宽度
-    width: {
-      type: [String, Number],
-      default: uni.$u.props.icon.width },
-
-    // 用于显示图片小图标时，图片的高度
-    height: {
-      type: [String, Number],
-      default: uni.$u.props.icon.height },
-
-    // 用于解决某些情况下，让图标垂直居中的用途
-    top: {
-      type: [String, Number],
-      default: uni.$u.props.icon.top },
-
-    // 是否阻止事件传播
-    stop: {
-      type: Boolean,
-      default: uni.$u.props.icon.stop } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
-  \*************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    color: {
-      type: String,
-      default: uni.$u.props.line.color },
-
-    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
-    length: {
-      type: [String, Number],
-      default: uni.$u.props.line.length },
-
-    // 线条方向，col-竖向，row-横向
-    direction: {
-      type: String,
-      default: uni.$u.props.line.direction },
-
-    // 是否显示细边框
-    hairline: {
-      type: Boolean,
-      default: uni.$u.props.line.hairline },
-
-    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
-    margin: {
-      type: [String, Number],
-      default: uni.$u.props.line.margin },
-
-    // 是否虚线，true-实线，false-虚线
-    dashed: {
-      type: Boolean,
-      default: uni.$u.props.line.dashed } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */,
-/* 328 */,
-/* 329 */,
-/* 330 */,
-/* 331 */
-/*!*************************************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \*************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.createAnimation = createAnimation;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} // const defaultOption = {
-// 	duration: 300,
-// 	timingFunction: 'linear',
-// 	delay: 0,
-// 	transformOrigin: '50% 50% 0'
-// }
-var
-
-
-MPAnimation = /*#__PURE__*/function () {
-  function MPAnimation(options, _this) {_classCallCheck(this, MPAnimation);
-    this.options = options;
-    this.animation = uni.createAnimation(options);
-    this.currentStepAnimates = {};
-    this.next = 0;
-    this.$ = _this;
-
-  }_createClass(MPAnimation, [{ key: "_nvuePushAnimates", value: function _nvuePushAnimates(
-
-    type, args) {
-      var aniObj = this.currentStepAnimates[this.next];
-      var styles = {};
-      if (!aniObj) {
-        styles = {
-          styles: {},
-          config: {} };
-
-      } else {
-        styles = aniObj;
-      }
-      if (animateTypes1.includes(type)) {
-        if (!styles.styles.transform) {
-          styles.styles.transform = '';
-        }
-        var unit = '';
-        if (type === 'rotate') {
-          unit = 'deg';
-        }
-        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
-      } else {
-        styles.styles[type] = "".concat(args);
-      }
-      this.currentStepAnimates[this.next] = styles;
-    } }, { key: "_animateRun", value: function _animateRun()
-    {var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var ref = this.$.$refs['ani'].ref;
-      if (!ref) return;
-      return new Promise(function (resolve, reject) {
-        nvueAnimation.transition(ref, _objectSpread({
-          styles: styles },
-        config),
-        function (res) {
-          resolve();
-        });
-      });
-    } }, { key: "_nvueNextAnimate", value: function _nvueNextAnimate(
-
-    animates) {var _this2 = this;var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;var fn = arguments.length > 2 ? arguments[2] : undefined;
-      var obj = animates[step];
-      if (obj) {var
-
-        styles =
-
-        obj.styles,config = obj.config;
-        this._animateRun(styles, config).then(function () {
-          step += 1;
-          _this2._nvueNextAnimate(animates, step, fn);
-        });
-      } else {
-        this.currentStepAnimates = {};
-        typeof fn === 'function' && fn();
-        this.isEnd = true;
-      }
-    } }, { key: "step", value: function step()
-
-    {var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      this.animation.step(config);
-
-
-
-
-
-
-      return this;
-    } }, { key: "run", value: function run(
-
-    fn) {
-
-      this.$.animationData = this.animation.export();
-      this.$.timer = setTimeout(function () {
-        typeof fn === 'function' && fn();
-      }, this.$.durationTime);
-
-
-
-
-
-
-
-
-    } }]);return MPAnimation;}();
-
-
-
-var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d',
-'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY',
-'translateZ'];
-
-var animateTypes2 = ['opacity', 'backgroundColor'];
-var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
-animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
-  MPAnimation.prototype[type] = function () {var _this$animation;
-
-    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
-
-
-
-
-    return this;
-  };
-});
-
-function createAnimation(option, _this) {
-  if (!_this) return;
-  clearTimeout(_this.timer);
-  return new MPAnimation(option, _this);
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 332 */,
-/* 333 */,
-/* 334 */,
-/* 335 */,
-/* 336 */,
-/* 337 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \*****************************************************************************************/
+/* 309 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23996,6 +23465,569 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "font_class": "cart",
     "unicode": "e631",
     "unicode_decimal": 58929 }] };exports.default = _default;
+
+/***/ }),
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */,
+/* 331 */,
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */,
+/* 337 */,
+/* 338 */,
+/* 339 */,
+/* 340 */,
+/* 341 */,
+/* 342 */,
+/* 343 */,
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  'uicon-level': "\uE693",
+  'uicon-column-line': "\uE68E",
+  'uicon-checkbox-mark': "\uE807",
+  'uicon-folder': "\uE7F5",
+  'uicon-movie': "\uE7F6",
+  'uicon-star-fill': "\uE669",
+  'uicon-star': "\uE65F",
+  'uicon-phone-fill': "\uE64F",
+  'uicon-phone': "\uE622",
+  'uicon-apple-fill': "\uE881",
+  'uicon-chrome-circle-fill': "\uE885",
+  'uicon-backspace': "\uE67B",
+  'uicon-attach': "\uE632",
+  'uicon-cut': "\uE948",
+  'uicon-empty-car': "\uE602",
+  'uicon-empty-coupon': "\uE682",
+  'uicon-empty-address': "\uE646",
+  'uicon-empty-favor': "\uE67C",
+  'uicon-empty-permission': "\uE686",
+  'uicon-empty-news': "\uE687",
+  'uicon-empty-search': "\uE664",
+  'uicon-github-circle-fill': "\uE887",
+  'uicon-rmb': "\uE608",
+  'uicon-person-delete-fill': "\uE66A",
+  'uicon-reload': "\uE788",
+  'uicon-order': "\uE68F",
+  'uicon-server-man': "\uE6BC",
+  'uicon-search': "\uE62A",
+  'uicon-fingerprint': "\uE955",
+  'uicon-more-dot-fill': "\uE630",
+  'uicon-scan': "\uE662",
+  'uicon-share-square': "\uE60B",
+  'uicon-map': "\uE61D",
+  'uicon-map-fill': "\uE64E",
+  'uicon-tags': "\uE629",
+  'uicon-tags-fill': "\uE651",
+  'uicon-bookmark-fill': "\uE63B",
+  'uicon-bookmark': "\uE60A",
+  'uicon-eye': "\uE613",
+  'uicon-eye-fill': "\uE641",
+  'uicon-mic': "\uE64A",
+  'uicon-mic-off': "\uE649",
+  'uicon-calendar': "\uE66E",
+  'uicon-calendar-fill': "\uE634",
+  'uicon-trash': "\uE623",
+  'uicon-trash-fill': "\uE658",
+  'uicon-play-left': "\uE66D",
+  'uicon-play-right': "\uE610",
+  'uicon-minus': "\uE618",
+  'uicon-plus': "\uE62D",
+  'uicon-info': "\uE653",
+  'uicon-info-circle': "\uE7D2",
+  'uicon-info-circle-fill': "\uE64B",
+  'uicon-question': "\uE715",
+  'uicon-error': "\uE6D3",
+  'uicon-close': "\uE685",
+  'uicon-checkmark': "\uE6A8",
+  'uicon-android-circle-fill': "\uE67E",
+  'uicon-android-fill': "\uE67D",
+  'uicon-ie': "\uE87B",
+  'uicon-IE-circle-fill': "\uE889",
+  'uicon-google': "\uE87A",
+  'uicon-google-circle-fill': "\uE88A",
+  'uicon-setting-fill': "\uE872",
+  'uicon-setting': "\uE61F",
+  'uicon-minus-square-fill': "\uE855",
+  'uicon-plus-square-fill': "\uE856",
+  'uicon-heart': "\uE7DF",
+  'uicon-heart-fill': "\uE851",
+  'uicon-camera': "\uE7D7",
+  'uicon-camera-fill': "\uE870",
+  'uicon-more-circle': "\uE63E",
+  'uicon-more-circle-fill': "\uE645",
+  'uicon-chat': "\uE620",
+  'uicon-chat-fill': "\uE61E",
+  'uicon-bag-fill': "\uE617",
+  'uicon-bag': "\uE619",
+  'uicon-error-circle-fill': "\uE62C",
+  'uicon-error-circle': "\uE624",
+  'uicon-close-circle': "\uE63F",
+  'uicon-close-circle-fill': "\uE637",
+  'uicon-checkmark-circle': "\uE63D",
+  'uicon-checkmark-circle-fill': "\uE635",
+  'uicon-question-circle-fill': "\uE666",
+  'uicon-question-circle': "\uE625",
+  'uicon-share': "\uE631",
+  'uicon-share-fill': "\uE65E",
+  'uicon-shopping-cart': "\uE621",
+  'uicon-shopping-cart-fill': "\uE65D",
+  'uicon-bell': "\uE609",
+  'uicon-bell-fill': "\uE640",
+  'uicon-list': "\uE650",
+  'uicon-list-dot': "\uE616",
+  'uicon-zhihu': "\uE6BA",
+  'uicon-zhihu-circle-fill': "\uE709",
+  'uicon-zhifubao': "\uE6B9",
+  'uicon-zhifubao-circle-fill': "\uE6B8",
+  'uicon-weixin-circle-fill': "\uE6B1",
+  'uicon-weixin-fill': "\uE6B2",
+  'uicon-twitter-circle-fill': "\uE6AB",
+  'uicon-twitter': "\uE6AA",
+  'uicon-taobao-circle-fill': "\uE6A7",
+  'uicon-taobao': "\uE6A6",
+  'uicon-weibo-circle-fill': "\uE6A5",
+  'uicon-weibo': "\uE6A4",
+  'uicon-qq-fill': "\uE6A1",
+  'uicon-qq-circle-fill': "\uE6A0",
+  'uicon-moments-circel-fill': "\uE69A",
+  'uicon-moments': "\uE69B",
+  'uicon-qzone': "\uE695",
+  'uicon-qzone-circle-fill': "\uE696",
+  'uicon-baidu-circle-fill': "\uE680",
+  'uicon-baidu': "\uE681",
+  'uicon-facebook-circle-fill': "\uE68A",
+  'uicon-facebook': "\uE689",
+  'uicon-car': "\uE60C",
+  'uicon-car-fill': "\uE636",
+  'uicon-warning-fill': "\uE64D",
+  'uicon-warning': "\uE694",
+  'uicon-clock-fill': "\uE638",
+  'uicon-clock': "\uE60F",
+  'uicon-edit-pen': "\uE612",
+  'uicon-edit-pen-fill': "\uE66B",
+  'uicon-email': "\uE611",
+  'uicon-email-fill': "\uE642",
+  'uicon-minus-circle': "\uE61B",
+  'uicon-minus-circle-fill': "\uE652",
+  'uicon-plus-circle': "\uE62E",
+  'uicon-plus-circle-fill': "\uE661",
+  'uicon-file-text': "\uE663",
+  'uicon-file-text-fill': "\uE665",
+  'uicon-pushpin': "\uE7E3",
+  'uicon-pushpin-fill': "\uE86E",
+  'uicon-grid': "\uE673",
+  'uicon-grid-fill': "\uE678",
+  'uicon-play-circle': "\uE647",
+  'uicon-play-circle-fill': "\uE655",
+  'uicon-pause-circle-fill': "\uE654",
+  'uicon-pause': "\uE8FA",
+  'uicon-pause-circle': "\uE643",
+  'uicon-eye-off': "\uE648",
+  'uicon-eye-off-outline': "\uE62B",
+  'uicon-gift-fill': "\uE65C",
+  'uicon-gift': "\uE65B",
+  'uicon-rmb-circle-fill': "\uE657",
+  'uicon-rmb-circle': "\uE677",
+  'uicon-kefu-ermai': "\uE656",
+  'uicon-server-fill': "\uE751",
+  'uicon-coupon-fill': "\uE8C4",
+  'uicon-coupon': "\uE8AE",
+  'uicon-integral': "\uE704",
+  'uicon-integral-fill': "\uE703",
+  'uicon-home-fill': "\uE964",
+  'uicon-home': "\uE965",
+  'uicon-hourglass-half-fill': "\uE966",
+  'uicon-hourglass': "\uE967",
+  'uicon-account': "\uE628",
+  'uicon-plus-people-fill': "\uE626",
+  'uicon-minus-people-fill': "\uE615",
+  'uicon-account-fill': "\uE614",
+  'uicon-thumb-down-fill': "\uE726",
+  'uicon-thumb-down': "\uE727",
+  'uicon-thumb-up': "\uE733",
+  'uicon-thumb-up-fill': "\uE72F",
+  'uicon-lock-fill': "\uE979",
+  'uicon-lock-open': "\uE973",
+  'uicon-lock-opened-fill': "\uE974",
+  'uicon-lock': "\uE97A",
+  'uicon-red-packet-fill': "\uE690",
+  'uicon-photo-fill': "\uE98B",
+  'uicon-photo': "\uE98D",
+  'uicon-volume-off-fill': "\uE659",
+  'uicon-volume-off': "\uE644",
+  'uicon-volume-fill': "\uE670",
+  'uicon-volume': "\uE633",
+  'uicon-red-packet': "\uE691",
+  'uicon-download': "\uE63C",
+  'uicon-arrow-up-fill': "\uE6B0",
+  'uicon-arrow-down-fill': "\uE600",
+  'uicon-play-left-fill': "\uE675",
+  'uicon-play-right-fill': "\uE676",
+  'uicon-rewind-left-fill': "\uE679",
+  'uicon-rewind-right-fill': "\uE67A",
+  'uicon-arrow-downward': "\uE604",
+  'uicon-arrow-leftward': "\uE601",
+  'uicon-arrow-rightward': "\uE603",
+  'uicon-arrow-upward': "\uE607",
+  'uicon-arrow-down': "\uE60D",
+  'uicon-arrow-right': "\uE605",
+  'uicon-arrow-left': "\uE60E",
+  'uicon-arrow-up': "\uE606",
+  'uicon-skip-back-left': "\uE674",
+  'uicon-skip-forward-right': "\uE672",
+  'uicon-rewind-right': "\uE66F",
+  'uicon-rewind-left': "\uE671",
+  'uicon-arrow-right-double': "\uE68D",
+  'uicon-arrow-left-double': "\uE68C",
+  'uicon-wifi-off': "\uE668",
+  'uicon-wifi': "\uE667",
+  'uicon-empty-data': "\uE62F",
+  'uicon-empty-history': "\uE684",
+  'uicon-empty-list': "\uE68B",
+  'uicon-empty-page': "\uE627",
+  'uicon-empty-order': "\uE639",
+  'uicon-man': "\uE697",
+  'uicon-woman': "\uE69C",
+  'uicon-man-add': "\uE61C",
+  'uicon-man-add-fill': "\uE64C",
+  'uicon-man-delete': "\uE61A",
+  'uicon-man-delete-fill': "\uE66A",
+  'uicon-zh': "\uE70A",
+  'uicon-en': "\uE692" };exports.default = _default;
+
+/***/ }),
+/* 353 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 图标类名
+    name: {
+      type: String,
+      default: uni.$u.props.icon.name },
+
+    // 图标颜色，可接受主题色
+    color: {
+      type: String,
+      default: uni.$u.props.icon.color },
+
+    // 字体大小，单位px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.icon.size },
+
+    // 是否显示粗体
+    bold: {
+      type: Boolean,
+      default: uni.$u.props.icon.bold },
+
+    // 点击图标的时候传递事件出去的index（用于区分点击了哪一个）
+    index: {
+      type: [String, Number],
+      default: uni.$u.props.icon.index },
+
+    // 触摸图标时的类名
+    hoverClass: {
+      type: String,
+      default: uni.$u.props.icon.hoverClass },
+
+    // 自定义扩展前缀，方便用户扩展自己的图标库
+    customPrefix: {
+      type: String,
+      default: uni.$u.props.icon.customPrefix },
+
+    // 图标右边或者下面的文字
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.icon.label },
+
+    // label的位置，只能右边或者下边
+    labelPos: {
+      type: String,
+      default: uni.$u.props.icon.labelPos },
+
+    // label的大小
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.icon.labelSize },
+
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.icon.labelColor },
+
+    // label与图标的距离
+    space: {
+      type: [String, Number],
+      default: uni.$u.props.icon.space },
+
+    // 图片的mode
+    imgMode: {
+      type: String,
+      default: uni.$u.props.icon.imgMode },
+
+    // 用于显示图片小图标时，图片的宽度
+    width: {
+      type: [String, Number],
+      default: uni.$u.props.icon.width },
+
+    // 用于显示图片小图标时，图片的高度
+    height: {
+      type: [String, Number],
+      default: uni.$u.props.icon.height },
+
+    // 用于解决某些情况下，让图标垂直居中的用途
+    top: {
+      type: [String, Number],
+      default: uni.$u.props.icon.top },
+
+    // 是否阻止事件传播
+    stop: {
+      type: Boolean,
+      default: uni.$u.props.icon.stop } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    color: {
+      type: String,
+      default: uni.$u.props.line.color },
+
+    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
+    length: {
+      type: [String, Number],
+      default: uni.$u.props.line.length },
+
+    // 线条方向，col-竖向，row-横向
+    direction: {
+      type: String,
+      default: uni.$u.props.line.direction },
+
+    // 是否显示细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.line.hairline },
+
+    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+    margin: {
+      type: [String, Number],
+      default: uni.$u.props.line.margin },
+
+    // 是否虚线，true-实线，false-虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.line.dashed } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */
+/*!************************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.createAnimation = createAnimation;function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} // const defaultOption = {
+// 	duration: 300,
+// 	timingFunction: 'linear',
+// 	delay: 0,
+// 	transformOrigin: '50% 50% 0'
+// }
+var
+
+
+MPAnimation = /*#__PURE__*/function () {
+  function MPAnimation(options, _this) {_classCallCheck(this, MPAnimation);
+    this.options = options;
+    this.animation = uni.createAnimation(options);
+    this.currentStepAnimates = {};
+    this.next = 0;
+    this.$ = _this;
+
+  }_createClass(MPAnimation, [{ key: "_nvuePushAnimates", value: function _nvuePushAnimates(
+
+    type, args) {
+      var aniObj = this.currentStepAnimates[this.next];
+      var styles = {};
+      if (!aniObj) {
+        styles = {
+          styles: {},
+          config: {} };
+
+      } else {
+        styles = aniObj;
+      }
+      if (animateTypes1.includes(type)) {
+        if (!styles.styles.transform) {
+          styles.styles.transform = '';
+        }
+        var unit = '';
+        if (type === 'rotate') {
+          unit = 'deg';
+        }
+        styles.styles.transform += "".concat(type, "(").concat(args + unit, ") ");
+      } else {
+        styles.styles[type] = "".concat(args);
+      }
+      this.currentStepAnimates[this.next] = styles;
+    } }, { key: "_animateRun", value: function _animateRun()
+    {var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var ref = this.$.$refs['ani'].ref;
+      if (!ref) return;
+      return new Promise(function (resolve, reject) {
+        nvueAnimation.transition(ref, _objectSpread({
+          styles: styles },
+        config),
+        function (res) {
+          resolve();
+        });
+      });
+    } }, { key: "_nvueNextAnimate", value: function _nvueNextAnimate(
+
+    animates) {var _this2 = this;var step = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;var fn = arguments.length > 2 ? arguments[2] : undefined;
+      var obj = animates[step];
+      if (obj) {var
+
+        styles =
+
+        obj.styles,config = obj.config;
+        this._animateRun(styles, config).then(function () {
+          step += 1;
+          _this2._nvueNextAnimate(animates, step, fn);
+        });
+      } else {
+        this.currentStepAnimates = {};
+        typeof fn === 'function' && fn();
+        this.isEnd = true;
+      }
+    } }, { key: "step", value: function step()
+
+    {var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this.animation.step(config);
+
+
+
+
+
+
+      return this;
+    } }, { key: "run", value: function run(
+
+    fn) {
+
+      this.$.animationData = this.animation.export();
+      this.$.timer = setTimeout(function () {
+        typeof fn === 'function' && fn();
+      }, this.$.durationTime);
+
+
+
+
+
+
+
+
+    } }]);return MPAnimation;}();
+
+
+
+var animateTypes1 = ['matrix', 'matrix3d', 'rotate', 'rotate3d', 'rotateX', 'rotateY', 'rotateZ', 'scale', 'scale3d',
+'scaleX', 'scaleY', 'scaleZ', 'skew', 'skewX', 'skewY', 'translate', 'translate3d', 'translateX', 'translateY',
+'translateZ'];
+
+var animateTypes2 = ['opacity', 'backgroundColor'];
+var animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+animateTypes1.concat(animateTypes2, animateTypes3).forEach(function (type) {
+  MPAnimation.prototype[type] = function () {var _this$animation;
+
+    (_this$animation = this.animation)[type].apply(_this$animation, arguments);
+
+
+
+
+    return this;
+  };
+});
+
+function createAnimation(option, _this) {
+  if (!_this) return;
+  clearTimeout(_this.timer);
+  return new MPAnimation(option, _this);
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 ]]);
