@@ -17741,8 +17741,43 @@ exports.fetchindexData = function () {
 /* 148 */,
 /* 149 */,
 /* 150 */,
-/* 151 */,
-/* 152 */,
+/* 151 */
+/*!*************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/api/sort.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
+
+function fetch_sortData() {
+  return request({
+    url: 'https://zlwh.jinghuanqiu.com/category' });
+
+}
+
+/***/ }),
+/* 152 */
+/*!****************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/util/window.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.getWindowHeight = getWindowHeight;function getWindowHeight() {
+  var height = 0;
+  uni.getSystemInfo({
+    success: function success(res) {
+      height = res.windowHeight;
+    } });
+
+  return height;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 153 */,
 /* 154 */,
 /* 155 */,
@@ -17759,7 +17794,11 @@ exports.fetchindexData = function () {
 /* 166 */,
 /* 167 */,
 /* 168 */,
-/* 169 */
+/* 169 */,
+/* 170 */,
+/* 171 */,
+/* 172 */,
+/* 173 */
 /*!***************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/api/search.js ***!
   \***************************************************/
@@ -17779,10 +17818,6 @@ exports.fetchSearch = function (page, size, keyWord) {
 };
 
 /***/ }),
-/* 170 */,
-/* 171 */,
-/* 172 */,
-/* 173 */,
 /* 174 */,
 /* 175 */,
 /* 176 */,
@@ -17795,7 +17830,11 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 183 */,
 /* 184 */,
 /* 185 */,
-/* 186 */
+/* 186 */,
+/* 187 */,
+/* 188 */,
+/* 189 */,
+/* 190 */
 /*!***********************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
   \***********************************************************************************/
@@ -21692,7 +21731,7 @@ var areaList = {
     820204: "圣方济各堂区" } };exports.areaList = areaList;
 
 /***/ }),
-/* 187 */
+/* 191 */
 /*!**********************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
   \**********************************************************************/
@@ -21700,7 +21739,7 @@ var areaList = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 188);
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 192);
 var defaultOptions = {
   type: 'text',
   mask: false,
@@ -21768,7 +21807,7 @@ Toast.resetDefaultOptions = function () {
 Toast;exports.default = _default;
 
 /***/ }),
-/* 188 */
+/* 192 */
 /*!***************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
   \***************************************************************************/
@@ -21809,10 +21848,6 @@ function isVideoUrl(url) {
 }
 
 /***/ }),
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */,
 /* 193 */,
 /* 194 */,
 /* 195 */,
@@ -21825,7 +21860,11 @@ function isVideoUrl(url) {
 /* 202 */,
 /* 203 */,
 /* 204 */,
-/* 205 */
+/* 205 */,
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */
 /*!**************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/api/login.js ***!
   \**************************************************/
@@ -21912,10 +21951,6 @@ function h5login(tell, code) {
 }
 
 /***/ }),
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
 /* 210 */,
 /* 211 */,
 /* 212 */,
@@ -21928,7 +21963,11 @@ function h5login(tell, code) {
 /* 219 */,
 /* 220 */,
 /* 221 */,
-/* 222 */
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */
 /*!***************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/api/detail.js ***!
   \***************************************************/
@@ -21958,14 +21997,14 @@ exports.fetchAddCart = function (token, _id, number) {
 };
 
 /***/ }),
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
 /* 227 */,
 /* 228 */,
 /* 229 */,
-/* 230 */
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */
 /*!***************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \***************************************************************************************/
@@ -22013,14 +22052,14 @@ exports.fetchAddCart = function (token, _id, number) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
 /* 235 */,
 /* 236 */,
 /* 237 */,
-/* 238 */
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */
 /*!***************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
   \***************************************************************************************/
@@ -22142,10 +22181,6 @@ exports.fetchAddCart = function (token, _id, number) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
 /* 243 */,
 /* 244 */,
 /* 245 */,
@@ -22174,7 +22209,58 @@ exports.fetchAddCart = function (token, _id, number) {
 /* 268 */,
 /* 269 */,
 /* 270 */,
-/* 271 */,
+/* 271 */
+/*!****************************************************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.divider.dashed },
+
+    // 是否细线
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.divider.hairline },
+
+    // 是否以点替代文字，优先于text字段起作用
+    dot: {
+      type: Boolean,
+      default: uni.$u.props.divider.dot },
+
+    // 内容文本的位置，left-左边，center-中间，right-右边
+    textPosition: {
+      type: String,
+      default: uni.$u.props.divider.textPosition },
+
+    // 文本内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.divider.text },
+
+    // 文本大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.divider.textSize },
+
+    // 文本颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.divider.textColor },
+
+    // 线条颜色
+    lineColor: {
+      type: String,
+      default: uni.$u.props.divider.lineColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 272 */,
 /* 273 */,
 /* 274 */,
@@ -22205,7 +22291,19 @@ exports.fetchAddCart = function (token, _id, number) {
 /* 299 */,
 /* 300 */,
 /* 301 */,
-/* 302 */
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */
 /*!*************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \*************************************************************************************/
@@ -22428,7 +22526,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 303 */
+/* 315 */
 /*!*************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
   \*************************************************************************************/
@@ -22525,14 +22623,62 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 304 */,
-/* 305 */,
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */,
+/* 323 */
+/*!*************************************************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    color: {
+      type: String,
+      default: uni.$u.props.line.color },
+
+    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
+    length: {
+      type: [String, Number],
+      default: uni.$u.props.line.length },
+
+    // 线条方向，col-竖向，row-横向
+    direction: {
+      type: String,
+      default: uni.$u.props.line.direction },
+
+    // 是否显示细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.line.hairline },
+
+    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+    margin: {
+      type: [String, Number],
+      default: uni.$u.props.line.margin },
+
+    // 是否虚线，true-实线，false-虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.line.dashed } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */,
+/* 331 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \*************************************************************************************************************/
@@ -22671,12 +22817,12 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */,
+/* 337 */
 /*!*****************************************************************************************!*\
   !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \*****************************************************************************************/
