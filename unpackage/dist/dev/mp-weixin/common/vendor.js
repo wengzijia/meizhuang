@@ -17741,8 +17741,43 @@ exports.fetchindexData = function () {
 /* 148 */,
 /* 149 */,
 /* 150 */,
-/* 151 */,
-/* 152 */,
+/* 151 */
+/*!*************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/api/sort.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
+
+function fetch_sortData() {
+  return request({
+    url: 'https://zlwh.jinghuanqiu.com/category' });
+
+}
+
+/***/ }),
+/* 152 */
+/*!****************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/util/window.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.getWindowHeight = getWindowHeight;function getWindowHeight() {
+  var height = 0;
+  uni.getSystemInfo({
+    success: function success(res) {
+      height = res.windowHeight;
+    } });
+
+  return height;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 153 */,
 /* 154 */,
 /* 155 */,
@@ -22174,7 +22209,58 @@ exports.fetchAddCart = function (token, _id, number) {
 /* 268 */,
 /* 269 */,
 /* 270 */,
-/* 271 */,
+/* 271 */
+/*!****************************************************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
+  \****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.divider.dashed },
+
+    // 是否细线
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.divider.hairline },
+
+    // 是否以点替代文字，优先于text字段起作用
+    dot: {
+      type: Boolean,
+      default: uni.$u.props.divider.dot },
+
+    // 内容文本的位置，left-左边，center-中间，right-右边
+    textPosition: {
+      type: String,
+      default: uni.$u.props.divider.textPosition },
+
+    // 文本内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.divider.text },
+
+    // 文本大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.divider.textSize },
+
+    // 文本颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.divider.textColor },
+
+    // 线条颜色
+    lineColor: {
+      type: String,
+      default: uni.$u.props.divider.lineColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 272 */,
 /* 273 */,
 /* 274 */,
@@ -22544,7 +22630,47 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 320 */,
 /* 321 */,
 /* 322 */,
-/* 323 */,
+/* 323 */
+/*!*************************************************************************************!*\
+  !*** C:/Users/小创/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    color: {
+      type: String,
+      default: uni.$u.props.line.color },
+
+    // 长度，竖向时表现为高度，横向时表现为长度，可以为百分比，带px单位的值等
+    length: {
+      type: [String, Number],
+      default: uni.$u.props.line.length },
+
+    // 线条方向，col-竖向，row-横向
+    direction: {
+      type: String,
+      default: uni.$u.props.line.direction },
+
+    // 是否显示细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.line.hairline },
+
+    // 线条与上下左右元素的间距，字符串形式，如"30px"、"20px 30px"
+    margin: {
+      type: [String, Number],
+      default: uni.$u.props.line.margin },
+
+    // 是否虚线，true-实线，false-虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.line.dashed } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 324 */,
 /* 325 */,
 /* 326 */,
