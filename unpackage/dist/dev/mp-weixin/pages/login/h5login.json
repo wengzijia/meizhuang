@@ -1,5 +1,7 @@
 {
-  "navigationBarTitleText": "",
+  "navigationBarTitleText": "登录",
   "enablePullDownRefresh": false,
-  "usingComponents": {}
+  "usingComponents": {
+    "cl-toast": "/node-modules/cl-uni/components/cl-toast/cl-toast"
+  }
 }

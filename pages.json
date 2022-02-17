@@ -1,5 +1,11 @@
 {
 
+	"easycom": {
+			"autoscan": true,
+			"custom": {
+	            "cl-(.*)": "cl-uni/components/cl-$1/cl-$1.vue"
+			}
+		},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/login/login",
@@ -28,7 +34,7 @@
 		{
 			"path": "pages/login/h5login",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "登录",
 				"enablePullDownRefresh": false
 			}
 
@@ -42,9 +48,7 @@
 
 		"usingComponents": {
 			// #ifdef MP-WEIXIN
-			"van-area": "wxcomponents/vant/area/index",
-			"van-toast": "wxcomponents/vant/toast/index",
-			"van-field": "wxcomponents/vant/field/index"
+			"van-area": "wxcomponents/vant/area/index"
 			// #endif
 		}
 

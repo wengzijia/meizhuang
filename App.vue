@@ -1,4 +1,5 @@
 <script>
+
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
@@ -12,7 +13,8 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
+	@import "cl-uni/index.scss";
 	/*每个页面公共css */
 	/* 引入vant组件里的css样式,不然vant组件样式会失效 */
  /* #ifdef H5 */

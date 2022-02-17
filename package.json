@@ -4,6 +4,7 @@
   "description": "",
   "main": "main.js",
   "dependencies": {
+    "cl-uni": "^1.8.20",
     "vant": "^2.12.39"
   },
   "devDependencies": {},

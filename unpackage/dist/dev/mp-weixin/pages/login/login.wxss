@@ -11,6 +11,9 @@
  *
  * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
  */
+/* COOL-UNI 颜色变量 */
+/* 默认主题色 */
+/* 自定义主题色 */
 /* 颜色变量 */
 /* 行为相关颜色 */
 /* 文字基本颜色 */
@@ -24,11 +27,35 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.logo {
+  display: block;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: 50px;
+  margin: auto;
+}
+.jianjie {
+  width: 80%;
+  border-top: 2px solid #eeeeee;
+  margin: auto;
+  margin-top: 100px;
+}
+.jianjie view {
+  margin-top: 15px;
+}
+.jianjie text {
+  display: inline-block;
+  margin-top: 15px;
+  color: #999999;
+  font-size: 14px;
+}
 .loginBtn {
   width: 80%;
   color: white;
-  background-color: red;
+  font-size: 15px;
+  background-color: #2b2e3d;
   border-radius: 20px;
-  margin-top: 200px;
+  margin-top: 35px;
 }
 
