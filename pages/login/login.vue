@@ -1,14 +1,28 @@
 <template>
 	<view>
+		
+		<image src="../../static/logo.png" mode="" class="logo"></image>
+		
+		<view class="jianjie">
+			
+			<view>登录后将获得以下权限</view>
+			
+			<text> • 获得你的公开信息(昵称,头像等)</text>
+			
+		</view>
+		
 		<button class="loginBtn" @click="newloginBtn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信登录</button>
-		<!-- 开启提示框 -->
-		<van-toast id="van-toast" />
+
+
+		<cl-toast ref="toast"></cl-toast>
+
 	</view>
 </template>
 
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
-	import Toast from 'wxcomponents/vant/toast/toast.js';
+	import {logincheck} from "utils/logincheck.js"
+
 	export default {
 		data() {
 			return {
@@ -30,7 +44,10 @@
 						if(code == 20000){
 							wx.setStorageSync("token",_this.token)
 							wx.setStorageSync("userInfo",_this.userInfo)
-							Toast("登录成功")
+							_this.$refs["toast"].open({
+							          message: "登录成功",
+									  position: "middle",
+							        });
 						}
 						
 					}
@@ -42,49 +59,58 @@
 			async getPhoneNumber(e){
 				if(e.detail.code){
 					let a = await phoneNumber(e.detail.code,this.token)
-					Toast("绑定手机号成功")
+					this.$refs["toast"].open({
+					          message: "绑定手机号成功",
+							  position: "middle",
+							  icon: "success",
+					        });
 				}
 			}
 		},
-		mounted(){
-			let _this = this;
-			wx.login({
-				async success(res){
-					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-					delete res.clientInfo	
-					if(res.code){
-						// 登录获取token
-						let {result} = await autologin(res)
-						
-						// 证明是第一次登录			
-						if(result.userInfo.nickname == null){
-							Toast("第一次登录")
-							_this.token = result.token
-							_this.userInfo = result.userInfo					
-						}else{
-							Toast("不是第一次登录")
-							wx.setStorageSync("token",result.token)
-							wx.setStorageSync("userInfo",result.userInfo)
-						}
-						
-						
-					}
-					
-				}
-			})
-		}
+		async mounted(){
+			let message = await logincheck()
+			this.token = message.token
+			this.userInfo = message.userInfo
+			
+		},
+
 		
 	}
 </script>
 
 <style lang="scss">
+	.logo{
+		display: block;
+		width: 100px;
+		height: 100px;
+		position: relative;
+		top: 50px;
+		margin: auto;
+	}
+	
+	.jianjie{
+		width: 80%;
+		border-top: 2px solid #eeeeee;
+		margin: auto;
+		margin-top: 100px;
+		view{
+			margin-top: 15px;
+		}
+		text{
+			display: inline-block;
+			margin-top: 15px;
+			color: #999999;
+			font-size: 14px;
+		}
+	}
 	
 	.loginBtn{
 		width: 80%;
 		color: white;
-		background-color: red;
+		font-size: 15px;
+		background-color: #2b2e3d;
 		border-radius: 20px;
-		margin-top: 200px;
+		margin-top: 35px;
 	}
 
 </style>

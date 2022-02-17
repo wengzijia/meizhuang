@@ -51,48 +51,44 @@
 	</view>
 </template>
 
+
 <script>
-	import {
-		areaList
-	} from 'wxcomponents/vant/area-data';
-	import Toast from 'wxcomponents/vant/toast/toast.js';
-	export default {
+		import { areaList } from 'wxcomponents/vant/area-data';
+		export default {
+			
+			data(){
+				return{
+						name: '',
+						number: '',
+						diquData: '',
+						detailed: '',
+						
+						areaList,
+						areaListShow: false,
+				}
+			},
+			methods:{
 
-		data() {
-			return {
-				name: '',
-				number: '',
-				diquData: '',
-				detailed: '',
-
-				areaList,
-				areaListShow: false,
-			}
-		},
-		methods: {
-
-			queren({
-				detail
-			}) {
+			queren({detail}){
 				let data = '';
-
-				detail.values.map(function(a) {
+				
+				detail.values.map(function(a){
 					return data += a.name
-
+					
 				})
 				this.diquData = data
 				this.areaListShow = false
 			},
-
-			submit() {
+			
+			submit(){
 				console.log(this.name)
 				console.log(this.number)
 				console.log(this.diquData)
 				console.log(this.detailed)
 			}
-
-		} 
-	}
+			
+			},
+		};
 </script>
 
 <style lang="scss">
