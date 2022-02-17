@@ -406,7 +406,7 @@
 		},
 		// 监听 - 页面每次【加载时】执行(如：前进)
 		async onLoad(options) {
-			this.id = 18
+			this.id = options.id
 			if (this.isCollect) {
 				this.isCollect = uni.getStorageSync('isCollect')
 			} else {

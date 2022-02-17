@@ -567,7 +567,7 @@ var that;var _default =
 
   // 监听 - 页面每次【加载时】执行(如：前进)
   onLoad: function onLoad(options) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var userInfo, _yield$fetchDetailDat2, result, _result$goods$2, brokerageType, brokeragePrice, userLevel;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
-              _this4.id = 18;
+              _this4.id = options.id;
               if (_this4.isCollect) {
                 _this4.isCollect = uni.getStorageSync('isCollect');
               } else {
