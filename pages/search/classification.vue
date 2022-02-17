@@ -2,7 +2,7 @@
 	<view class="tab">
 		<block v-for="(item,index) in searchData">
 		<navigator open-type="navigate" :url="'/pages/goodsDetail/goodsDetail?id='+item.id">
-		<Goods v-for="(item,index) in searchData" :goodsList="item"></Goods>
+		<Goods :goodsList="item"></Goods>
 		</navigator>
 		</block>
 	</view>
