@@ -805,9 +805,15 @@ var customize = cached(function (str) {
 
 function initTriggerEvent(mpInstance) {
   var oldTriggerEvent = mpInstance.triggerEvent;
-  mpInstance.triggerEvent = function (event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
+  var newTriggerEvent = function newTriggerEvent(event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
     return oldTriggerEvent.apply(mpInstance, [customize(event)].concat(args));
   };
+  try {
+    // 京东小程序 triggerEvent 为只读
+    mpInstance.triggerEvent = newTriggerEvent;
+  } catch (error) {
+    mpInstance._triggerEvent = newTriggerEvent;
+  }
 }
 
 function initHook(name, options, isComponent) {
@@ -1981,17 +1987,17 @@ function createPlugin(vm) {
   var appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow(function () {for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {args[_key7] = arguments[_key7];}
-      appOptions.onShow.apply(vm, args);
+      vm.__call_hook('onShow', args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide(function () {for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {args[_key8] = arguments[_key8];}
-      appOptions.onHide.apply(vm, args);
+      vm.__call_hook('onHide', args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     var args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    appOptions.onLaunch.call(vm, args);
+    vm.__call_hook('onLaunch', args);
   }
   return vm;
 }
@@ -3037,21 +3043,23 @@ module.exports = g;
 /***/ }),
 
 /***/ 21:
-/*!***********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/api/detail.js ***!
-  \***********************************************************************/
+/*!************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/detail.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var request = __webpack_require__(/*! ./request.js */ 22);
 
-exports.fetchDetailData = function () {
-  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=115";
+// 获取详情数据
+exports.fetchDetailData = function (id) {
+  console.log('id', id);
+  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=".concat(id);
   return request({
     url: url });
 
 };
-
+// 加入购物车
 exports.fetchAddCart = function (token, _id, number) {
   return request({
     method: "POST",
@@ -3064,13 +3072,43 @@ exports.fetchAddCart = function (token, _id, number) {
 
 
 };
+// 获取购物车
+exports.fetchGetCart = function (token) {
+  return request({
+    method: "POST",
+    header: {
+      Authorization: token },
+
+    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
+
+};
+
+// 收藏
+exports.fetchJionCollect = function (token, id) {
+  return request({
+    header: {
+      Authorization: token },
+
+    url: "https://zlwh.jinghuanqiu.com/user/add/collection?goods_id=".concat(id) });
+
+};
+
+// 取消收藏
+exports.fetchCancelCollect = function (token, id) {
+  return request({
+    header: {
+      Authorization: token },
+
+    url: "https://zlwh.jinghuanqiu.com/user/delete/collection?goods_id=".concat(id) });
+
+};
 
 /***/ }),
 
 /***/ 22:
-/*!************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/api/request.js ***!
-  \************************************************************************/
+/*!*************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/request.js ***!
+  \*************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3090,7 +3128,6 @@ exports.fetchAddCart = function (token, _id, number) {
   });
 };
 module.exports = function request(options) {
-  console.log(options);
   return new Promise(function (resolve, reject) {
     wx.showLoading({
       title: 'loading...' });
@@ -8940,9 +8977,10 @@ function internalMixin(Vue) {
 
   Vue.prototype.$emit = function(event) {
     if (this.$scope && event) {
-      this.$scope['triggerEvent'](event, {
-        __args__: toArray(arguments, 1)
-      });
+      (this.$scope['_triggerEvent'] || this.$scope['triggerEvent'])
+        .call(this.$scope, event, {
+          __args__: toArray(arguments, 1)
+        })
     }
     return oldEmit.apply(this, arguments)
   };
@@ -9165,9 +9203,9 @@ internalMixin(Vue);
 /***/ }),
 
 /***/ 31:
-/*!**********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/api/login.js ***!
-  \**********************************************************************/
+/*!***********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/login.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9215,9 +9253,9 @@ function phoneNumber(code, token) {
 /***/ }),
 
 /***/ 32:
-/*!******************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/wxcomponents/vant/toast/toast.js ***!
-  \******************************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/wxcomponents/vant/toast/toast.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9292,9 +9330,9 @@ Toast;exports.default = _default;
 /***/ }),
 
 /***/ 33:
-/*!***********************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/wxcomponents/vant/common/validator.js ***!
-  \***********************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/wxcomponents/vant/common/validator.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9798,9 +9836,9 @@ function resolveLocaleChain(locale) {
 /***/ }),
 
 /***/ 42:
-/*!*******************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/wxcomponents/vant/area-data/dist/index.esm.js ***!
-  \*******************************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/wxcomponents/vant/area-data/dist/index.esm.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13696,9 +13734,9 @@ var areaList = {
 /***/ }),
 
 /***/ 5:
-/*!********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages.json ***!
-  \********************************************************************/
+/*!*********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages.json ***!
+  \*********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -13707,9 +13745,9 @@ var areaList = {
 /***/ }),
 
 /***/ 92:
-/*!*********************************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \*********************************************************************************************************************************/
+/*!**********************************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \**********************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13847,9 +13885,9 @@ function createAnimation(option, _this) {
 /***/ }),
 
 /***/ 98:
-/*!*************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \*************************************************************************************************************/
+/*!**************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \**************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

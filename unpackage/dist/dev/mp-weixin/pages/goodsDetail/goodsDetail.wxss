@@ -123,11 +123,17 @@
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .getCouponWrap .greaterThan {
   margin-left: 12rpx;
 }
+.goodsDetailContainer .header .multicastDiagramContainer .popup {
+  position: relative;
+}
 .goodsDetailContainer .header .multicastDiagramContainer .popup .receiveCoupon {
   height: 800rpx;
   background-color: #FFFFFF;
   border-top-left-radius: 40rpx;
   border-top-right-radius: 40rpx;
+  position: absolute;
+  bottom: -33px;
+  width: 100%;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .popup .receiveCoupon .title {
   padding-top: 20rpx;
@@ -213,13 +219,25 @@
   font-size: 20rpx;
 }
 .goodsNavigation .serviceWrap .shopping {
-  margin-left: 60rpx;
   text-align: center;
 }
 .goodsNavigation .serviceWrap .shopping .cartIcon {
   font-size: 40rpx;
 }
 .goodsNavigation .serviceWrap .shopping .cartTitle {
+  font-size: 20rpx;
+}
+.goodsNavigation .serviceWrap .collect {
+  margin-left: 30rpx;
+  text-align: center;
+}
+.goodsNavigation .serviceWrap .collect .collectIcon {
+  font-size: 40rpx;
+}
+.goodsNavigation .serviceWrap .collect .icon-shoucang {
+  color: #ffca3e;
+}
+.goodsNavigation .serviceWrap .collect .collectTitle {
   font-size: 20rpx;
 }
 .goodsNavigation .buyContainer {

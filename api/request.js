@@ -14,7 +14,6 @@ module.exports = function(options) {
 	})
 }
 module.exports = function  request(options) {
-	console.log(options)
     return new Promise((resolve,reject)=>{
       wx.showLoading({
         title: 'loading...',

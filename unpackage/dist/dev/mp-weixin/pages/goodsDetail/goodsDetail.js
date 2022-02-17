@@ -12,9 +12,9 @@
 /* 10 */,
 /* 11 */,
 /* 12 */
-/*!**************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/main.js?{"page":"pages%2FgoodsDetail%2FgoodsDetail"} ***!
-  \**************************************************************************************************************/
+/*!***************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/main.js?{"page":"pages%2FgoodsDetail%2FgoodsDetail"} ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27,9 +27,9 @@ createPage(_goodsDetail.default);
 
 /***/ }),
 /* 13 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue ***!
-  \*******************************************************************************************/
+/*!********************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -67,9 +67,9 @@ component.options.__file = "pages/goodsDetail/goodsDetail.vue"
 
 /***/ }),
 /* 14 */
-/*!**************************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=template&id=21ea9296& ***!
-  \**************************************************************************************************************************/
+/*!***************************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=template&id=21ea9296& ***!
+  \***************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -88,9 +88,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 15 */
-/*!**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--16-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=template&id=21ea9296& ***!
-  \**************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--16-0!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/template.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-uni-app-loader/page-meta.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=template&id=21ea9296& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns, recyclableRender, components */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -143,9 +143,9 @@ render._withStripped = true
 
 /***/ }),
 /* 16 */
-/*!********************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************/
+/*!*********************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -158,9 +158,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 17 */
-/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -306,16 +306,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 var _require =
 
 
-__webpack_require__(/*! ../../api/detail.js */ 21),fetchDetailData = _require.fetchDetailData,fetchAddCart = _require.fetchAddCart;
+
+
+
+
+__webpack_require__(/*! ../../api/detail.js */ 21),fetchDetailData = _require.fetchDetailData,fetchAddCart = _require.fetchAddCart,fetchGetCart = _require.fetchGetCart,fetchJionCollect = _require.fetchJionCollect,fetchCancelCollect = _require.fetchCancelCollect;
 var that;var _default =
 {
   data: function data() {
     return {
       value: "5",
-      toView: "xx",
+      toView: "info",
       // sku
       // 是否打开SKU弹窗
       skuKey: false,
@@ -326,17 +335,17 @@ var that;var _default =
       infoContent: [{
         id: 1,
         data: '信息',
-        jx: 'xx' },
+        jx: 'info' },
 
       {
         id: 2,
         data: '评论',
-        jx: 'pl' },
+        jx: 'comment' },
 
       {
         id: 3,
         data: '详情',
-        jx: 'xq' }],
+        jx: 'detail' }],
 
 
       activeindex: 0,
@@ -353,17 +362,25 @@ var that;var _default =
       brokeragePrice: "", // 佣金金额
       isShowMoney: false, // 是否显示佣金金额
       skuName: "未选择",
-      number: 0 // 商品数量
-    };
+      isCollect: false, // 是否收藏
+      id: "", // 商品id
+      token: "", // 用户凭证
+      switch: true, // 开关变量
+      test: true };
+
   },
   methods: {
+    back: function back() {
+      uni.navigateBack({
+        delta: 1 });
+
+    },
     jumpTo: function jumpTo(e, index) {
       var id = e.currentTarget.dataset.id;
       this.toView = id;
       this.activeindex = index;
-      console.log(this.toView);
     },
-    gun: function gun(e) {var
+    roll: function roll(e) {var
 
       scrollTop =
       e.detail.scrollTop;
@@ -382,23 +399,27 @@ var that;var _default =
     },
     //  请求详情页数据
     detailData: function detailData() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$fetchDetailDat, result, _result$goods$, brokerageType, brokeragePrice;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-                  fetchDetailData());case 2:_yield$fetchDetailDat = _context.sent;result = _yield$fetchDetailDat.result;
+
+
+                  fetchDetailData(_this.id));case 2:_yield$fetchDetailDat = _context.sent;result = _yield$fetchDetailDat.result;
                 _this.data = result.goods[0];_result$goods$ =
+
+
+
                 result.goods[0], brokerageType = _result$goods$.brokerageType, brokeragePrice = _result$goods$.brokeragePrice;
                 _this.brokerageType = brokerageType; // 是否需要佣金
                 _this.brokeragePrice = brokeragePrice; // 佣金金额
                 _this.gallery = result.goods[0].gallery;
-                _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g, '<img style="width:100%;height:100%"');
+                _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
+                '<img style="width:100%;height:100%"');
                 _this.stock = result.goods[0].sku_list[0].stock;
                 _this.spec_list = result.goods[0].spec_list[0];
-                console.log(_this.spec_list);
                 result.goods[0].sku_list.forEach(function (item) {
                   item.price = item.price * 100;
                   _this.skuData.push(item);
                   return item;
                 });
-                _this.sku_list = result.goods[0].sku_list;
-                console.log(result.goods[0].sku_list);case 16:case "end":return _context.stop();}}}, _callee);}))();
+                _this.sku_list = result.goods[0].sku_list;case 14:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 初始化
     init: function init() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -412,31 +433,45 @@ var that;var _default =
                                             */
       // 此处写接口请求，并将返回的数据进行处理成goodsInfo的数据格式，
       // goodsInfo是后端返回的数据
-      that.goodsInfo = {
-        "_id": this.sku_list[0]._id,
-        "name": this.sku_list[0].goods_name,
-        "goods_thumb": this.sku_list[0].image,
-        "sku_list": this.skuData,
-        "spec_list": [{
-          "list": [
-          {
-            "name": this.spec_list.list[0] },
+      if (this.spec_list.name == "默认") {
+        that.goodsInfo = {
+          "_id": this.sku_list[0]._id,
+          "name": this.sku_list[0].goods_name,
+          "goods_thumb": this.sku_list[0].image,
+          "sku_list": this.skuData,
+          "spec_list": [{
+            "list": [{
+              "name": this.spec_list.list[0] }],
 
-          {
-            "name": this.spec_list.list[1] }],
-
-
-          "name": this.spec_list.name }] };
+            "name": this.spec_list.name }] };
 
 
+      } else {
+        that.goodsInfo = {
+          "_id": this.sku_list[0]._id,
+          "name": this.sku_list[0].goods_name,
+          "goods_thumb": this.sku_list[0].image,
+          "sku_list": this.skuData,
+          "spec_list": [{
+            "list": [{
+              "name": this.spec_list.list[0] },
+
+            {
+              "name": this.spec_list.list[1] }],
+
+
+            "name": this.spec_list.name }] };
+
+
+      }
       that.skuKey = true;
     },
     // sku组件 开始-----------------------------------------------------------
     onOpenSkuPopup: function onOpenSkuPopup() {
-      console.log("监听 - 打开sku组件");
+      // console.log("监听 - 打开sku组件");
     },
     SkuPopup: function SkuPopup() {
-      console.log("监听 - 关闭sku组件");
+      // console.log("监听 - 关闭sku组件");
     },
     // 加入购物车前的判断
     // addCartFn(obj) {
@@ -453,19 +488,31 @@ var that;var _default =
     // 	if (typeof obj.success == "function") obj.success(res);
     // },
     // 加入购物车按钮
-    addCart: function addCart(selectShop) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var token, result;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
+    addCart: function addCart(selectShop) {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var _yield$fetchGetCart, data, sumnumber, _yield$fetchAddCart, code;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:
                 console.log("监听 - 加入购物车");
-                console.log('加入购物车', selectShop);
                 _this2.skuName = selectShop.sku_name_arr[0];
-                // this._id = selectShop._id
-                // this.number = selectShop.buy_num
-                token = uni.getStorageSync("token");
-                console.log(token);
-                if (selectShop.goods_name === selectShop.goods_name) {
-                  _this2.number += selectShop.buy_num;
-                }_context2.next = 8;return (
-                  fetchAddCart(token, selectShop._id, _this2.number));case 8:result = _context2.sent;
-                console.log('2332', result);
+                _this2.token = uni.getStorageSync("token");_context2.next = 5;return (
+
+
+                  fetchGetCart(_this2.token));case 5:_yield$fetchGetCart = _context2.sent;data = _yield$fetchGetCart.data;
+                sumnumber = 0;
+                data.forEach(function (item) {
+                  if (item.good._id == selectShop._id) {
+                    sumnumber = item.number;
+                  }
+                });
+                sumnumber += selectShop.buy_num;
+                console.log(_this2.token, selectShop._id, sumnumber);_context2.next = 13;return (
+
+
+                  fetchAddCart(_this2.token, selectShop._id, sumnumber));case 13:_yield$fetchAddCart = _context2.sent;code = _yield$fetchAddCart.code;
+                console.log(code);
+                if (code === 2000) {
+                  uni.showToast({
+                    title: '加入购物车成功' });
+
+                }
+                _this2.skuKey = false;
                 // that.addCartFn({
                 // 	selectShop: selectShop,
                 // 	success: function(res) {
@@ -477,43 +524,82 @@ var that;var _default =
 
                 // 	}
                 // });
-              case 10:case "end":return _context2.stop();}}}, _callee2);}))();},
+              case 18:case "end":return _context2.stop();}}}, _callee2);}))();},
     // 立即购买
     buyNow: function buyNow(selectShop) {
       console.log("监听 - 立即购买");
-      that.addCartFn({
-        selectShop: selectShop,
-        success: function success(res) {
-          // 实际业务时,请替换自己的立即购买逻辑
-          that.toast("立即购买");
-        } });
-
+      // that.addCartFn({
+      // 	selectShop: selectShop,
+      // 	success: function(res) {
+      // 		// 实际业务时,请替换自己的立即购买逻辑
+      // 		that.toast("立即购买");
+      // 	}
+      // });
     },
     toast: function toast(msg) {
       uni.showToast({
         title: msg,
         icon: "none" });
 
+    },
+    // 收藏
+    collect: function collect() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var _yield$fetchJionColle, code, _yield$fetchCancelCol, _code;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (!
+                _this3.switch) {_context3.next = 8;break;}_context3.next = 3;return (
+
+
+                  fetchJionCollect(_this3.token, _this3.id));case 3:_yield$fetchJionColle = _context3.sent;code = _yield$fetchJionColle.code;
+                if (code === 1000) {
+                  _this3.isCollect = true;
+                  uni.setStorageSync('isCollect', true);
+                  _this3.switch = false;
+                  uni.showToast({
+                    title: "收藏成功" });
+
+                }_context3.next = 16;break;case 8:
+
+                _this3.isCollect = false;
+                uni.setStorageSync('isCollect', false);
+                _this3.switch = true;_context3.next = 13;return (
+
+
+                  fetchCancelCollect(_this3.token, _this3.id));case 13:_yield$fetchCancelCol = _context3.sent;_code = _yield$fetchCancelCol.code;
+                if (_code === 1000) {
+                  uni.showToast({
+                    title: "取消收藏成功" });
+
+                }case 16:case "end":return _context3.stop();}}}, _callee3);}))();
+
     } },
 
   // 监听 - 页面每次【加载时】执行(如：前进)
   onLoad: function onLoad(options) {
+    this.id = options.id;
+    if (this.isCollect) {
+      this.isCollect = uni.getStorageSync('isCollect');
+      console.log("收藏");
+    } else {
+      this.isCollect = uni.getStorageSync('isCollect');
+      console.log("没有");
+    }
     that = this;
     that.init(options);
     this.detailData();
-
-    var token = uni.getStorageSync("token");
+    this.token = uni.getStorageSync("token");
     var userInfo = uni.getStorageSync("userInfo");
 
 
 
 
 
+
+
     // 用户等级
-    var userLevel = userInfo.userLevel;
+    var
+    userLevel =
+    userInfo.userLevel;
 
     // token和用户信息都为真  
-    if (token && userInfo) {
+    if (this.token && userInfo) {
       // 是否需要佣金为1并且用户等级为2,才显示佣金金额 
       if (this.brokerageType === 1 && userLevel === 2) {
         this.isShowMoney = true;
@@ -529,9 +615,9 @@ var that;var _default =
 /* 21 */,
 /* 22 */,
 /* 23 */
-/*!*****************************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=style&index=0&lang=scss& ***!
-  \*****************************************************************************************************************************/
+/*!******************************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=style&index=0&lang=scss& ***!
+  \******************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -544,9 +630,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 /* 24 */
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--8-oneOf-1-0!./node_modules/css-loader/dist/cjs.js??ref--8-oneOf-1-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-2!./node_modules/postcss-loader/src??ref--8-oneOf-1-3!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/sass-loader/dist/cjs.js??ref--8-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-5!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 备份-这个/pages/goodsDetail/goodsDetail.vue?vue&type=style&index=0&lang=scss& ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/mini-css-extract-plugin/dist/loader.js??ref--8-oneOf-1-0!./node_modules/css-loader/dist/cjs.js??ref--8-oneOf-1-1!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-2!./node_modules/postcss-loader/src??ref--8-oneOf-1-3!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/sass-loader/dist/cjs.js??ref--8-oneOf-1-4!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--8-oneOf-1-5!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/pages/goodsDetail/goodsDetail.vue?vue&type=style&index=0&lang=scss& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
