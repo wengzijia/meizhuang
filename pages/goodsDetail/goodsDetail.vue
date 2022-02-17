@@ -2,22 +2,22 @@
 	<view>
 		<!-- 自定义导航栏 -->
 		<view class="particularsWrap">
-			<view class="iconfont icon-fanhui"></view>
+			<view class="iconfont icon-fanhui" @click="back"></view>
 			<view v-show="!isShow" class="particulars">
 				商品详情
 			</view>
 			<view v-show="isShow" class="navigationInfo flex">
 				<!-- <text :class="activeindex==index?'border':''" v-for="(item,index) in infoContent" :key="item.id"
 					:data-id="item.jx" @click="jumpTo($event,index)">{{item.data}}</text> -->
-					<view class="item" v-for="(item,index) in infoContent" :key="item.id"
-					:data-id="item.jx" @click="jumpTo($event,index)">
-						<view>{{item.data}}</view>
-						<view :class="activeindex==index?'border':''"></view>
-					</view>
+				<view class="item" v-for="(item,index) in infoContent" :key="item.id" :data-id="item.jx"
+					@click="jumpTo($event,index)">
+					<view>{{item.data}}</view>
+					<view :class="activeindex==index?'border':''"></view>
+				</view>
 			</view>
 		</view>
-		<scroll-view scroll-y style="height:100vh" :scroll-into-view="toView" @scroll="gun" scroll-with-animation>
-			<view class="goodsDetailContainer " id="xx">
+		<scroll-view scroll-y style="height:100vh" :scroll-into-view="toView" @scroll="roll" scroll-with-animation>
+			<view class="goodsDetailContainer " id="info">
 				<!-- 头部 -->
 				<view class="header">
 					<!-- 轮播图 -->
@@ -25,14 +25,13 @@
 						<swiper class="multicastDiagram" indicator-dots="true" indicator-active-color="#000000"
 							autoplay="true">
 							<swiper-item class="item" v-for="(item,index) in gallery" :key="index">
-								<image
-									:src="item">
+								<image :src="item">
 								</image>
 							</swiper-item>
 						</swiper>
 						<!--  商品标题 -->
 						<view class="titleContainer flex_l_r">
-							<view class="title">{{data.name}} </view>
+							<view class="title">{{data.title}} </view>
 						</view>
 						<view class="goodsInfo flex ">
 							<view class="information flex_c_c">
@@ -51,19 +50,19 @@
 							</view>
 						</view>
 						<!-- 领劵弹窗 -->
-							<uni-popup class="popup" ref="popup" type="bottom">
-								<view class="receiveCoupon center">
-									<view class="title">领劵中心</view>
-									<view class="discountCoupon">
-										<view class="imgWrap">
-											<image src="../../static/image/couponLogo.png"></image>
-										</view>
-										<view class="noCoupon">暂无优惠券</view>
+						<uni-popup class="popup" ref="popup" type="bottom">
+							<view class="receiveCoupon center">
+								<view class="title">领劵中心</view>
+								<view class="discountCoupon">
+									<view class="imgWrap">
+										<image src="../../static/image/couponLogo.png"></image>
 									</view>
+									<view class="noCoupon">暂无优惠券</view>
 								</view>
-							</uni-popup>
+							</view>
+						</uni-popup>
 						<!--  保障信息 -->
-						<view class="safeguard flex_l_r" id="pl">
+						<view class="safeguard flex_l_r" id="comment">
 							<view class="iconfont icon-zhengpinbz  BSO size">正品保证</view>
 							<view class="iconfont icon-zhengpinbaozhang salesReturn size">无忧退货</view>
 							<view class="iconfont icon-tianmaobaoyouqia pinkage size">免费包邮</view>
@@ -97,7 +96,7 @@
 						</view>
 						<view class="commentWrap">
 							<view class="comment">中国共产党万岁</view>
-							<view class="picturesContainer" id="xq">
+							<view class="picturesContainer" id="detail">
 								<image class="pictures" src="../../static/logo.png"></image>
 							</view>
 						</view>
@@ -110,20 +109,26 @@
 						<!-- <image class="img" src="../../static/logo.png"></image>
 						<image class="img" src="../../static/logo.png"></image>
 						<image class="img" src="../../static/logo.png"></image> -->
-						<view  v-html="detail"></view>
+						<view v-html="detail"></view>
 					</view>
 				</view>
 			</view>
 			<!-- 商品导航 -->
 			<view class="goodsNavigation flex">
 				<view class="serviceWrap flex">
-					<view class="service">
+					<!-- <view class="service">
 						<view class="serviceIcon iconfont icon-kefu"></view>
 						<view class="serviceTitle">客服</view>
-					</view>
+					</view> -->
 					<view class="shopping">
 						<view class="cartIcon iconfont icon-gouwuche"></view>
 						<view class="cartTitle">购物车</view>
+					</view>
+					<view class="collect" @click="collect">
+						<view
+							:class="isCollect ? 'collectIcon iconfont icon-shoucang' : 'collectIcon iconfont icon-shoucang1'">
+						</view>
+						<view class="collectTitle">收藏</view>
 					</view>
 				</view>
 				<view class="buyContainer flex">
@@ -141,14 +146,18 @@
 
 <script>
 	const {
-		fetchDetailData,fetchAddCart
+		fetchDetailData,
+		fetchAddCart,
+		fetchGetCart,
+		fetchJionCollect,
+		fetchCancelCollect
 	} = require("../../api/detail.js")
 	var that;
 	export default {
 		data() {
 			return {
 				value: "5",
-				toView: "xx",
+				toView: "info",
 				// sku
 				// 是否打开SKU弹窗
 				skuKey: false,
@@ -159,51 +168,65 @@
 				infoContent: [{
 						id: 1,
 						data: '信息',
-						jx: 'xx'
+						jx: 'info'
 					},
 					{
 						id: 2,
 						data: '评论',
-						jx: 'pl'
+						jx: 'comment'
 					},
 					{
 						id: 3,
 						data: '详情',
-						jx: 'xq'
+						jx: 'detail'
 					}
 				],
 				activeindex: 0,
 				// border: 'border',
 				isShow: false, // 是否显示导航栏     
-				data:{},  // 详情数据
-				gallery:[], //轮播图
-				stock:'', // 件数
-				detail:"", // 富文本详情
-				sku_list:[], // 商品对应的sku列表的字段名   
-				spec_list:[], //  商品规格名称的字段名
-				skuData:[],    // sku每一项的数据
-				brokerageType:"",  // 是否需要给佣金
-				brokeragePrice:"",// 佣金金额
-				isShowMoney:false,   // 是否显示佣金金额
-				skuName:"未选择",
-				number:0   // 商品数量
+				data: {}, // 详情数据
+				gallery: [], //轮播图
+				stock: '', // 件数
+				detail: "", // 富文本详情
+				sku_list: [], // 商品对应的sku列表的字段名   
+				spec_list: [], //  商品规格名称的字段名
+				skuData: [], // sku每一项的数据
+				brokerageType: "", // 是否需要给佣金
+				brokeragePrice: "", // 佣金金额
+				isShowMoney: false, // 是否显示佣金金额
+				skuName: "未选择",
+				isCollect: false, // 是否收藏
+				id: "", // 商品id
+				token: "", // 用户凭证
+				switch: true, // 开关变量
+				test: true
 			}
 		},
 		methods: {
-			jumpTo(e,index) {
+			// 返回
+			back() {
+				// #ifdef H5
+					history.back()
+				// #endif
+				// #ifdef MP-WEIXIN
+				uni.navigateBack({
+					delta: 1
+				})
+				// #endif
+			},
+			jumpTo(e, index) {
 				let id = e.currentTarget.dataset.id;
 				this.toView = id;
 				this.activeindex = index
-				console.log(this.toView)
 			},
-			gun(e) {
+			roll(e) {
 				let {
 					scrollTop
 				} = e.detail;
 				if (scrollTop > 180) {
 					this.isShow = true
 					this.activeindex = 0
-				}else{
+				} else {
 					this.isShow = false
 				}
 				scrollTop >= 400 ? this.activeindex = 1 : this.activeindex = 0
@@ -211,27 +234,31 @@
 			},
 			// 弹出领券框
 			open() {
-			            this.$refs.popup.open('bottom')
-			        },
+				this.$refs.popup.open('bottom')
+			},
 			//  请求详情页数据
 			async detailData() {
-				let { result} = await fetchDetailData()
+				let {
+					result
+				} = await fetchDetailData(this.id)
 				this.data = result.goods[0]
-				let {brokerageType,brokeragePrice} = result.goods[0]
-				this.brokerageType = brokerageType  // 是否需要佣金
-				this.brokeragePrice = brokeragePrice   // 佣金金额
-				this.gallery = result.goods[0].gallery 
-				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,'<img style="width:100%;height:100%"')
-				this.stock = result.goods[0].sku_list[0].stock 
-				this.spec_list = result.goods[0].spec_list[0]  
-				console.log(this.spec_list)
-				result.goods[0].sku_list.forEach(item=>{
+				let {
+					brokerageType,
+					brokeragePrice
+				} = result.goods[0]
+				this.brokerageType = brokerageType // 是否需要佣金
+				this.brokeragePrice = brokeragePrice // 佣金金额
+				this.gallery = result.goods[0].gallery
+				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
+					'<img style="width:100%;height:100%"')
+				this.stock = result.goods[0].sku_list[0].stock
+				this.spec_list = result.goods[0].spec_list[0]
+				result.goods[0].sku_list.forEach(item => {
 					item.price = item.price * 100
 					this.skuData.push(item)
 					return item
 				})
 				this.sku_list = result.goods[0].sku_list
-				console.log(result.goods[0].sku_list)
 			},
 			// 初始化
 			init(options = {}) {
@@ -245,31 +272,45 @@
 				 */
 				// 此处写接口请求，并将返回的数据进行处理成goodsInfo的数据格式，
 				// goodsInfo是后端返回的数据
-				that.goodsInfo = {
-					"_id": this.sku_list[0]._id,
-					"name": this.sku_list[0].goods_name,
-					"goods_thumb": this.sku_list[0].image,
-					"sku_list":this.skuData,
-					"spec_list": [{
-						"list": [
-							{
+				if (this.spec_list.name == "默认") {
+					that.goodsInfo = {
+						"_id": this.sku_list[0]._id,
+						"name": this.sku_list[0].goods_name,
+						"goods_thumb": this.sku_list[0].image,
+						"sku_list": this.skuData,
+						"spec_list": [{
+							"list": [{
 								"name": this.spec_list.list[0]
-							},
-							{
-								"name": this.spec_list.list[1]
-							}
-						],
-						"name": this.spec_list.name
-					}]
+							}],
+							"name": this.spec_list.name
+						}]
+					}
+				} else {
+					that.goodsInfo = {
+						"_id": this.sku_list[0]._id,
+						"name": this.sku_list[0].goods_name,
+						"goods_thumb": this.sku_list[0].image,
+						"sku_list": this.skuData,
+						"spec_list": [{
+							"list": [{
+									"name": this.spec_list.list[0]
+								},
+								{
+									"name": this.spec_list.list[1]
+								}
+							],
+							"name": this.spec_list.name
+						}]
+					}
 				}
 				that.skuKey = true;
 			},
 			// sku组件 开始-----------------------------------------------------------
 			onOpenSkuPopup() {
-				console.log("监听 - 打开sku组件");
+				// console.log("监听 - 打开sku组件");
 			},
 			SkuPopup() {
-				console.log("监听 - 关闭sku组件");
+				// console.log("监听 - 关闭sku组件");
 			},
 			// 加入购物车前的判断
 			// addCartFn(obj) {
@@ -288,17 +329,28 @@
 			// 加入购物车按钮
 			async addCart(selectShop) {
 				console.log("监听 - 加入购物车");
-				console.log('加入购物车',selectShop)
 				this.skuName = selectShop.sku_name_arr[0]
-				// this._id = selectShop._id
-				// this.number = selectShop.buy_num
-				let token = uni.getStorageSync("token");
-				console.log(token)
-				if(selectShop.goods_name === selectShop.goods_name){
-					this.number  +=  selectShop.buy_num
+				this.token = uni.getStorageSync("token");
+				let {
+					data
+				} = await fetchGetCart(this.token);
+				let sumnumber = 0;
+				data.forEach(item => {
+					if (item.good._id == selectShop._id) {
+						sumnumber = item.number
+					}
+				})
+				sumnumber += selectShop.buy_num
+				let {
+					code
+				} = await fetchAddCart(this.token, selectShop._id, sumnumber)
+				console.log(code)
+				if (code === 2000) {
+					uni.showToast({
+						title: '加入购物车成功'
+					})
 				}
-				let result = await  fetchAddCart(token,selectShop._id,this.number)
-				console.log('2332',result)
+				this.skuKey = false
 				// that.addCartFn({
 				// 	selectShop: selectShop,
 				// 	success: function(res) {
@@ -307,52 +359,91 @@
 				// 		// setTimeout(function() {
 				// 		// 	that.skuKey = false;
 				// 		// }, 300);
-						
+
 				// 	}
 				// });
 			},
 			// 立即购买
 			buyNow(selectShop) {
 				console.log("监听 - 立即购买");
-				that.addCartFn({
-					selectShop: selectShop,
-					success: function(res) {
-						// 实际业务时,请替换自己的立即购买逻辑
-						that.toast("立即购买");
-					}
-				});
+				// that.addCartFn({
+				// 	selectShop: selectShop,
+				// 	success: function(res) {
+				// 		// 实际业务时,请替换自己的立即购买逻辑
+				// 		that.toast("立即购买");
+				// 	}
+				// });
 			},
 			toast(msg) {
 				uni.showToast({
 					title: msg,
 					icon: "none"
 				});
+			},
+			// 收藏
+			async collect() {
+				if (this.switch) {
+					let {
+						code
+					} = await fetchJionCollect(this.token, this.id);
+					if (code === 1000) {
+						this.isCollect = true
+						uni.setStorageSync('isCollect', true)
+						this.switch = false
+						uni.showToast({
+							title: "收藏成功"
+						})
+					}
+				} else {
+					this.isCollect = false
+					uni.setStorageSync('isCollect', false)
+					this.switch = true
+					let {
+						code
+					} = await fetchCancelCollect(this.token, this.id);
+					if (code === 1000) {
+						uni.showToast({
+							title: "取消收藏成功"
+						})
+					}
+				}
 			}
 		},
 		// 监听 - 页面每次【加载时】执行(如：前进)
 		onLoad(options) {
+			this.id = options.id
+			if (this.isCollect) {
+				this.isCollect = uni.getStorageSync('isCollect')
+				console.log("收藏")
+			} else {
+				this.isCollect = uni.getStorageSync('isCollect')
+				console.log("没有")
+			}
 			that = this;
 			that.init(options);
 			this.detailData()
-			
-			let token = uni.getStorageSync("token");
+			this.token = uni.getStorageSync("token");
 			let userInfo = uni.getStorageSync("userInfo");
 			// #ifdef H5
 			// 用户等级
-				let {userLevel} = JSON.parse(uni.getStorageSync("userInfo"));
+			let {
+				userLevel
+			} = JSON.parse(uni.getStorageSync("userInfo"));
 			// #endif
 			// #ifdef MP-WEIXIN
 			// 用户等级
-				let {userLevel} = userInfo;
+			let {
+				userLevel
+			} = userInfo;
 			// #endif
 			// token和用户信息都为真  
-			if(token&&userInfo){
+			if (this.token && userInfo) {
 				// 是否需要佣金为1并且用户等级为2,才显示佣金金额 
-				if(this.brokerageType === 1 && userLevel === 2){
+				if (this.brokerageType === 1 && userLevel === 2) {
 					this.isShowMoney = true
 				}
 			}
-		},
+		}
 	}
 </script>
 
@@ -362,12 +453,12 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	
-	.flexC{
+
+	.flexC {
 		display: flex;
 		align-items: center;
 	}
-	
+
 	.flex_l_r {
 		display: flex;
 		justify-content: space-between;
@@ -379,8 +470,8 @@
 		justify-content: center;
 		align-items: center;
 	}
-	
-	.center{
+
+	.center {
 		text-align: center;
 	}
 
@@ -401,9 +492,9 @@
 			// border-bottom: 4rpx solid #2b2e3d;
 		}
 	}
-	
-	.border:after{
-		display:block;
+
+	.border:after {
+		display: block;
 		content: "";
 		width: 40rpx;
 		margin-top: 12rpx;
@@ -440,7 +531,7 @@
 		.navigationInfo {
 			margin: auto;
 
-			.item{
+			.item {
 				margin: 0 20rpx;
 			}
 		}
@@ -458,6 +549,7 @@
 		.header {
 			background-color: #FFFFFF;
 			height: 1200rpx;
+
 			//  轮播图
 			.multicastDiagramContainer {
 				.multicastDiagram {
@@ -506,21 +598,28 @@
 						}
 					}
 				}
+
 				// 弹框
-				.popup{
-					.receiveCoupon{
+				.popup {
+					position: relative;
+					.receiveCoupon {
 						height: 800rpx;
 						background-color: #FFFFFF;
 						border-top-left-radius: 40rpx;
-						border-top-right-radius:40rpx;
-						.title{
+						border-top-right-radius: 40rpx;
+						position: absolute;
+						bottom: -33px;
+						width: 100%;
+						.title {
 							padding-top: 20rpx;
 						}
-						.discountCoupon{
+
+						.discountCoupon {
 							margin-top: 100rpx;
 						}
 					}
 				}
+
 				// 保障信息
 				.safeguard {
 					margin: 20rpx;
@@ -543,6 +642,7 @@
 			background-color: #FFFFFF;
 			padding: 30rpx;
 			margin: 30rpx 0rpx;
+
 			.commentInfo {
 				padding: 30rpx 0rpx;
 
@@ -607,8 +707,7 @@
 				padding: 30rpx;
 			}
 
-			.detailImg {
-			}
+			.detailImg {}
 		}
 	}
 
@@ -635,7 +734,7 @@
 			}
 
 			.shopping {
-				margin-left: 60rpx;
+				// margin-left: 60rpx;
 				text-align: center;
 
 				.cartIcon {
@@ -646,6 +745,24 @@
 					font-size: 20rpx;
 				}
 			}
+
+			.collect {
+				margin-left: 30rpx;
+				text-align: center;
+
+				.collectIcon {
+					font-size: 40rpx;
+				}
+
+				.icon-shoucang {
+					color: #ffca3e;
+				}
+
+				.collectTitle {
+					font-size: 20rpx;
+				}
+			}
+
 		}
 
 		.buyContainer {
