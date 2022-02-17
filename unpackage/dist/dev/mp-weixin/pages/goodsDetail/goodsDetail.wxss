@@ -88,7 +88,7 @@
 }
 .goodsDetailContainer .header {
   background-color: #FFFFFF;
-  height: 1200rpx;
+  padding-bottom: 8rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .multicastDiagram {
   height: 600rpx;
@@ -97,9 +97,12 @@
   width: 100%;
   height: 100%;
 }
-.goodsDetailContainer .header .multicastDiagramContainer .titleContainer {
-  padding: 30rpx;
-  height: 120rpx;
+.goodsDetailContainer .header .multicastDiagramContainer .titleContainer .title {
+  margin-top: 40rpx;
+  margin-left: 30rpx;
+}
+.goodsDetailContainer .header .multicastDiagramContainer .titleContainer .brief {
+  margin: 12rpx 24rpx 12rpx 32rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo {
   padding: 30rpx;
@@ -113,12 +116,19 @@
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .soldOut {
   margin-left: 20rpx;
-  background-color: #b2b2b2;
-  color: #FFFFFF;
-  border-radius: 20rpx;
-  text-align: center;
-  width: 160rpx;
-  height: 40rpx;
+  color: #d53249;
+  border-radius: 12rpx;
+  padding: 4rpx;
+  height: 44rpx;
+  border: 2rpx solid #dd524d;
+}
+.goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .brokerage {
+  margin-left: 20rpx;
+  color: #d53249;
+  border-radius: 12rpx;
+  padding: 4rpx;
+  height: 44rpx;
+  border: 2rpx solid #dd524d;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .getCouponWrap .greaterThan {
   margin-left: 12rpx;
@@ -201,6 +211,11 @@
 .goodsDetailContainer .detailContainer .goodsDetail {
   padding: 30rpx;
 }
+.goodsDetailContainer .detailContainer .end {
+  padding: 16px 60px;
+  padding-bottom: 90px;
+  color: #C0C0C0;
+}
 .goodsNavigation {
   background-color: #FFFFFF;
   position: fixed;
@@ -244,18 +259,14 @@
   margin-left: 80rpx;
 }
 .goodsNavigation .buyContainer .cart {
-  border: 1rpx solid #cccccc;
-  border-radius: 6rpx;
-  background-color: #ffffff;
+  background-color: #fc7e8d;
   font-size: 20rpx;
   height: 80rpx;
   width: 200rpx;
+  color: #f3fffa;
 }
 .goodsNavigation .buyContainer .buy {
-  margin-left: 30rpx;
-  border: 1rpx solid #cccccc;
-  border-radius: 6rpx;
-  background-color: #2b2e3d;
+  background-color: #fe3a46;
   color: #FFFFFF;
   font-size: 20rpx;
   height: 80rpx;

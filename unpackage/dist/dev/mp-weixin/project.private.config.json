@@ -1,5 +1,4 @@
 {
-  "setting": {},
   "condition": {
     "plugin": {
       "list": []
@@ -13,10 +12,11 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/login/login",
+          "name": "",
           "pathName": "pages/login/login",
           "query": "",
-          "scene": null
+          "scene": null,
+          "launchMode": "default"
         }
       ]
     }

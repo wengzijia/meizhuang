@@ -1,7 +1,5 @@
 <template>
 	<view>
-		
-	  
 		<button class="loginBtn" @click="newloginBtn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信登录</button>
 		<!-- 开启提示框 -->
 		<van-toast id="van-toast" />
@@ -11,7 +9,6 @@
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
 	import Toast from 'wxcomponents/vant/toast/toast.js';
-	
 	export default {
 		data() {
 			return {
@@ -43,22 +40,18 @@
 			},
 			// 获取手机号
 			async getPhoneNumber(e){
-				
 				if(e.detail.code){
 					let a = await phoneNumber(e.detail.code,this.token)
 					Toast("绑定手机号成功")
 				}
-			   
 			}
 		},
 		mounted(){
 			let _this = this;
 			wx.login({
-				
 				async success(res){
 					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-					delete res.clientInfo
-					
+					delete res.clientInfo	
 					if(res.code){
 						// 登录获取token
 						let {result} = await autologin(res)
@@ -67,8 +60,7 @@
 						if(result.userInfo.nickname == null){
 							Toast("第一次登录")
 							_this.token = result.token
-							_this.userInfo = result.userInfo
-							
+							_this.userInfo = result.userInfo					
 						}else{
 							Toast("不是第一次登录")
 							wx.setStorageSync("token",result.token)
@@ -80,7 +72,7 @@
 					
 				}
 			})
-		},
+		}
 		
 	}
 </script>

@@ -30,8 +30,9 @@
 							</swiper-item>
 						</swiper>
 						<!--  商品标题 -->
-						<view class="titleContainer flex_l_r">
+						<view class="titleContainer">
 							<view class="title">{{data.title}} </view>
+							<view class="brief">{{data.brief}} </view>
 						</view>
 						<view class="goodsInfo flex ">
 							<view class="information flex_c_c">
@@ -41,8 +42,8 @@
 									<text class="bigNumber">{{data.retailPrice}}</text>
 									<text class="price">.00</text>
 								</view>
-								<view class="soldOut size">{{stock}}件已售</view>
-								<view class="" v-if="isShowMoney">佣金:{{brokeragePrice}}</view>
+								<view class="soldOut size flex_c_c">{{stock}}件已售</view>
+								<view class="brokerage flex_c_c" v-if="isShowMoney">佣金:{{brokeragePrice}}</view>
 							</view>
 							<view class="getCouponWrap flexC">
 								<text class="iconfont icon-lingquanzhongxin getCoupon size" @click="open">领券 ></text>
@@ -106,11 +107,9 @@
 				<view class="detailContainer">
 					<view class="goodsDetail">商品详情</view>
 					<view class="detailImg">
-						<!-- <image class="img" src="../../static/logo.png"></image>
-						<image class="img" src="../../static/logo.png"></image>
-						<image class="img" src="../../static/logo.png"></image> -->
 						<view v-html="detail"></view>
 					</view>
+					<view class="end">——————  已经到底了  ——————</view>
 				</view>
 			</view>
 			<!-- 商品导航 -->
@@ -132,12 +131,12 @@
 					</view>
 				</view>
 				<view class="buyContainer flex">
-					<button class="cart flex_c_c" @click="openSkuPopup()">加入购物车</button>
-					<button class="buy flex_c_c" @click="openSkuPopup()">立即购买</button>
+					<view class="cart flex_c_c" @click="openSkuPopup()">加入购物车</view>
+					<view class="buy flex_c_c" @click="openSkuPopup()">立即购买</view>
 				</view>
 			</view>
 			<!-- sku弹窗 -->
-			<vk-data-goods-sku-popup ref="skuPopup" v-model="skuKey" theme="black-white" border-radius="20"
+			<vk-data-goods-sku-popup ref="skuPopup" v-model="skuKey" theme="red-black" border-radius="20"
 				:localdata="goodsInfo" :mode="skuMode" @open="onOpenSkuPopup" @close="SkuPopup" @add-cart="addCart"
 				@buy-now="buyNow"></vk-data-goods-sku-popup>
 		</scroll-view>
@@ -191,7 +190,7 @@
 				sku_list: [], // 商品对应的sku列表的字段名   
 				spec_list: [], //  商品规格名称的字段名
 				skuData: [], // sku每一项的数据
-				brokerageType: "", // 是否需要给佣金
+				brokerageType: 0, // 是否需要给佣金
 				brokeragePrice: "", // 佣金金额
 				isShowMoney: false, // 是否显示佣金金额
 				skuName: "未选择",
@@ -240,8 +239,9 @@
 					brokerageType,
 					brokeragePrice
 				} = result.goods[0]
-				this.brokerageType = brokerageType // 是否需要佣金
-				this.brokeragePrice = brokeragePrice // 佣金金额
+				this.brokerageType = 1 // 是否需要佣金
+				console.log('1',this.brokerageType)
+				this.brokeragePrice = 100 // 佣金金额
 				this.gallery = result.goods[0].gallery
 				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
 					'<img style="width:100%;height:100%"')
@@ -405,20 +405,25 @@
 			}
 		},
 		// 监听 - 页面每次【加载时】执行(如：前进)
-		onLoad(options) {
-			this.id = options.id
+		async onLoad(options) {
+			this.id = 18
 			if (this.isCollect) {
 				this.isCollect = uni.getStorageSync('isCollect')
-				console.log("收藏")
 			} else {
 				this.isCollect = uni.getStorageSync('isCollect')
-				console.log("没有")
 			}
 			that = this;
 			that.init(options);
 			this.detailData()
 			this.token = uni.getStorageSync("token");
 			let userInfo = uni.getStorageSync("userInfo");
+			let { result } = await fetchDetailData(this.id)
+			let {
+				brokerageType,
+				brokeragePrice
+			} = result.goods[0]
+			this.brokerageType = brokerageType // 是否需要佣金
+			this.brokeragePrice = brokeragePrice // 佣金金额
 			// #ifdef H5
 			// 用户等级
 			let {
@@ -433,6 +438,7 @@
 			// #endif
 			// token和用户信息都为真  
 			if (this.token && userInfo) {
+				console.log(this.brokerageType,userLevel)
 				// 是否需要佣金为1并且用户等级为2,才显示佣金金额 
 				if (this.brokerageType === 1 && userLevel === 2) {
 					this.isShowMoney = true
@@ -543,8 +549,7 @@
 		/* #endif */
 		.header {
 			background-color: #FFFFFF;
-			height: 1200rpx;
-
+			padding-bottom: 8rpx;
 			//  轮播图
 			.multicastDiagramContainer {
 				.multicastDiagram {
@@ -560,8 +565,13 @@
 
 				//  标题容器
 				.titleContainer {
-					padding: 30rpx;
-					height: 120rpx;
+					.title{
+						margin-top: 40rpx;
+						margin-left: 30rpx;
+					}
+					.brief{
+						margin: 12rpx 24rpx 12rpx 32rpx;
+					}
 				}
 
 				// 商品信息
@@ -579,12 +589,20 @@
 
 					.soldOut {
 						margin-left: 20rpx;
-						background-color: #b2b2b2;
-						color: #FFFFFF;
-						border-radius: 20rpx;
-						text-align: center;
-						width: 160rpx;
-						height: 40rpx;
+						color: #d53249;
+						border-radius: 12rpx;
+						padding: 4rpx;
+						height: 44rpx;
+						border: 2rpx solid #dd524d;
+					}
+					
+					.brokerage {
+						margin-left: 20rpx;
+						color: #d53249;
+						border-radius: 12rpx;
+						padding: 4rpx;
+						height: 44rpx;
+						border: 2rpx solid #dd524d;
 					}
 
 					.getCouponWrap {
@@ -702,7 +720,13 @@
 				padding: 30rpx;
 			}
 
-			.detailImg {}
+			.detailImg {
+			}
+			.end{
+				    padding: 16px 60px;
+				    padding-bottom: 90px;
+					color: #C0C0C0;
+			}
 		}
 	}
 
@@ -764,19 +788,15 @@
 			margin-left: 80rpx;
 
 			.cart {
-				border: 1rpx solid #cccccc;
-				border-radius: 6rpx;
-				background-color: #ffffff;
+				background-color: #fc7e8d;
 				font-size: 20rpx;
 				height: 80rpx;
 				width: 200rpx;
+				color: #f3fffa;
 			}
 
 			.buy {
-				margin-left: 30rpx;
-				border: 1rpx solid #cccccc;
-				border-radius: 6rpx;
-				background-color: #2b2e3d;
+				background-color: #fe3a46;
 				color: #FFFFFF;
 				font-size: 20rpx;
 				height: 80rpx;
