@@ -21,7 +21,6 @@
 
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
-	import {logincheck} from "utils/logincheck.js"
 
 	export default {
 		data() {
@@ -92,11 +91,7 @@
 				}
 			}
 		},
-		async mounted(){
-			let message = await logincheck()
-			this.token = message.token
-			this.userInfo = message.userInfo
-		},
+		
 
 
 				}
