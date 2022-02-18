@@ -17,24 +17,51 @@
 			};
 		},
 		methods:{
+		
 			// 第一次登录点击的按钮(为了录入用户的基本信息)
 			newloginBtn(){
-				let _this = this;
-				
-				// 获取用户基本信息
 				wx.getUserProfile({
-					desc:"有用的",
+					desc:"获取昵称等基本信息",
 					async success(res){
-						
-						let {code} = await newlogin(res,_this.token)
+						console.log(res)
+						let {code} = await newlogin(res)
 						if(code == 20000){
-							wx.setStorageSync("token",_this.token)
-							wx.setStorageSync("userInfo",_this.userInfo)
-							Toast("登录成功")
+							
+						wx.login({
+							async success(res){
+								// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+								delete res.clientInfo	
+								if(res.code){
+									// 登录获取token
+									autologin(res,true)
+						
+									
+								}
+								
+								
+							}
+						})
 						}
 						
 					}
 				})
+			wx.login({
+				async success(res){
+					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+					delete res.clientInfo	
+					if(res.code){
+						// 登录获取token
+						autologin(res,true)
+
+						
+					}
+		
+					
+				}
+			})
+				
+				// 获取用户基本信息
+		
 				 
 				
 			},
@@ -42,36 +69,12 @@
 			async getPhoneNumber(e){
 				if(e.detail.code){
 					let a = await phoneNumber(e.detail.code,this.token)
-					Toast("绑定手机号成功")
+				console.log(a,"tell")
 				}
 			}
 		},
 		mounted(){
-			let _this = this;
-			wx.login({
-				async success(res){
-					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-					delete res.clientInfo	
-					if(res.code){
-						// 登录获取token
-						let {result} = await autologin(res)
-						
-						// 证明是第一次登录			
-						if(result.userInfo.nickname == null){
-							Toast("第一次登录")
-							_this.token = result.token
-							_this.userInfo = result.userInfo					
-						}else{
-							Toast("不是第一次登录")
-							wx.setStorageSync("token",result.token)
-							wx.setStorageSync("userInfo",result.userInfo)
-						}
-						
-						
-					}
-					
-				}
-			})
+
 		}
 		
 	}
