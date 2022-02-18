@@ -33,7 +33,9 @@
 </template>
 
 <script>
+
 	import Toast from 'wxcomponents/vant/toast/toast.js';
+
 	export default {
 		data() {
 			return {

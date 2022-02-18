@@ -21781,7 +21781,15 @@ var areaList = {
     820204: "圣方济各堂区" } };exports.areaList = areaList;
 
 /***/ }),
-/* 193 */
+/* 193 */,
+/* 194 */,
+/* 195 */,
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */
 /*!*******************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/wxcomponents/vant/toast/toast.js ***!
   \*******************************************************************************************/
@@ -21789,7 +21797,7 @@ var areaList = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 194);
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 202);
 var defaultOptions = {
   type: 'text',
   mask: false,
@@ -21857,7 +21865,7 @@ Toast.resetDefaultOptions = function () {
 Toast;exports.default = _default;
 
 /***/ }),
-/* 194 */
+/* 202 */
 /*!************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/wxcomponents/vant/common/validator.js ***!
   \************************************************************************************************/
@@ -21898,14 +21906,6 @@ function isVideoUrl(url) {
 }
 
 /***/ }),
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-/* 201 */,
-/* 202 */,
 /* 203 */,
 /* 204 */,
 /* 205 */,
@@ -22009,7 +22009,63 @@ function h5login(tell, code) {
 /* 217 */,
 /* 218 */,
 /* 219 */,
-/* 220 */,
+/* 220 */
+/*!******************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/utils/logincheck.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.logincheck = logincheck;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));var _login = __webpack_require__(/*! api/login.js */ 211);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function
+
+logincheck() {return _logincheck.apply(this, arguments);}function _logincheck() {_logincheck = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:return _context2.abrupt("return",
+            new Promise(function (reslove, reject) {
+
+              var token = wx.getStorageSync("token");
+              var message = {};
+
+              // 没token要登录
+              if (token == null || token == "") {
+                wx.login({
+                  success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$autologin, result;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+                              // 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+                              delete res.clientInfo;if (!
+
+                              res.code) {_context.next = 7;break;}_context.next = 4;return (
+
+                                (0, _login.autologin)(res));case 4:_yield$autologin = _context.sent;result = _yield$autologin.result;
+
+                              // 证明是第一次登录			
+                              if (result.userInfo.nickname == null) {
+                                message.token = result.token;
+                                message.userInfo = result.userInfo;
+                                message.state = "第一次登录";
+                                reslove(message);
+                              } else {
+                                message.state = "自动登录";
+
+                                // 如果不是第一次登陆,就直接保存token自动登录,不需要点击按钮登录
+                                wx.setStorageSync("token", result.token);
+                                wx.setStorageSync("userInfo", result.userInfo);
+                                reslove(message);
+                              }case 7:case "end":return _context.stop();}}}, _callee);}))();
+
+
+
+
+                  } });
+
+
+              } else {
+                // 有token不需登录
+                message.state = "已登录";
+                reslove(message);
+              }
+
+            }));case 1:case "end":return _context2.stop();}}}, _callee2);}));return _logincheck.apply(this, arguments);}
+
+/***/ }),
 /* 221 */,
 /* 222 */,
 /* 223 */,
@@ -22017,7 +22073,8 @@ function h5login(tell, code) {
 /* 225 */,
 /* 226 */,
 /* 227 */,
-/* 228 */
+/* 228 */,
+/* 229 */
 /*!************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/detail.js ***!
   \************************************************************************/
@@ -22079,14 +22136,14 @@ exports.fetchCancelCollect = function (token, id) {
 };
 
 /***/ }),
-/* 229 */,
 /* 230 */,
 /* 231 */,
 /* 232 */,
 /* 233 */,
 /* 234 */,
 /* 235 */,
-/* 236 */
+/* 236 */,
+/* 237 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \************************************************************************************************************/
@@ -22134,14 +22191,14 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 237 */,
 /* 238 */,
 /* 239 */,
 /* 240 */,
 /* 241 */,
 /* 242 */,
 /* 243 */,
-/* 244 */
+/* 244 */,
+/* 245 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-search/props.js ***!
   \************************************************************************************************************/
@@ -22263,7 +22320,6 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 245 */,
 /* 246 */,
 /* 247 */,
 /* 248 */,
@@ -22291,7 +22347,8 @@ exports.fetchCancelCollect = function (token, id) {
 /* 270 */,
 /* 271 */,
 /* 272 */,
-/* 273 */
+/* 273 */,
+/* 274 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-divider/props.js ***!
   \*************************************************************************************************************/
@@ -22343,7 +22400,6 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 274 */,
 /* 275 */,
 /* 276 */,
 /* 277 */,
@@ -22378,7 +22434,8 @@ exports.fetchCancelCollect = function (token, id) {
 /* 306 */,
 /* 307 */,
 /* 308 */,
-/* 309 */
+/* 309 */,
+/* 310 */
 /*!**************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************************************/
@@ -23554,7 +23611,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
-/* 310 */,
 /* 311 */,
 /* 312 */,
 /* 313 */,
@@ -23576,7 +23632,245 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 329 */,
 /* 330 */,
 /* 331 */,
-/* 332 */,
+/* 332 */
+/*!*********************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/utils/index.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.isArray = isArray;exports.isObject = isObject;exports.isFunction = isFunction;exports.isString = isString;exports.isNull = isNull;exports.isBoolean = isBoolean;exports.isNumber = isNumber;exports.isDecimal = isDecimal;exports.isPromise = isPromise;exports.isEmpty = isEmpty;exports.last = last;exports.firstUpperCase = firstUpperCase;exports.debounce = debounce;exports.compareValue = compareValue;exports.cloneDeep = cloneDeep;exports.deepMerge = deepMerge;exports.getCurrentPage = getCurrentPage;exports.parseRpx = parseRpx;exports.getParent = getParent;exports.getCurrentColor = getCurrentColor;exports.getUrlParam = getUrlParam;exports.orderBy = orderBy;exports.isDev = void 0; // 是否开发模式
+var isDev = "development" == "development";
+
+// 是否Array类型
+exports.isDev = isDev;function isArray(value) {
+  if (typeof Array.isArray === "function") {
+    return Array.isArray(value);
+  } else {
+    return Object.prototype.toString.call(value) === "[object Array]";
+  }
+}
+
+// 是否Object类型
+function isObject(value) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}
+
+// 是否Function类型
+function isFunction(value) {
+  return typeof value === "function";
+}
+
+// 是否String类型
+function isString(value) {
+  return typeof value === "string";
+}
+
+// 是否null类型
+function isNull(value) {
+  return !value && value !== 0;
+}
+
+// 是否Boolean类型
+function isBoolean(value) {
+  return typeof value === "boolean";
+}
+
+// 是否数字类型
+function isNumber(value) {
+  return typeof value === "number" && !isNaN(value);
+}
+
+// 是否小数
+function isDecimal(value) {
+  return String(value).length - String(value).indexOf(".") + 1;
+}
+
+// 是否Promise类型
+function isPromise(obj) {
+  obj !== null && (
+  typeof obj === "object" || typeof obj === "function") &&
+  typeof obj.then === "function";
+}
+
+// 是否为空
+function isEmpty(value) {
+  if (isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (isObject(value)) {
+    return Object.keys(value).length === 0;
+  }
+
+  return value === "" || value === undefined || value === null;
+}
+
+// 取最后一个值
+function last(data) {
+  if (isArray(data) || isString(data)) {
+    return data[data.length - 1];
+  }
+}
+
+// 首字母大写
+function firstUpperCase(value) {
+  return value.replace(/\b(\w)(\w*)/g, function ($0, $1, $2) {
+    return $1.toUpperCase() + $2.toLowerCase();
+  });
+}
+
+// 防抖
+function debounce(fn, wait, immediate) {
+  var timer;
+  return function () {var _arguments = arguments,_this = this;
+    if (timer) clearTimeout(timer);
+    if (immediate) {
+      var callNow = !timer;
+      timer = setTimeout(function () {
+        timer = null;
+      }, wait);
+      if (callNow) {
+        fn.apply(this, arguments);
+      }
+    } else {
+      timer = setTimeout(function () {
+        fn.apply(_this, _arguments);
+      }, wait);
+    }
+  };
+}
+
+// 比较值
+function compareValue(a, b) {
+  return String(a) === String(b);
+}
+
+// 深拷贝
+function cloneDeep(v) {
+  if (isObject(v)) {
+    var d = {};
+
+    for (var k in v) {
+      if (v.hasOwnProperty && v.hasOwnProperty(k)) {
+        if (v[k] && typeof v[k] === "object") {
+          d[k] = cloneDeep(v[k]);
+        } else {
+          d[k] = v[k];
+        }
+      }
+    }
+
+    return d;
+  } else if (isArray(v)) {
+    return v.map(cloneDeep);
+  } else {
+    return v;
+  }
+}
+
+// 深度合并
+function deepMerge(a, b) {
+  var k;
+  for (k in b) {
+    a[k] =
+    a[k] && a[k].toString() === "[object Object]" ? deepMerge(a[k], b[k]) : a[k] = b[k];
+  }
+  return a;
+}
+
+// 获取当前页面信息
+function getCurrentPage() {var _last =
+  last(getCurrentPages()),route = _last.route,$page = _last.$page,options = _last.options,$route = _last.$route;
+
+  return {
+    path: "/".concat(route),
+    fullPath: $page.fullPath,
+
+    query: options };
+
+
+
+
+
+}
+
+/**
+   * 解析rpx
+   * @param {*} val
+   */
+function parseRpx(val) {
+  return isArray(val) ? val.map(parseRpx).join(" ") : isNumber(val) ? val + "rpx" : val;
+}
+
+/**
+   * 获取父级节点
+   * @param {*} name componentName
+   * @param {*} keys 保留的参数，避免 computed 非 H5 解析失败
+   */
+function getParent(name, keys) {
+  var parent = this.$parent;
+
+  while (parent) {
+    if (parent.$options.componentName !== name) {
+      parent = parent.$parent;
+    } else {
+      return keys.reduce(function (result, key) {
+        result[key] = parent[key];
+        return result;
+      }, {});
+    }
+  }
+
+  return null;
+}
+
+/**
+   * 获取当前颜色
+   *
+   * @param {*} { color, max, value }
+   */
+function getCurrentColor(_ref) {var color = _ref.color,max = _ref.max,value = _ref.value;
+  if (isString(color)) {
+    return color;
+  } else {
+    var colorArray = color.
+    map(function (item, index) {
+      if (isString(item)) {
+        return {
+          color: item,
+          value: (index + 1) * (max / color.length) };
+
+      }
+      return item;
+    }).
+    sort(function (a, b) {return a.value - b.value;});
+
+    for (var i = 0; i < colorArray.length; i++) {
+      if (colorArray[i].value >= value) {
+        return colorArray[i].color;
+      }
+    }
+
+    return colorArray[colorArray.length - 1].color;
+  }
+}
+
+// 获取地址栏参数
+function getUrlParam(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) return decodeURIComponent(r[2]);
+  return null;
+}
+
+// 根据某个字段排序
+function orderBy(list, key) {
+  return list.sort(function (a, b) {return a[key] - b[key];});
+}
+
+/***/ }),
 /* 333 */,
 /* 334 */,
 /* 335 */,
@@ -23596,7 +23890,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 349 */,
 /* 350 */,
 /* 351 */,
-/* 352 */
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \**********************************************************************************************************/
@@ -23819,7 +24120,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 353 */
+/* 360 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/props.js ***!
   \**********************************************************************************************************/
@@ -23916,14 +24217,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-line/props.js ***!
   \**********************************************************************************************************/
@@ -23964,13 +24265,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
 /* 369 */,
 /* 370 */,
 /* 371 */,
@@ -23978,7 +24272,19 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 373 */,
 /* 374 */,
 /* 375 */,
-/* 376 */
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */
 /*!**********************************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \**********************************************************************************************************************************/

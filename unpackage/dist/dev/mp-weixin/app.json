@@ -44,9 +44,7 @@
     ]
   },
   "usingComponents": {
-    "van-area": "wxcomponents/vant/area/index",
-    "van-toast": "wxcomponents/vant/toast/index",
-    "van-field": "wxcomponents/vant/field/index"
+    "van-area": "wxcomponents/vant/area/index"
   },
   "sitemapLocation": "sitemap.json"
 }
