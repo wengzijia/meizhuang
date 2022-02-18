@@ -243,9 +243,9 @@
 				console.log('1',this.brokerageType)
 				this.brokeragePrice = 100 // 佣金金额
 				this.gallery = result.goods[0].gallery
+				// img 下面会有空白(空行)   解决办法 转换为块
 				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
-					'<img style="width:100%;height:100%"')
-				this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<p>/g,'<p style="display: flex;flex-direction: column;">')
+					'<img style="display:block;width:100%;height:100%"')
 				this.stock = result.goods[0].sku_list[0].stock
 				this.spec_list = result.goods[0].spec_list[0]
 				result.goods[0].sku_list.forEach(item => {
