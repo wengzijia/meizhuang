@@ -2,13 +2,57 @@ const request = require('./request.js')
 
 // 自动登录 (用来获取token)
 
-export function autologin(wxCode){
-	return request({
+export  async  function  autologin(wxCode,auto=false){
+		let {result} =await request({
 		url:`https://zlwh.jinghuanqiu.com/wxlogin`,
 		method: 'POST',
 		data:wxCode
 		
 	})
+	console.log(result)
+	wx.setStorageSync('token',result.token)
+		uni.setStorageSync('token',result.token)
+	    wx.setStorageSync("userInfo",JSON.stringify(result.userInfo) )
+		
+		if(auto){
+			return
+		}
+		
+			console.log( result.userInfo.nickname)
+		if( !result.userInfo.nickname){
+				console.log("第一次登录")
+			// wx.getSetting({
+				// success(e){
+					// console.log(e.authSetting.scope.userInfo)
+					// if(!e.authSetting.scope.userInfo){
+					wx.getUserProfile({
+						desc:"获取昵称等基本信息",
+						async success(res){
+							console.log(res)
+							let {code} = await newlogin(res)
+							if(code == 20000){
+								
+								// wx.setStorageSync("token",_this.token)
+								// wx.setStorageSync("userInfo",_this.userInfo)
+							}
+							
+						}
+					})
+					
+					
+					
+					
+				// }
+				// }
+			// })
+			
+			
+// 		
+	
+		}
+		
+		
+	
 }
 
 // 第一次登录 (录入用户基本信息)

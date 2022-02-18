@@ -31,27 +31,52 @@
 			};
 		},
 		methods:{
+		
 			// 第一次登录点击的按钮(为了录入用户的基本信息)
 			newloginBtn(){
-				let _this = this;
-				
-				// 获取用户基本信息
 				wx.getUserProfile({
-					desc:"有用的",
+					desc:"获取昵称等基本信息",
 					async success(res){
-						
-						let {code} = await newlogin(res,_this.token)
+						console.log(res)
+						let {code} = await newlogin(res)
 						if(code == 20000){
-							wx.setStorageSync("token",_this.token)
-							wx.setStorageSync("userInfo",_this.userInfo)
-							_this.$refs["toast"].open({
-							          message: "登录成功",
-									  position: "middle",
-							        });
+
+							
+						wx.login({
+							async success(res){
+								// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+								delete res.clientInfo	
+								if(res.code){
+									// 登录获取token
+									autologin(res,true)
+						
+								}
+								
+								
+							}
+						})
+
 						}
 						
 					}
 				})
+				wx.login({
+				async success(res){
+					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+					delete res.clientInfo	
+					if(res.code){
+						// 登录获取token
+						autologin(res,true)
+
+						
+					}
+		
+					
+				}
+			})
+		
+			
+		
 				 
 				
 			},
@@ -71,11 +96,15 @@
 			let message = await logincheck()
 			this.token = message.token
 			this.userInfo = message.userInfo
-			
 		},
 
+
+				}
+			
 		
-	}
+
+		
+	
 </script>
 
 <style lang="scss">
