@@ -1,9 +1,0 @@
-{
-  "navigationStyle": "custom",
-  "navigationBarTitleText": "商品详情",
-  "usingComponents": {
-    "uni-popup": "/uni_modules/uni-popup/components/uni-popup/uni-popup",
-    "uni-rate": "/uni_modules/uni-rate/components/uni-rate/uni-rate",
-    "vk-data-goods-sku-popup": "/uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup"
-  }
-}
