@@ -25,7 +25,7 @@
 		  
 		  
 		  <view class="addressBtn">
-		  
+		  <cl-select-region v-model="val"></cl-select-region>
 		  <van-field
 		  	label="地区"
 		    placeholder="选择省/市/区"
@@ -59,7 +59,6 @@
 		<!-- 选择省市区 -->
 		<view class="areaList">
 
-		<van-area :area-list="areaList" v-if="areaListShow" @confirm="queren" @cancel="areaListShow = false"/>
 		</view>
 		
 		
@@ -67,7 +66,8 @@
 </template>
 
 <script>
-		import { areaList } from 'wxcomponents/vant/area-data';
+	
+		
 		export default {
 			
 			data(){
@@ -77,8 +77,8 @@
 						diquData: '',
 						detailed: '',
 						
-						areaList,
-						areaListShow: false,
+						// areaList,
+						// areaListShow: false,
 				}
 			},
 			methods:{
