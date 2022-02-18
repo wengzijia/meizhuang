@@ -406,6 +406,7 @@ var that;var _default =
                 _this.gallery = result.goods[0].gallery;
                 _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
                 '<img style="width:100%;height:100%"');
+                _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<p>/g, '<p style="display: flex;flex-direction: column;">');
                 _this.stock = result.goods[0].sku_list[0].stock;
                 _this.spec_list = result.goods[0].spec_list[0];
                 result.goods[0].sku_list.forEach(function (item) {
@@ -413,7 +414,7 @@ var that;var _default =
                   _this.skuData.push(item);
                   return item;
                 });
-                _this.sku_list = result.goods[0].sku_list;case 15:case "end":return _context.stop();}}}, _callee);}))();
+                _this.sku_list = result.goods[0].sku_list;case 16:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 初始化
     init: function init() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
