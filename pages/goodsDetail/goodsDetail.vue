@@ -362,6 +362,7 @@
 			// 立即购买
 			buyNow(selectShop) {
 				console.log("监听 - 立即购买");
+				console.log(selectShop)
 				// that.addCartFn({
 				// 	selectShop: selectShop,
 				// 	success: function(res) {

@@ -404,9 +404,9 @@ var that;var _default =
                 console.log('1', _this.brokerageType);
                 _this.brokeragePrice = 100; // 佣金金额
                 _this.gallery = result.goods[0].gallery;
+                // img 下面会有空白(空行)   解决办法 转换为块
                 _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<img/g,
-                '<img style="width:100%;height:100%"');
-                _this.detail = result.goods[0].detail = result.goods[0].detail.replace(/<p>/g, '<p style="display: flex;flex-direction: column;">');
+                '<img style="display:block;width:100%;height:100%"');
                 _this.stock = result.goods[0].sku_list[0].stock;
                 _this.spec_list = result.goods[0].spec_list[0];
                 result.goods[0].sku_list.forEach(function (item) {
@@ -414,7 +414,7 @@ var that;var _default =
                   _this.skuData.push(item);
                   return item;
                 });
-                _this.sku_list = result.goods[0].sku_list;case 16:case "end":return _context.stop();}}}, _callee);}))();
+                _this.sku_list = result.goods[0].sku_list;case 15:case "end":return _context.stop();}}}, _callee);}))();
     },
     // 初始化
     init: function init() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -523,6 +523,7 @@ var that;var _default =
     // 立即购买
     buyNow: function buyNow(selectShop) {
       console.log("监听 - 立即购买");
+      console.log(selectShop);
       // that.addCartFn({
       // 	selectShop: selectShop,
       // 	success: function(res) {
