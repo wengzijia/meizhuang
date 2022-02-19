@@ -1,15 +1,9 @@
 {
 	"easycom": {
-		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue",
-		"autoscan": true,
-			"custom": {
-	            "cl-(.*)": "cl-uni/components/cl-$1/cl-$1.vue"
-			}
-	},
 
-	
-	"pages": [ 
-		//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	},
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/home/home",
 			"style": {
@@ -72,7 +66,7 @@
 		{
 			"path": "pages/login/h5login",
 			"style": {
-				"navigationBarTitleText": "登录",
+				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -172,7 +166,9 @@
 		"backgroundColor": "#F8F8F8",
 		"usingComponents": {
 			// #ifdef MP-WEIXIN
-			"van-area": "wxcomponents/vant/area/index"
+			"van-area": "wxcomponents/vant/area/index",
+			"van-toast": "wxcomponents/vant/toast/index",
+			"van-field": "wxcomponents/vant/field/index"
 			// #endif
 		}
 

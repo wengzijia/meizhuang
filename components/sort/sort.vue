@@ -33,7 +33,7 @@
 .content {
 	width: 100rpx;
 	height: 200rpx;
-	margin-left: 40rpx;
+	margin-left: 22rpx;
 	.imgWpar {
 		text-align: center;
 		width: 100rpx;

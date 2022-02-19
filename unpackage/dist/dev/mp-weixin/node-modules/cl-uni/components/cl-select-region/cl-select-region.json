@@ -1,6 +1,0 @@
-{
-  "usingComponents": {
-    "cl-select": "/node-modules/cl-uni/components/cl-select/cl-select"
-  },
-  "component": true
-}

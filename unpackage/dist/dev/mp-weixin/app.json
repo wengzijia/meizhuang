@@ -1,54 +1,56 @@
 {
-    "pages": [
-        "pages/home/home",
-        "pages/sort/sort",
-        "pages/shopCar/car",
-        "pages/user/user",
-        "pages/search/index",
-        "pages/search/classification",
-        "pages/address/addressSubmit",
-        "pages/address/addressList",
-        "pages/login/h5login",
-        "pages/login/login",
-        "pages/goodsDetail/goodsDetail",
-        "pages/orderpage/orderpage",
-        "pages/ordedetli/ordedetli",
-        "pages/payresult/payresult",
-        "pages/confirmorder/confirmorder"
-    ],
-    "subPackages": [],
-    "window": {
-        "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "uni-app",
-        "navigationBarBackgroundColor": "#F8F8F8",
-        "backgroundColor": "#F8F8F8"
-    },
-    "tabBar": {
-        "list": [
-            {
-                "pagePath": "pages/home/home",
-                "iconPath": "static/tabbar/index.png",
-                "selectedIconPath": "static/tabbar/index-select.png"
-            },
-            {
-                "pagePath": "pages/sort/sort",
-                "iconPath": "static/tabbar/classification.png",
-                "selectedIconPath": "static/tabbar/classification-select.png"
-            },
-            {
-                "pagePath": "pages/shopCar/car",
-                "iconPath": "static/tabbar/shoppingCart.png",
-                "selectedIconPath": "static/tabbar/shoppingCart-select.png"
-            },
-            {
-                "pagePath": "pages/user/user",
-                "iconPath": "static/tabbar/my.png",
-                "selectedIconPath": "static/tabbar/my-select.png"
-            }
-        ]
-    },
-    "usingComponents": {
-        "van-area": "wxcomponents/vant/area/index"
-    },
-    "sitemapLocation": "sitemap85.json"
+  "pages": [
+    "pages/home/home",
+    "pages/sort/sort",
+    "pages/shopCar/car",
+    "pages/user/user",
+    "pages/search/index",
+    "pages/search/classification",
+    "pages/address/addressSubmit",
+    "pages/address/addressList",
+    "pages/login/h5login",
+    "pages/login/login",
+    "pages/goodsDetail/goodsDetail",
+    "pages/orderpage/orderpage",
+    "pages/ordedetli/ordedetli",
+    "pages/payresult/payresult",
+    "pages/confirmorder/confirmorder"
+  ],
+  "subPackages": [],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "iconPath": "static/tabbar/index.png",
+        "selectedIconPath": "static/tabbar/index-select.png"
+      },
+      {
+        "pagePath": "pages/sort/sort",
+        "iconPath": "static/tabbar/classification.png",
+        "selectedIconPath": "static/tabbar/classification-select.png"
+      },
+      {
+        "pagePath": "pages/shopCar/car",
+        "iconPath": "static/tabbar/shoppingCart.png",
+        "selectedIconPath": "static/tabbar/shoppingCart-select.png"
+      },
+      {
+        "pagePath": "pages/user/user",
+        "iconPath": "static/tabbar/my.png",
+        "selectedIconPath": "static/tabbar/my-select.png"
+      }
+    ]
+  },
+  "usingComponents": {
+    "van-area": "wxcomponents/vant/area/index",
+    "van-toast": "wxcomponents/vant/toast/index",
+    "van-field": "wxcomponents/vant/field/index"
+  },
+  "sitemapLocation": "sitemap.json"
 }

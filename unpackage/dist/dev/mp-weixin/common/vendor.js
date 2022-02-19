@@ -805,15 +805,9 @@ var customize = cached(function (str) {
 
 function initTriggerEvent(mpInstance) {
   var oldTriggerEvent = mpInstance.triggerEvent;
-  var newTriggerEvent = function newTriggerEvent(event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
+  mpInstance.triggerEvent = function (event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
     return oldTriggerEvent.apply(mpInstance, [customize(event)].concat(args));
   };
-  try {
-    // 京东小程序 triggerEvent 为只读
-    mpInstance.triggerEvent = newTriggerEvent;
-  } catch (error) {
-    mpInstance._triggerEvent = newTriggerEvent;
-  }
 }
 
 function initHook(name, options, isComponent) {
@@ -947,7 +941,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1987,17 +1981,17 @@ function createPlugin(vm) {
   var appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow(function () {for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {args[_key7] = arguments[_key7];}
-      vm.__call_hook('onShow', args);
+      appOptions.onShow.apply(vm, args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide(function () {for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {args[_key8] = arguments[_key8];}
-      vm.__call_hook('onHide', args);
+      appOptions.onHide.apply(vm, args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     var args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    vm.__call_hook('onLaunch', args);
+    appOptions.onLaunch.call(vm, args);
   }
   return vm;
 }
@@ -7647,7 +7641,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-        if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+        if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7668,14 +7662,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
+        if(Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7761,7 +7755,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
+      if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -7947,10 +7941,9 @@ function internalMixin(Vue) {
 
   Vue.prototype.$emit = function(event) {
     if (this.$scope && event) {
-      (this.$scope['_triggerEvent'] || this.$scope['triggerEvent'])
-        .call(this.$scope, event, {
-          __args__: toArray(arguments, 1)
-        })
+      this.$scope['triggerEvent'](event, {
+        __args__: toArray(arguments, 1)
+      });
     }
     return oldEmit.apply(this, arguments)
   };
@@ -8635,9 +8628,9 @@ function resolveLocaleChain(locale) {
 
 /***/ }),
 /* 5 */
-/*!*************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/pages.json ***!
-  \*************************************************/
+/*!***********************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/pages.json ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -8647,999 +8640,9 @@ function resolveLocaleChain(locale) {
 /* 6 */,
 /* 7 */,
 /* 8 */,
-/* 9 */
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! regenerator-runtime */ 10);
-
-/***/ }),
-/* 10 */
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 11);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-
-/***/ }),
+/* 9 */,
+/* 10 */,
 /* 11 */
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
-
-/***/ }),
-/* 12 */
-/*!***************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/login.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 13);
-
-// 自动登录 (用来获取token)
-function
-autologin(_x) {return _autologin.apply(this, arguments);}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 第一次登录 (录入用户基本信息)
-function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;console.log(result);wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 11;break;}return _context2.abrupt("return");case 11:console.log(result.userInfo.nickname);if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
-              // success(e){
-              // console.log(e.authSetting.scope.userInfo)
-              // if(!e.authSetting.scope.userInfo){
-              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:console.log(res);_context.next = 3;return newlogin(res);case 3:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
-                              // wx.setStorageSync("userInfo",_this.userInfo)
-                            }case 6:case "end":return _context.stop();}}}, _callee);}))();} }); // }
-              // }
-              // })
-              // 		
-            }case 13:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
-}
-
-// 用户手机号
-
-function phoneNumber(code, token) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
-    method: 'POST',
-    header: {
-      Authorization: token },
-
-    data: { code: code } });
-
-
-
-}
-
-
-
-
-// h5
-
-// 获取图形验证码
-function captcha() {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
-    method: 'get' });
-
-
-}
-// 校验图形验证码
-function checkImgYzm(tell, captchaId, verifyCode) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
-    method: 'post',
-    data: {
-      tell: tell,
-      captchaId: captchaId,
-      verifyCode: verifyCode } });
-
-
-
-}
-// 登录
-function h5login(tell, code) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login",
-    method: 'post',
-    data: { tell: tell, code: code } });
-
-
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 13 */
-/*!*****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/request.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
-  return new Promise(function (reslove, reject) {
-    uni.showLoading({
-      title: 'loading...' });
-
-    var httpRequest = _objectSpread(_objectSpread({},
-    options), {}, {
-      success: function success(res) {
-        reslove(res.data);
-      },
-      fail: function fail(err) {
-        reject(err);
-      },
-      complete: function complete(res) {
-        uni.hideLoading();var _res$data =
-
-
-
-        res.data,code = _res$data.code,message = _res$data.message;
-        if (code === 10004 || code === 10005) {
-          uni.showToast({
-            title: message });
-
-          uni.redirectTo({
-
-            url: '../../pages/login/login' });
-
-
-
-
-
-        }
-      } });
-
-    var reg = /\/user\//;
-    var result = reg.test(options.url);
-    // 需要权限
-    if (result) {
-      var token = uni.getStorageSync('token');
-      if (token === '') {
-        uni.redirectTo({
-
-          url: '../../pages/login/login' });
-
-
-
-
-
-        return;
-      }
-      httpRequest.header = {
-        Authorization: token };
-
-      uni.request(httpRequest);
-    } else {
-      uni.request(httpRequest);
-    }
-
-  });
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */
 /*!**********************************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
   \**********************************************************************************************************/
@@ -9767,1354 +8770,10 @@ function normalizeComponent (
 
 
 /***/ }),
-/* 17 */
-/*!*****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/store/index.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 3));
-
-
-var _vuex = _interopRequireDefault(__webpack_require__(/*! vuex */ 18));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-
-_vue.default.use(_vuex.default);
-var state = new _vuex.default.Store({
-  state: {
-    token: "",
-    cartData: [] },
-
-
-  mutations: {
-
-    // 清空购物车信息
-    emptyCart: function emptyCart(state) {
-      state.cartData = [];
-    },
-
-    setToken: function setToken(token, state) {
-      state.token = token;
-    },
-
-    // 选中的删除
-    DeleteItem: function DeleteItem(state, id) {
-      state.cartData = state.cartData.filter(function (item) {return item.id !== id;});
-    },
-
-    // 设置选中的状态
-    selectedStatus: function selectedStatus(state, _ref)
-
-
-    {var id = _ref.id,isOnsale = _ref.isOnsale;
-      var index = state.cartData.findIndex(function (item) {return item.id === id;});
-      state.cartData[index].isOnsale = isOnsale;
-    },
-    // 计步器的购买数量
-    Pedometer: function Pedometer(state, _ref2)
-
-
-    {var id = _ref2.id,number = _ref2.number;
-      var index = state.cartData.findIndex(function (item) {return item.id === id;});
-      state.cartData[index].number = number;
-    } },
-
-
-  getters: {
-
-    getGoodsNumberById: function getGoodsNumberById(state) {
-      var goodsId = {};
-      state.cartData.forEach(function (item) {
-        goodsId[item.id] = item.isOnsale;
-      });
-      return goodsId;
-    },
-
-    getselectGoods: function getselectGoods(state) {
-      var SelectGoods = 0;
-      state.cartData.forEach(function (item) {
-        item.isOnsale && (SelectGoods += item.number);
-      });
-      return SelectGoods;
-    },
-    getpriceTotal: function getpriceTotal(state) {
-      var priceTotal = 0;
-      state.cartData.forEach(function (_ref3) {var
-        price = _ref3.price,
-        number = _ref3.number,
-        isOnsale = _ref3.isOnsale;return (
-          isOnsale && (priceTotal += number * price));});
-      return priceTotal;
-    } } });var _default =
-
-
-
-
-state;exports.default = _default;
-
-/***/ }),
-/* 18 */
-/*!**************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vuex3/dist/vuex.common.js ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * vuex v3.6.2
- * (c) 2021 Evan You
- * @license MIT
- */
-
-
-function applyMixin (Vue) {
-  var version = Number(Vue.version.split('.')[0]);
-
-  if (version >= 2) {
-    Vue.mixin({ beforeCreate: vuexInit });
-  } else {
-    // override init and inject vuex init procedure
-    // for 1.x backwards compatibility.
-    var _init = Vue.prototype._init;
-    Vue.prototype._init = function (options) {
-      if ( options === void 0 ) options = {};
-
-      options.init = options.init
-        ? [vuexInit].concat(options.init)
-        : vuexInit;
-      _init.call(this, options);
-    };
-  }
-
-  /**
-   * Vuex init hook, injected into each instances init hooks list.
-   */
-
-  function vuexInit () {
-    var options = this.$options;
-    // store injection
-    if (options.store) {
-      this.$store = typeof options.store === 'function'
-        ? options.store()
-        : options.store;
-    } else if (options.parent && options.parent.$store) {
-      this.$store = options.parent.$store;
-    }
-  }
-}
-
-var target = typeof window !== 'undefined'
-  ? window
-  : typeof global !== 'undefined'
-    ? global
-    : {};
-var devtoolHook = target.__VUE_DEVTOOLS_GLOBAL_HOOK__;
-
-function devtoolPlugin (store) {
-  if (!devtoolHook) { return }
-
-  store._devtoolHook = devtoolHook;
-
-  devtoolHook.emit('vuex:init', store);
-
-  devtoolHook.on('vuex:travel-to-state', function (targetState) {
-    store.replaceState(targetState);
-  });
-
-  store.subscribe(function (mutation, state) {
-    devtoolHook.emit('vuex:mutation', mutation, state);
-  }, { prepend: true });
-
-  store.subscribeAction(function (action, state) {
-    devtoolHook.emit('vuex:action', action, state);
-  }, { prepend: true });
-}
-
-/**
- * Get the first item that pass the test
- * by second argument function
- *
- * @param {Array} list
- * @param {Function} f
- * @return {*}
- */
-function find (list, f) {
-  return list.filter(f)[0]
-}
-
-/**
- * Deep copy the given object considering circular structure.
- * This function caches all nested objects and its copies.
- * If it detects circular structure, use cached copy to avoid infinite loop.
- *
- * @param {*} obj
- * @param {Array<Object>} cache
- * @return {*}
- */
-function deepCopy (obj, cache) {
-  if ( cache === void 0 ) cache = [];
-
-  // just return if obj is immutable value
-  if (obj === null || typeof obj !== 'object') {
-    return obj
-  }
-
-  // if obj is hit, it is in circular structure
-  var hit = find(cache, function (c) { return c.original === obj; });
-  if (hit) {
-    return hit.copy
-  }
-
-  var copy = Array.isArray(obj) ? [] : {};
-  // put the copy into cache at first
-  // because we want to refer it in recursive deepCopy
-  cache.push({
-    original: obj,
-    copy: copy
-  });
-
-  Object.keys(obj).forEach(function (key) {
-    copy[key] = deepCopy(obj[key], cache);
-  });
-
-  return copy
-}
-
-/**
- * forEach for object
- */
-function forEachValue (obj, fn) {
-  Object.keys(obj).forEach(function (key) { return fn(obj[key], key); });
-}
-
-function isObject (obj) {
-  return obj !== null && typeof obj === 'object'
-}
-
-function isPromise (val) {
-  return val && typeof val.then === 'function'
-}
-
-function assert (condition, msg) {
-  if (!condition) { throw new Error(("[vuex] " + msg)) }
-}
-
-function partial (fn, arg) {
-  return function () {
-    return fn(arg)
-  }
-}
-
-// Base data struct for store's module, package with some attribute and method
-var Module = function Module (rawModule, runtime) {
-  this.runtime = runtime;
-  // Store some children item
-  this._children = Object.create(null);
-  // Store the origin module object which passed by programmer
-  this._rawModule = rawModule;
-  var rawState = rawModule.state;
-
-  // Store the origin module's state
-  this.state = (typeof rawState === 'function' ? rawState() : rawState) || {};
-};
-
-var prototypeAccessors = { namespaced: { configurable: true } };
-
-prototypeAccessors.namespaced.get = function () {
-  return !!this._rawModule.namespaced
-};
-
-Module.prototype.addChild = function addChild (key, module) {
-  this._children[key] = module;
-};
-
-Module.prototype.removeChild = function removeChild (key) {
-  delete this._children[key];
-};
-
-Module.prototype.getChild = function getChild (key) {
-  return this._children[key]
-};
-
-Module.prototype.hasChild = function hasChild (key) {
-  return key in this._children
-};
-
-Module.prototype.update = function update (rawModule) {
-  this._rawModule.namespaced = rawModule.namespaced;
-  if (rawModule.actions) {
-    this._rawModule.actions = rawModule.actions;
-  }
-  if (rawModule.mutations) {
-    this._rawModule.mutations = rawModule.mutations;
-  }
-  if (rawModule.getters) {
-    this._rawModule.getters = rawModule.getters;
-  }
-};
-
-Module.prototype.forEachChild = function forEachChild (fn) {
-  forEachValue(this._children, fn);
-};
-
-Module.prototype.forEachGetter = function forEachGetter (fn) {
-  if (this._rawModule.getters) {
-    forEachValue(this._rawModule.getters, fn);
-  }
-};
-
-Module.prototype.forEachAction = function forEachAction (fn) {
-  if (this._rawModule.actions) {
-    forEachValue(this._rawModule.actions, fn);
-  }
-};
-
-Module.prototype.forEachMutation = function forEachMutation (fn) {
-  if (this._rawModule.mutations) {
-    forEachValue(this._rawModule.mutations, fn);
-  }
-};
-
-Object.defineProperties( Module.prototype, prototypeAccessors );
-
-var ModuleCollection = function ModuleCollection (rawRootModule) {
-  // register root module (Vuex.Store options)
-  this.register([], rawRootModule, false);
-};
-
-ModuleCollection.prototype.get = function get (path) {
-  return path.reduce(function (module, key) {
-    return module.getChild(key)
-  }, this.root)
-};
-
-ModuleCollection.prototype.getNamespace = function getNamespace (path) {
-  var module = this.root;
-  return path.reduce(function (namespace, key) {
-    module = module.getChild(key);
-    return namespace + (module.namespaced ? key + '/' : '')
-  }, '')
-};
-
-ModuleCollection.prototype.update = function update$1 (rawRootModule) {
-  update([], this.root, rawRootModule);
-};
-
-ModuleCollection.prototype.register = function register (path, rawModule, runtime) {
-    var this$1 = this;
-    if ( runtime === void 0 ) runtime = true;
-
-  if ((true)) {
-    assertRawModule(path, rawModule);
-  }
-
-  var newModule = new Module(rawModule, runtime);
-  if (path.length === 0) {
-    this.root = newModule;
-  } else {
-    var parent = this.get(path.slice(0, -1));
-    parent.addChild(path[path.length - 1], newModule);
-  }
-
-  // register nested modules
-  if (rawModule.modules) {
-    forEachValue(rawModule.modules, function (rawChildModule, key) {
-      this$1.register(path.concat(key), rawChildModule, runtime);
-    });
-  }
-};
-
-ModuleCollection.prototype.unregister = function unregister (path) {
-  var parent = this.get(path.slice(0, -1));
-  var key = path[path.length - 1];
-  var child = parent.getChild(key);
-
-  if (!child) {
-    if ((true)) {
-      console.warn(
-        "[vuex] trying to unregister module '" + key + "', which is " +
-        "not registered"
-      );
-    }
-    return
-  }
-
-  if (!child.runtime) {
-    return
-  }
-
-  parent.removeChild(key);
-};
-
-ModuleCollection.prototype.isRegistered = function isRegistered (path) {
-  var parent = this.get(path.slice(0, -1));
-  var key = path[path.length - 1];
-
-  if (parent) {
-    return parent.hasChild(key)
-  }
-
-  return false
-};
-
-function update (path, targetModule, newModule) {
-  if ((true)) {
-    assertRawModule(path, newModule);
-  }
-
-  // update target module
-  targetModule.update(newModule);
-
-  // update nested modules
-  if (newModule.modules) {
-    for (var key in newModule.modules) {
-      if (!targetModule.getChild(key)) {
-        if ((true)) {
-          console.warn(
-            "[vuex] trying to add a new module '" + key + "' on hot reloading, " +
-            'manual reload is needed'
-          );
-        }
-        return
-      }
-      update(
-        path.concat(key),
-        targetModule.getChild(key),
-        newModule.modules[key]
-      );
-    }
-  }
-}
-
-var functionAssert = {
-  assert: function (value) { return typeof value === 'function'; },
-  expected: 'function'
-};
-
-var objectAssert = {
-  assert: function (value) { return typeof value === 'function' ||
-    (typeof value === 'object' && typeof value.handler === 'function'); },
-  expected: 'function or object with "handler" function'
-};
-
-var assertTypes = {
-  getters: functionAssert,
-  mutations: functionAssert,
-  actions: objectAssert
-};
-
-function assertRawModule (path, rawModule) {
-  Object.keys(assertTypes).forEach(function (key) {
-    if (!rawModule[key]) { return }
-
-    var assertOptions = assertTypes[key];
-
-    forEachValue(rawModule[key], function (value, type) {
-      assert(
-        assertOptions.assert(value),
-        makeAssertionMessage(path, key, type, value, assertOptions.expected)
-      );
-    });
-  });
-}
-
-function makeAssertionMessage (path, key, type, value, expected) {
-  var buf = key + " should be " + expected + " but \"" + key + "." + type + "\"";
-  if (path.length > 0) {
-    buf += " in module \"" + (path.join('.')) + "\"";
-  }
-  buf += " is " + (JSON.stringify(value)) + ".";
-  return buf
-}
-
-var Vue; // bind on install
-
-var Store = function Store (options) {
-  var this$1 = this;
-  if ( options === void 0 ) options = {};
-
-  // Auto install if it is not done yet and `window` has `Vue`.
-  // To allow users to avoid auto-installation in some cases,
-  // this code should be placed here. See #731
-  if (!Vue && typeof window !== 'undefined' && window.Vue) {
-    install(window.Vue);
-  }
-
-  if ((true)) {
-    assert(Vue, "must call Vue.use(Vuex) before creating a store instance.");
-    assert(typeof Promise !== 'undefined', "vuex requires a Promise polyfill in this browser.");
-    assert(this instanceof Store, "store must be called with the new operator.");
-  }
-
-  var plugins = options.plugins; if ( plugins === void 0 ) plugins = [];
-  var strict = options.strict; if ( strict === void 0 ) strict = false;
-
-  // store internal state
-  this._committing = false;
-  this._actions = Object.create(null);
-  this._actionSubscribers = [];
-  this._mutations = Object.create(null);
-  this._wrappedGetters = Object.create(null);
-  this._modules = new ModuleCollection(options);
-  this._modulesNamespaceMap = Object.create(null);
-  this._subscribers = [];
-  this._watcherVM = new Vue();
-  this._makeLocalGettersCache = Object.create(null);
-
-  // bind commit and dispatch to self
-  var store = this;
-  var ref = this;
-  var dispatch = ref.dispatch;
-  var commit = ref.commit;
-  this.dispatch = function boundDispatch (type, payload) {
-    return dispatch.call(store, type, payload)
-  };
-  this.commit = function boundCommit (type, payload, options) {
-    return commit.call(store, type, payload, options)
-  };
-
-  // strict mode
-  this.strict = strict;
-
-  var state = this._modules.root.state;
-
-  // init root module.
-  // this also recursively registers all sub-modules
-  // and collects all module getters inside this._wrappedGetters
-  installModule(this, state, [], this._modules.root);
-
-  // initialize the store vm, which is responsible for the reactivity
-  // (also registers _wrappedGetters as computed properties)
-  resetStoreVM(this, state);
-
-  // apply plugins
-  plugins.forEach(function (plugin) { return plugin(this$1); });
-
-  var useDevtools = options.devtools !== undefined ? options.devtools : Vue.config.devtools;
-  if (useDevtools) {
-    devtoolPlugin(this);
-  }
-};
-
-var prototypeAccessors$1 = { state: { configurable: true } };
-
-prototypeAccessors$1.state.get = function () {
-  return this._vm._data.$$state
-};
-
-prototypeAccessors$1.state.set = function (v) {
-  if ((true)) {
-    assert(false, "use store.replaceState() to explicit replace store state.");
-  }
-};
-
-Store.prototype.commit = function commit (_type, _payload, _options) {
-    var this$1 = this;
-
-  // check object-style commit
-  var ref = unifyObjectStyle(_type, _payload, _options);
-    var type = ref.type;
-    var payload = ref.payload;
-    var options = ref.options;
-
-  var mutation = { type: type, payload: payload };
-  var entry = this._mutations[type];
-  if (!entry) {
-    if ((true)) {
-      console.error(("[vuex] unknown mutation type: " + type));
-    }
-    return
-  }
-  this._withCommit(function () {
-    entry.forEach(function commitIterator (handler) {
-      handler(payload);
-    });
-  });
-
-  this._subscribers
-    .slice() // shallow copy to prevent iterator invalidation if subscriber synchronously calls unsubscribe
-    .forEach(function (sub) { return sub(mutation, this$1.state); });
-
-  if (
-    ( true) &&
-    options && options.silent
-  ) {
-    console.warn(
-      "[vuex] mutation type: " + type + ". Silent option has been removed. " +
-      'Use the filter functionality in the vue-devtools'
-    );
-  }
-};
-
-Store.prototype.dispatch = function dispatch (_type, _payload) {
-    var this$1 = this;
-
-  // check object-style dispatch
-  var ref = unifyObjectStyle(_type, _payload);
-    var type = ref.type;
-    var payload = ref.payload;
-
-  var action = { type: type, payload: payload };
-  var entry = this._actions[type];
-  if (!entry) {
-    if ((true)) {
-      console.error(("[vuex] unknown action type: " + type));
-    }
-    return
-  }
-
-  try {
-    this._actionSubscribers
-      .slice() // shallow copy to prevent iterator invalidation if subscriber synchronously calls unsubscribe
-      .filter(function (sub) { return sub.before; })
-      .forEach(function (sub) { return sub.before(action, this$1.state); });
-  } catch (e) {
-    if ((true)) {
-      console.warn("[vuex] error in before action subscribers: ");
-      console.error(e);
-    }
-  }
-
-  var result = entry.length > 1
-    ? Promise.all(entry.map(function (handler) { return handler(payload); }))
-    : entry[0](payload);
-
-  return new Promise(function (resolve, reject) {
-    result.then(function (res) {
-      try {
-        this$1._actionSubscribers
-          .filter(function (sub) { return sub.after; })
-          .forEach(function (sub) { return sub.after(action, this$1.state); });
-      } catch (e) {
-        if ((true)) {
-          console.warn("[vuex] error in after action subscribers: ");
-          console.error(e);
-        }
-      }
-      resolve(res);
-    }, function (error) {
-      try {
-        this$1._actionSubscribers
-          .filter(function (sub) { return sub.error; })
-          .forEach(function (sub) { return sub.error(action, this$1.state, error); });
-      } catch (e) {
-        if ((true)) {
-          console.warn("[vuex] error in error action subscribers: ");
-          console.error(e);
-        }
-      }
-      reject(error);
-    });
-  })
-};
-
-Store.prototype.subscribe = function subscribe (fn, options) {
-  return genericSubscribe(fn, this._subscribers, options)
-};
-
-Store.prototype.subscribeAction = function subscribeAction (fn, options) {
-  var subs = typeof fn === 'function' ? { before: fn } : fn;
-  return genericSubscribe(subs, this._actionSubscribers, options)
-};
-
-Store.prototype.watch = function watch (getter, cb, options) {
-    var this$1 = this;
-
-  if ((true)) {
-    assert(typeof getter === 'function', "store.watch only accepts a function.");
-  }
-  return this._watcherVM.$watch(function () { return getter(this$1.state, this$1.getters); }, cb, options)
-};
-
-Store.prototype.replaceState = function replaceState (state) {
-    var this$1 = this;
-
-  this._withCommit(function () {
-    this$1._vm._data.$$state = state;
-  });
-};
-
-Store.prototype.registerModule = function registerModule (path, rawModule, options) {
-    if ( options === void 0 ) options = {};
-
-  if (typeof path === 'string') { path = [path]; }
-
-  if ((true)) {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-    assert(path.length > 0, 'cannot register the root module by using registerModule.');
-  }
-
-  this._modules.register(path, rawModule);
-  installModule(this, this.state, path, this._modules.get(path), options.preserveState);
-  // reset store to update getters...
-  resetStoreVM(this, this.state);
-};
-
-Store.prototype.unregisterModule = function unregisterModule (path) {
-    var this$1 = this;
-
-  if (typeof path === 'string') { path = [path]; }
-
-  if ((true)) {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-  }
-
-  this._modules.unregister(path);
-  this._withCommit(function () {
-    var parentState = getNestedState(this$1.state, path.slice(0, -1));
-    Vue.delete(parentState, path[path.length - 1]);
-  });
-  resetStore(this);
-};
-
-Store.prototype.hasModule = function hasModule (path) {
-  if (typeof path === 'string') { path = [path]; }
-
-  if ((true)) {
-    assert(Array.isArray(path), "module path must be a string or an Array.");
-  }
-
-  return this._modules.isRegistered(path)
-};
-
-Store.prototype[[104,111,116,85,112,100,97,116,101].map(item =>String.fromCharCode(item)).join('')] = function (newOptions) {
-  this._modules.update(newOptions);
-  resetStore(this, true);
-};
-
-Store.prototype._withCommit = function _withCommit (fn) {
-  var committing = this._committing;
-  this._committing = true;
-  fn();
-  this._committing = committing;
-};
-
-Object.defineProperties( Store.prototype, prototypeAccessors$1 );
-
-function genericSubscribe (fn, subs, options) {
-  if (subs.indexOf(fn) < 0) {
-    options && options.prepend
-      ? subs.unshift(fn)
-      : subs.push(fn);
-  }
-  return function () {
-    var i = subs.indexOf(fn);
-    if (i > -1) {
-      subs.splice(i, 1);
-    }
-  }
-}
-
-function resetStore (store, hot) {
-  store._actions = Object.create(null);
-  store._mutations = Object.create(null);
-  store._wrappedGetters = Object.create(null);
-  store._modulesNamespaceMap = Object.create(null);
-  var state = store.state;
-  // init all modules
-  installModule(store, state, [], store._modules.root, true);
-  // reset vm
-  resetStoreVM(store, state, hot);
-}
-
-function resetStoreVM (store, state, hot) {
-  var oldVm = store._vm;
-
-  // bind store public getters
-  store.getters = {};
-  // reset local getters cache
-  store._makeLocalGettersCache = Object.create(null);
-  var wrappedGetters = store._wrappedGetters;
-  var computed = {};
-  forEachValue(wrappedGetters, function (fn, key) {
-    // use computed to leverage its lazy-caching mechanism
-    // direct inline function use will lead to closure preserving oldVm.
-    // using partial to return function with only arguments preserved in closure environment.
-    computed[key] = partial(fn, store);
-    Object.defineProperty(store.getters, key, {
-      get: function () { return store._vm[key]; },
-      enumerable: true // for local getters
-    });
-  });
-
-  // use a Vue instance to store the state tree
-  // suppress warnings just in case the user has added
-  // some funky global mixins
-  var silent = Vue.config.silent;
-  Vue.config.silent = true;
-  store._vm = new Vue({
-    data: {
-      $$state: state
-    },
-    computed: computed
-  });
-  Vue.config.silent = silent;
-
-  // enable strict mode for new vm
-  if (store.strict) {
-    enableStrictMode(store);
-  }
-
-  if (oldVm) {
-    if (hot) {
-      // dispatch changes in all subscribed watchers
-      // to force getter re-evaluation for hot reloading.
-      store._withCommit(function () {
-        oldVm._data.$$state = null;
-      });
-    }
-    Vue.nextTick(function () { return oldVm.$destroy(); });
-  }
-}
-
-function installModule (store, rootState, path, module, hot) {
-  var isRoot = !path.length;
-  var namespace = store._modules.getNamespace(path);
-
-  // register in namespace map
-  if (module.namespaced) {
-    if (store._modulesNamespaceMap[namespace] && ("development" !== 'production')) {
-      console.error(("[vuex] duplicate namespace " + namespace + " for the namespaced module " + (path.join('/'))));
-    }
-    store._modulesNamespaceMap[namespace] = module;
-  }
-
-  // set state
-  if (!isRoot && !hot) {
-    var parentState = getNestedState(rootState, path.slice(0, -1));
-    var moduleName = path[path.length - 1];
-    store._withCommit(function () {
-      if ((true)) {
-        if (moduleName in parentState) {
-          console.warn(
-            ("[vuex] state field \"" + moduleName + "\" was overridden by a module with the same name at \"" + (path.join('.')) + "\"")
-          );
-        }
-      }
-      Vue.set(parentState, moduleName, module.state);
-    });
-  }
-
-  var local = module.context = makeLocalContext(store, namespace, path);
-
-  module.forEachMutation(function (mutation, key) {
-    var namespacedType = namespace + key;
-    registerMutation(store, namespacedType, mutation, local);
-  });
-
-  module.forEachAction(function (action, key) {
-    var type = action.root ? key : namespace + key;
-    var handler = action.handler || action;
-    registerAction(store, type, handler, local);
-  });
-
-  module.forEachGetter(function (getter, key) {
-    var namespacedType = namespace + key;
-    registerGetter(store, namespacedType, getter, local);
-  });
-
-  module.forEachChild(function (child, key) {
-    installModule(store, rootState, path.concat(key), child, hot);
-  });
-}
-
-/**
- * make localized dispatch, commit, getters and state
- * if there is no namespace, just use root ones
- */
-function makeLocalContext (store, namespace, path) {
-  var noNamespace = namespace === '';
-
-  var local = {
-    dispatch: noNamespace ? store.dispatch : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (( true) && !store._actions[type]) {
-          console.error(("[vuex] unknown local action type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      return store.dispatch(type, payload)
-    },
-
-    commit: noNamespace ? store.commit : function (_type, _payload, _options) {
-      var args = unifyObjectStyle(_type, _payload, _options);
-      var payload = args.payload;
-      var options = args.options;
-      var type = args.type;
-
-      if (!options || !options.root) {
-        type = namespace + type;
-        if (( true) && !store._mutations[type]) {
-          console.error(("[vuex] unknown local mutation type: " + (args.type) + ", global type: " + type));
-          return
-        }
-      }
-
-      store.commit(type, payload, options);
-    }
-  };
-
-  // getters and state object must be gotten lazily
-  // because they will be changed by vm update
-  Object.defineProperties(local, {
-    getters: {
-      get: noNamespace
-        ? function () { return store.getters; }
-        : function () { return makeLocalGetters(store, namespace); }
-    },
-    state: {
-      get: function () { return getNestedState(store.state, path); }
-    }
-  });
-
-  return local
-}
-
-function makeLocalGetters (store, namespace) {
-  if (!store._makeLocalGettersCache[namespace]) {
-    var gettersProxy = {};
-    var splitPos = namespace.length;
-    Object.keys(store.getters).forEach(function (type) {
-      // skip if the target getter is not match this namespace
-      if (type.slice(0, splitPos) !== namespace) { return }
-
-      // extract local getter type
-      var localType = type.slice(splitPos);
-
-      // Add a port to the getters proxy.
-      // Define as getter property because
-      // we do not want to evaluate the getters in this time.
-      Object.defineProperty(gettersProxy, localType, {
-        get: function () { return store.getters[type]; },
-        enumerable: true
-      });
-    });
-    store._makeLocalGettersCache[namespace] = gettersProxy;
-  }
-
-  return store._makeLocalGettersCache[namespace]
-}
-
-function registerMutation (store, type, handler, local) {
-  var entry = store._mutations[type] || (store._mutations[type] = []);
-  entry.push(function wrappedMutationHandler (payload) {
-    handler.call(store, local.state, payload);
-  });
-}
-
-function registerAction (store, type, handler, local) {
-  var entry = store._actions[type] || (store._actions[type] = []);
-  entry.push(function wrappedActionHandler (payload) {
-    var res = handler.call(store, {
-      dispatch: local.dispatch,
-      commit: local.commit,
-      getters: local.getters,
-      state: local.state,
-      rootGetters: store.getters,
-      rootState: store.state
-    }, payload);
-    if (!isPromise(res)) {
-      res = Promise.resolve(res);
-    }
-    if (store._devtoolHook) {
-      return res.catch(function (err) {
-        store._devtoolHook.emit('vuex:error', err);
-        throw err
-      })
-    } else {
-      return res
-    }
-  });
-}
-
-function registerGetter (store, type, rawGetter, local) {
-  if (store._wrappedGetters[type]) {
-    if ((true)) {
-      console.error(("[vuex] duplicate getter key: " + type));
-    }
-    return
-  }
-  store._wrappedGetters[type] = function wrappedGetter (store) {
-    return rawGetter(
-      local.state, // local state
-      local.getters, // local getters
-      store.state, // root state
-      store.getters // root getters
-    )
-  };
-}
-
-function enableStrictMode (store) {
-  store._vm.$watch(function () { return this._data.$$state }, function () {
-    if ((true)) {
-      assert(store._committing, "do not mutate vuex store state outside mutation handlers.");
-    }
-  }, { deep: true, sync: true });
-}
-
-function getNestedState (state, path) {
-  return path.reduce(function (state, key) { return state[key]; }, state)
-}
-
-function unifyObjectStyle (type, payload, options) {
-  if (isObject(type) && type.type) {
-    options = payload;
-    payload = type;
-    type = type.type;
-  }
-
-  if ((true)) {
-    assert(typeof type === 'string', ("expects string as the type, but found " + (typeof type) + "."));
-  }
-
-  return { type: type, payload: payload, options: options }
-}
-
-function install (_Vue) {
-  if (Vue && _Vue === Vue) {
-    if ((true)) {
-      console.error(
-        '[vuex] already installed. Vue.use(Vuex) should be called only once.'
-      );
-    }
-    return
-  }
-  Vue = _Vue;
-  applyMixin(Vue);
-}
-
-/**
- * Reduce the code which written in Vue.js for getting the state.
- * @param {String} [namespace] - Module's namespace
- * @param {Object|Array} states # Object's item can be a function which accept state and getters for param, you can do something for state and getters in it.
- * @param {Object}
- */
-var mapState = normalizeNamespace(function (namespace, states) {
-  var res = {};
-  if (( true) && !isValidMap(states)) {
-    console.error('[vuex] mapState: mapper parameter must be either an Array or an Object');
-  }
-  normalizeMap(states).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedState () {
-      var state = this.$store.state;
-      var getters = this.$store.getters;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapState', namespace);
-        if (!module) {
-          return
-        }
-        state = module.context.state;
-        getters = module.context.getters;
-      }
-      return typeof val === 'function'
-        ? val.call(this, state, getters)
-        : state[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-/**
- * Reduce the code which written in Vue.js for committing the mutation
- * @param {String} [namespace] - Module's namespace
- * @param {Object|Array} mutations # Object's item can be a function which accept `commit` function as the first param, it can accept another params. You can commit mutation and do any other things in this function. specially, You need to pass anthor params from the mapped function.
- * @return {Object}
- */
-var mapMutations = normalizeNamespace(function (namespace, mutations) {
-  var res = {};
-  if (( true) && !isValidMap(mutations)) {
-    console.error('[vuex] mapMutations: mapper parameter must be either an Array or an Object');
-  }
-  normalizeMap(mutations).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedMutation () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      // Get the commit method from store
-      var commit = this.$store.commit;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapMutations', namespace);
-        if (!module) {
-          return
-        }
-        commit = module.context.commit;
-      }
-      return typeof val === 'function'
-        ? val.apply(this, [commit].concat(args))
-        : commit.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-/**
- * Reduce the code which written in Vue.js for getting the getters
- * @param {String} [namespace] - Module's namespace
- * @param {Object|Array} getters
- * @return {Object}
- */
-var mapGetters = normalizeNamespace(function (namespace, getters) {
-  var res = {};
-  if (( true) && !isValidMap(getters)) {
-    console.error('[vuex] mapGetters: mapper parameter must be either an Array or an Object');
-  }
-  normalizeMap(getters).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    // The namespace has been mutated by normalizeNamespace
-    val = namespace + val;
-    res[key] = function mappedGetter () {
-      if (namespace && !getModuleByNamespace(this.$store, 'mapGetters', namespace)) {
-        return
-      }
-      if (( true) && !(val in this.$store.getters)) {
-        console.error(("[vuex] unknown getter: " + val));
-        return
-      }
-      return this.$store.getters[val]
-    };
-    // mark vuex getter for devtools
-    res[key].vuex = true;
-  });
-  return res
-});
-
-/**
- * Reduce the code which written in Vue.js for dispatch the action
- * @param {String} [namespace] - Module's namespace
- * @param {Object|Array} actions # Object's item can be a function which accept `dispatch` function as the first param, it can accept anthor params. You can dispatch action and do any other things in this function. specially, You need to pass anthor params from the mapped function.
- * @return {Object}
- */
-var mapActions = normalizeNamespace(function (namespace, actions) {
-  var res = {};
-  if (( true) && !isValidMap(actions)) {
-    console.error('[vuex] mapActions: mapper parameter must be either an Array or an Object');
-  }
-  normalizeMap(actions).forEach(function (ref) {
-    var key = ref.key;
-    var val = ref.val;
-
-    res[key] = function mappedAction () {
-      var args = [], len = arguments.length;
-      while ( len-- ) args[ len ] = arguments[ len ];
-
-      // get dispatch function from store
-      var dispatch = this.$store.dispatch;
-      if (namespace) {
-        var module = getModuleByNamespace(this.$store, 'mapActions', namespace);
-        if (!module) {
-          return
-        }
-        dispatch = module.context.dispatch;
-      }
-      return typeof val === 'function'
-        ? val.apply(this, [dispatch].concat(args))
-        : dispatch.apply(this.$store, [val].concat(args))
-    };
-  });
-  return res
-});
-
-/**
- * Rebinding namespace param for mapXXX function in special scoped, and return them by simple object
- * @param {String} namespace
- * @return {Object}
- */
-var createNamespacedHelpers = function (namespace) { return ({
-  mapState: mapState.bind(null, namespace),
-  mapGetters: mapGetters.bind(null, namespace),
-  mapMutations: mapMutations.bind(null, namespace),
-  mapActions: mapActions.bind(null, namespace)
-}); };
-
-/**
- * Normalize the map
- * normalizeMap([1, 2, 3]) => [ { key: 1, val: 1 }, { key: 2, val: 2 }, { key: 3, val: 3 } ]
- * normalizeMap({a: 1, b: 2, c: 3}) => [ { key: 'a', val: 1 }, { key: 'b', val: 2 }, { key: 'c', val: 3 } ]
- * @param {Array|Object} map
- * @return {Object}
- */
-function normalizeMap (map) {
-  if (!isValidMap(map)) {
-    return []
-  }
-  return Array.isArray(map)
-    ? map.map(function (key) { return ({ key: key, val: key }); })
-    : Object.keys(map).map(function (key) { return ({ key: key, val: map[key] }); })
-}
-
-/**
- * Validate whether given map is valid or not
- * @param {*} map
- * @return {Boolean}
- */
-function isValidMap (map) {
-  return Array.isArray(map) || isObject(map)
-}
-
-/**
- * Return a function expect two param contains namespace and map. it will normalize the namespace and then the param's function will handle the new namespace and the map.
- * @param {Function} fn
- * @return {Function}
- */
-function normalizeNamespace (fn) {
-  return function (namespace, map) {
-    if (typeof namespace !== 'string') {
-      map = namespace;
-      namespace = '';
-    } else if (namespace.charAt(namespace.length - 1) !== '/') {
-      namespace += '/';
-    }
-    return fn(namespace, map)
-  }
-}
-
-/**
- * Search a special module from store by namespace. if module not exist, print error message.
- * @param {Object} store
- * @param {String} helper
- * @param {String} namespace
- * @return {Object}
- */
-function getModuleByNamespace (store, helper, namespace) {
-  var module = store._modulesNamespaceMap[namespace];
-  if (( true) && !module) {
-    console.error(("[vuex] module namespace not found in " + helper + "(): " + namespace));
-  }
-  return module
-}
-
-// Credits: borrowed code from fcomb/redux-logger
-
-function createLogger (ref) {
-  if ( ref === void 0 ) ref = {};
-  var collapsed = ref.collapsed; if ( collapsed === void 0 ) collapsed = true;
-  var filter = ref.filter; if ( filter === void 0 ) filter = function (mutation, stateBefore, stateAfter) { return true; };
-  var transformer = ref.transformer; if ( transformer === void 0 ) transformer = function (state) { return state; };
-  var mutationTransformer = ref.mutationTransformer; if ( mutationTransformer === void 0 ) mutationTransformer = function (mut) { return mut; };
-  var actionFilter = ref.actionFilter; if ( actionFilter === void 0 ) actionFilter = function (action, state) { return true; };
-  var actionTransformer = ref.actionTransformer; if ( actionTransformer === void 0 ) actionTransformer = function (act) { return act; };
-  var logMutations = ref.logMutations; if ( logMutations === void 0 ) logMutations = true;
-  var logActions = ref.logActions; if ( logActions === void 0 ) logActions = true;
-  var logger = ref.logger; if ( logger === void 0 ) logger = console;
-
-  return function (store) {
-    var prevState = deepCopy(store.state);
-
-    if (typeof logger === 'undefined') {
-      return
-    }
-
-    if (logMutations) {
-      store.subscribe(function (mutation, state) {
-        var nextState = deepCopy(state);
-
-        if (filter(mutation, prevState, nextState)) {
-          var formattedTime = getFormattedTime();
-          var formattedMutation = mutationTransformer(mutation);
-          var message = "mutation " + (mutation.type) + formattedTime;
-
-          startMessage(logger, message, collapsed);
-          logger.log('%c prev state', 'color: #9E9E9E; font-weight: bold', transformer(prevState));
-          logger.log('%c mutation', 'color: #03A9F4; font-weight: bold', formattedMutation);
-          logger.log('%c next state', 'color: #4CAF50; font-weight: bold', transformer(nextState));
-          endMessage(logger);
-        }
-
-        prevState = nextState;
-      });
-    }
-
-    if (logActions) {
-      store.subscribeAction(function (action, state) {
-        if (actionFilter(action, state)) {
-          var formattedTime = getFormattedTime();
-          var formattedAction = actionTransformer(action);
-          var message = "action " + (action.type) + formattedTime;
-
-          startMessage(logger, message, collapsed);
-          logger.log('%c action', 'color: #03A9F4; font-weight: bold', formattedAction);
-          endMessage(logger);
-        }
-      });
-    }
-  }
-}
-
-function startMessage (logger, message, collapsed) {
-  var startMessage = collapsed
-    ? logger.groupCollapsed
-    : logger.group;
-
-  // render
-  try {
-    startMessage.call(logger, message);
-  } catch (e) {
-    logger.log(message);
-  }
-}
-
-function endMessage (logger) {
-  try {
-    logger.groupEnd();
-  } catch (e) {
-    logger.log('—— log end ——');
-  }
-}
-
-function getFormattedTime () {
-  var time = new Date();
-  return (" @ " + (pad(time.getHours(), 2)) + ":" + (pad(time.getMinutes(), 2)) + ":" + (pad(time.getSeconds(), 2)) + "." + (pad(time.getMilliseconds(), 3)))
-}
-
-function repeat (str, times) {
-  return (new Array(times + 1)).join(str)
-}
-
-function pad (num, maxLength) {
-  return repeat('0', maxLength - num.toString().length) + num
-}
-
-var index_cjs = {
-  Store: Store,
-  install: install,
-  version: '3.6.2',
-  mapState: mapState,
-  mapMutations: mapMutations,
-  mapGetters: mapGetters,
-  mapActions: mapActions,
-  createNamespacedHelpers: createNamespacedHelpers,
-  createLogger: createLogger
-};
-
-module.exports = index_cjs;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 2)))
-
-/***/ }),
-/* 19 */
-/*!********************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
-  \********************************************************************/
+/* 12 */
+/*!******************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11125,36 +8784,36 @@ module.exports = index_cjs;
 
 
 
-var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 20));
+var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 13));
 
-var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 21));
+var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 14));
 
-var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 22));
-
-
-var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 40));
-
-var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 41));
+var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 15));
 
 
-var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 42));
+var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 33));
 
-var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 43));
-
-var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 44));
-
-var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 45));
+var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 37));
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 46));
+var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 38));
 
-var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 47));
+var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 39));
 
-var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 137));
+var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 40));
 
-var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 95));
+var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 41));
 
-var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 138));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
+
+var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 42));
+
+var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 43));
+
+var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 133));
+
+var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 91));
+
+var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 134));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
 var pleaseSetTranspileDependencies = {},babelTest = pleaseSetTranspileDependencies === null || pleaseSetTranspileDependencies === void 0 ? void 0 : pleaseSetTranspileDependencies.test; // 引入全局mixin
 var $u = _objectSpread(_objectSpread({
   route: _route.default,
@@ -11200,10 +8859,10 @@ var install = function install(Vue) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 20 */
-/*!*******************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
-  \*******************************************************************************/
+/* 13 */
+/*!*****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11365,10 +9024,10 @@ var install = function install(Vue) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 21 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
-  \*********************************************************************************/
+/* 14 */
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11380,23 +9039,23 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     virtualHost: true } };exports.default = _default;
 
 /***/ }),
-/* 22 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
-  \**************************************************************************************/
+/* 15 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 
 _Request.default;exports.default = _default;
 
 /***/ }),
-/* 23 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
-  \*********************************************************************************************/
+/* 16 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11414,12 +9073,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 24));
-var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 32));
-var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 33));
-var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 34));
-var _utils = __webpack_require__(/*! ../utils */ 27);
-var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 35));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
+var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 17));
+var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 25));
+var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 26));
+var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 27));
+var _utils = __webpack_require__(/*! ../utils */ 20);
+var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 28));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
 
 Request = /*#__PURE__*/function () {
   /**
@@ -11601,31 +9260,31 @@ Request = /*#__PURE__*/function () {
                                */exports.default = Request;
 
 /***/ }),
-/* 24 */
-/*!*****************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
-  \*****************************************************************************************************/
+/* 17 */
+/*!***************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 25));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 18));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 
 function _default(config) {return (0, _index.default)(config);};exports.default = _default;
 
 /***/ }),
-/* 25 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
-  \***********************************************************************************************/
+/* 18 */
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 26));
-var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 28));
-var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 31));
-var _utils = __webpack_require__(/*! ../utils */ 27);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 19));
+var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 21));
+var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 24));
+var _utils = __webpack_require__(/*! ../utils */ 20);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 返回可选值存在的配置
@@ -11722,17 +9381,17 @@ function _default(config) {return new Promise(function (resolve, reject) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 26 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
-  \*************************************************************************************************/
+/* 19 */
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildURL;
 
-var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 27));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
+var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 20));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -11801,10 +9460,10 @@ function buildURL(url, params) {
 }
 
 /***/ }),
-/* 27 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
-  \**************************************************************************************/
+/* 20 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11942,18 +9601,18 @@ function isUndefined(val) {
 }
 
 /***/ }),
-/* 28 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
-  \***************************************************************************************************/
+/* 21 */
+/*!*************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
+  \*************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildFullPath;
 
-var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 29));
-var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 30));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 22));
+var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
                                                                                                                                                                             * Creates a new URL by combining the baseURL with the requestedURL,
@@ -11972,10 +9631,10 @@ function buildFullPath(baseURL, requestedURL) {
 }
 
 /***/ }),
-/* 29 */
-/*!******************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
-  \******************************************************************************************************/
+/* 22 */
+/*!****************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
+  \****************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11996,10 +9655,10 @@ function isAbsoluteURL(url) {
 }
 
 /***/ }),
-/* 30 */
-/*!****************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
-  \****************************************************************************************************/
+/* 23 */
+/*!**************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
+  \**************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12020,10 +9679,10 @@ function combineURLs(baseURL, relativeURL) {
 }
 
 /***/ }),
-/* 31 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
-  \********************************************************************************************/
+/* 24 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12046,10 +9705,10 @@ function settle(resolve, reject, response) {var
 }
 
 /***/ }),
-/* 32 */
-/*!********************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
-  \********************************************************************************************************/
+/* 25 */
+/*!******************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
+  \******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12106,15 +9765,15 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 InterceptorManager;exports.default = _default;
 
 /***/ }),
-/* 33 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
-  \*************************************************************************************************/
+/* 26 */
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 27);function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 20);function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   * 合并局部配置优先的配置，如果局部有该配置项则用局部，如果全局有该配置项则用全局
@@ -12219,10 +9878,10 @@ function _default(globalsConfig) {var config2 = arguments.length > 1 && argument
 };exports.default = _default;
 
 /***/ }),
-/* 34 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
-  \**********************************************************************************************/
+/* 27 */
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12257,10 +9916,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   } };exports.default = _default;
 
 /***/ }),
-/* 35 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
-  \********************************************************************************************/
+/* 28 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12529,10 +10188,10 @@ var clone = function () {
 }();var _default =
 
 clone;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/buffer/index.js */ 36).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 29).Buffer))
 
 /***/ }),
-/* 36 */
+/* 29 */
 /*!**************************************!*\
   !*** ./node_modules/buffer/index.js ***!
   \**************************************/
@@ -12550,9 +10209,9 @@ clone;exports.default = _default;
 
 
 
-var base64 = __webpack_require__(/*! base64-js */ 37)
-var ieee754 = __webpack_require__(/*! ieee754 */ 38)
-var isArray = __webpack_require__(/*! isarray */ 39)
+var base64 = __webpack_require__(/*! base64-js */ 30)
+var ieee754 = __webpack_require__(/*! ieee754 */ 31)
+var isArray = __webpack_require__(/*! isarray */ 32)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -14333,7 +11992,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ 2)))
 
 /***/ }),
-/* 37 */
+/* 30 */
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
   \*****************************************/
@@ -14496,7 +12155,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 38 */
+/* 31 */
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
   \***************************************/
@@ -14590,7 +12249,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 39 */
+/* 32 */
 /*!***************************************!*\
   !*** ./node_modules/isarray/index.js ***!
   \***************************************/
@@ -14605,18 +12264,18 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 40 */
-/*!******************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
-  \******************************************************************************/
+/* 33 */
+/*!****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          * 并且带有路由拦截功能
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          */var
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 并且带有路由拦截功能
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */var
 
 Router = /*#__PURE__*/function () {
   function Router() {_classCallCheck(this, Router);
@@ -14740,10 +12399,798 @@ new Router().route;exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 41 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
-  \******************************************************************************************/
+/* 34 */
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ 35);
+
+/***/ }),
+/* 35 */
+/*!************************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// This method of obtaining a reference to the global object needs to be
+// kept identical to the way it is obtained in runtime.js
+var g = (function() {
+  return this || (typeof self === "object" && self);
+})() || Function("return this")();
+
+// Use `getOwnPropertyNames` because not all browsers support calling
+// `hasOwnProperty` on the global `self` object in a worker. See #183.
+var hadRuntime = g.regeneratorRuntime &&
+  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
+
+// Save the old regeneratorRuntime in case it needs to be restored later.
+var oldRuntime = hadRuntime && g.regeneratorRuntime;
+
+// Force reevalutation of runtime.js.
+g.regeneratorRuntime = undefined;
+
+module.exports = __webpack_require__(/*! ./runtime */ 36);
+
+if (hadRuntime) {
+  // Restore the original runtime.
+  g.regeneratorRuntime = oldRuntime;
+} else {
+  // Remove the global property added by runtime.js.
+  try {
+    delete g.regeneratorRuntime;
+  } catch(e) {
+    g.regeneratorRuntime = undefined;
+  }
+}
+
+
+/***/ }),
+/* 36 */
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() {
+    return this || (typeof self === "object" && self);
+  })() || Function("return this")()
+);
+
+
+/***/ }),
+/* 37 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14883,10 +13330,10 @@ function colorToRgba(color, alpha) {
   colorToRgba: colorToRgba };exports.default = _default;
 
 /***/ }),
-/* 42 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
-  \*********************************************************************************/
+/* 38 */
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15179,10 +13626,10 @@ function regExp(o) {
   string: string };exports.default = _default;
 
 /***/ }),
-/* 43 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
-  \*************************************************************************************/
+/* 39 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15218,10 +13665,10 @@ function debounce(func) {var wait = arguments.length > 1 && arguments[1] !== und
 debounce;exports.default = _default;
 
 /***/ }),
-/* 44 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
-  \*************************************************************************************/
+/* 40 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15258,15 +13705,15 @@ function throttle(func) {var wait = arguments.length > 1 && arguments[1] !== und
 throttle;exports.default = _default;
 
 /***/ }),
-/* 45 */
-/*!**********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
-  \**********************************************************************************/
+/* 41 */
+/*!********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 38));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
                                                                                                                                                                                                                                                             * @description 如果value小于min，取min；如果value大于max，取max
@@ -15956,10 +14403,10 @@ function setConfig(_ref)
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 46 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
-  \*********************************************************************************/
+/* 42 */
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15999,10 +14446,10 @@ if (true) {
   unit: 'px' };exports.default = _default;
 
 /***/ }),
-/* 47 */
-/*!********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
-  \********************************************************************************/
+/* 43 */
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16012,96 +14459,96 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 46));
+var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 42));
 
-var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 48));
-var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 49));
-var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 50));
-var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 51));
-var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 52));
-var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 53));
-var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 54));
-var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 55));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 56));
-var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 57));
-var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 58));
-var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 59));
-var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 60));
-var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 61));
-var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 62));
-var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 63));
-var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 64));
-var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 65));
-var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 66));
-var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 67));
-var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 68));
-var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 69));
-var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 70));
-var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 71));
-var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 72));
-var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 73));
-var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 74));
-var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 75));
-var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 76));
-var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 77));
-var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 78));
-var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 79));
-var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 80));
-var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 81));
-var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 82));
-var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 83));
-var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 84));
-var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 85));
-var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 86));
-var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 87));
-var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 88));
-var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 89));
-var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 90));
-var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 91));
-var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 92));
-var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 93));
-var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 94));
-var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 96));
-var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 97));
-var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 98));
-var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 99));
-var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 100));
-var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 101));
-var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 102));
-var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 103));
-var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 104));
-var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 105));
-var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 106));
-var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 107));
-var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 108));
-var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 109));
-var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 110));
-var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 111));
-var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 112));
-var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 113));
-var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 114));
-var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 115));
-var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 116));
-var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 117));
-var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 118));
-var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 119));
-var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 120));
-var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 121));
-var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 122));
-var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 123));
-var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 124));
-var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 125));
-var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 126));
-var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 127));
-var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 128));
-var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 129));
-var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 130));
-var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 131));
-var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 132));
-var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 133));
-var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 134));
-var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 135));
-var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 136));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
+var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 44));
+var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 45));
+var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 46));
+var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 47));
+var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 48));
+var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 49));
+var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 50));
+var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 51));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 52));
+var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 53));
+var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 54));
+var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 55));
+var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 56));
+var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 57));
+var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 58));
+var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 59));
+var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 60));
+var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 61));
+var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 62));
+var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 63));
+var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 64));
+var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 65));
+var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 66));
+var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 67));
+var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 68));
+var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 69));
+var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 70));
+var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 71));
+var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 72));
+var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 73));
+var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 74));
+var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 75));
+var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 76));
+var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 77));
+var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 78));
+var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 79));
+var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 80));
+var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 81));
+var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 82));
+var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 83));
+var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 84));
+var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 85));
+var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 86));
+var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 87));
+var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 88));
+var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 89));
+var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 90));
+var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 92));
+var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 93));
+var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 94));
+var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 95));
+var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 96));
+var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 97));
+var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 98));
+var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 99));
+var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 100));
+var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 101));
+var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 102));
+var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 103));
+var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 104));
+var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 105));
+var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 106));
+var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 107));
+var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 108));
+var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 109));
+var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 110));
+var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 111));
+var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 112));
+var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 113));
+var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 114));
+var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 115));
+var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 116));
+var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 117));
+var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 118));
+var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 119));
+var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 120));
+var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 121));
+var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 122));
+var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 123));
+var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 124));
+var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 125));
+var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 126));
+var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 127));
+var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 128));
+var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 129));
+var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 130));
+var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 131));
+var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 132));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
 
 
 color =
@@ -16198,10 +14645,10 @@ _transition.default),
 _upload.default);exports.default = _default;
 
 /***/ }),
-/* 48 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
-  \********************************************************************************************/
+/* 44 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16231,10 +14678,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     round: 0 } };exports.default = _default;
 
 /***/ }),
-/* 49 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
-  \**************************************************************************************/
+/* 45 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16264,10 +14711,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showMore: true } };exports.default = _default;
 
 /***/ }),
-/* 50 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
-  \**************************************************************************************/
+/* 46 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16294,10 +14741,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     fontSize: 14 } };exports.default = _default;
 
 /***/ }),
-/* 51 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
-  \***************************************************************************************/
+/* 47 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16330,10 +14777,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 52 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
-  \********************************************************************************************/
+/* 48 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16361,10 +14808,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     extraValue: 0 } };exports.default = _default;
 
 /***/ }),
-/* 53 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
-  \****************************************************************************************/
+/* 49 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16395,10 +14842,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         fontSize: '19px' };} } };exports.default = _default;
 
 /***/ }),
-/* 54 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
-  \**************************************************************************************/
+/* 50 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16430,10 +14877,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     absolute: false } };exports.default = _default;
 
 /***/ }),
-/* 55 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
-  \***************************************************************************************/
+/* 51 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16480,10 +14927,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     color: '' } };exports.default = _default;
 
 /***/ }),
-/* 56 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
-  \*****************************************************************************************/
+/* 52 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16530,10 +14977,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     monthNum: 3 } };exports.default = _default;
 
 /***/ }),
-/* 57 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
-  \********************************************************************************************/
+/* 53 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16553,10 +15000,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-/* 58 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
-  \*************************************************************************************/
+/* 54 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16596,10 +15043,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 59 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
-  \******************************************************************************************/
+/* 55 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16621,10 +15068,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-/* 60 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
-  \*****************************************************************************************/
+/* 56 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16656,10 +15103,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelDisabled: '' } };exports.default = _default;
 
 /***/ }),
-/* 61 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
-  \**********************************************************************************************/
+/* 57 */
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16693,10 +15140,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     borderBottom: false } };exports.default = _default;
 
 /***/ }),
-/* 62 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
-  \***********************************************************************************************/
+/* 58 */
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16716,10 +15163,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     percentage: 30 } };exports.default = _default;
 
 /***/ }),
-/* 63 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
-  \*************************************************************************************/
+/* 59 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16745,10 +15192,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     uniqueKey: '' } };exports.default = _default;
 
 /***/ }),
-/* 64 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
-  \******************************************************************************************/
+/* 60 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16781,10 +15228,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disabledDot: true } };exports.default = _default;
 
 /***/ }),
-/* 65 */
-/*!************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
-  \************************************************************************************/
+/* 61 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16808,10 +15255,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     textAlign: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 66 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
-  \*****************************************************************************************/
+/* 62 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16833,10 +15280,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     border: true } };exports.default = _default;
 
 /***/ }),
-/* 67 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
-  \*********************************************************************************************/
+/* 63 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16866,10 +15313,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-/* 68 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
-  \*********************************************************************************************/
+/* 64 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16898,10 +15345,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disableTouch: true } };exports.default = _default;
 
 /***/ }),
-/* 69 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
-  \******************************************************************************************/
+/* 65 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16924,10 +15371,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     millisecond: false } };exports.default = _default;
 
 /***/ }),
-/* 70 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
-  \****************************************************************************************/
+/* 66 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16957,10 +15404,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     separator: '' } };exports.default = _default;
 
 /***/ }),
-/* 71 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
-  \***********************************************************************************************/
+/* 67 */
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17001,10 +15448,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     defaultIndex: function defaultIndex() {return [];} } };exports.default = _default;
 
 /***/ }),
-/* 72 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
-  \****************************************************************************************/
+/* 68 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17031,10 +15478,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     lineColor: '#dcdfe6' } };exports.default = _default;
 
 /***/ }),
-/* 73 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
-  \**************************************************************************************/
+/* 69 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17064,10 +15511,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     marginTop: 0 } };exports.default = _default;
 
 /***/ }),
-/* 74 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
-  \*************************************************************************************/
+/* 70 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17094,10 +15541,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelStyle: function labelStyle() {return {};} } };exports.default = _default;
 
 /***/ }),
-/* 75 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
-  \*****************************************************************************************/
+/* 71 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17123,10 +15570,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     required: false } };exports.default = _default;
 
 /***/ }),
-/* 76 */
-/*!************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
-  \************************************************************************************/
+/* 72 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17150,10 +15597,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-/* 77 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
-  \*************************************************************************************/
+/* 73 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17175,10 +15622,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 78 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
-  \*****************************************************************************************/
+/* 74 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17199,10 +15646,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-/* 79 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
-  \*************************************************************************************/
+/* 75 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17216,7 +15663,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -17243,10 +15690,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     stop: false } };exports.default = _default;
 
 /***/ }),
-/* 80 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
-  \**************************************************************************************/
+/* 76 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17281,10 +15728,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: '#f3f4f6' } };exports.default = _default;
 
 /***/ }),
-/* 81 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
-  \********************************************************************************************/
+/* 77 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17308,10 +15755,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 32 } };exports.default = _default;
 
 /***/ }),
-/* 82 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
-  \******************************************************************************************/
+/* 78 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17335,10 +15782,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customNavHeight: 0 } };exports.default = _default;
 
 /***/ }),
-/* 83 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
-  \**************************************************************************************/
+/* 79 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17391,10 +15838,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-/* 84 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
-  \*****************************************************************************************/
+/* 80 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17429,10 +15876,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoChange: false } };exports.default = _default;
 
 /***/ }),
-/* 85 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
-  \*************************************************************************************/
+/* 81 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17457,10 +15904,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dashed: false } };exports.default = _default;
 
 /***/ }),
-/* 86 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
-  \*********************************************************************************************/
+/* 82 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17484,10 +15931,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 12 } };exports.default = _default;
 
 /***/ }),
-/* 87 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
-  \*************************************************************************************/
+/* 83 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17501,7 +15948,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -17518,10 +15965,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     text: '' } };exports.default = _default;
 
 /***/ }),
-/* 88 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
-  \*************************************************************************************/
+/* 84 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17554,10 +16001,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     preLoadScreen: 1 } };exports.default = _default;
 
 /***/ }),
-/* 89 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
-  \*****************************************************************************************/
+/* 85 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17577,10 +16024,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     anchor: '' } };exports.default = _default;
 
 /***/ }),
-/* 90 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
-  \********************************************************************************************/
+/* 86 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17594,7 +16041,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -17615,10 +16062,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     inactiveColor: '' } };exports.default = _default;
 
 /***/ }),
-/* 91 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
-  \********************************************************************************************/
+/* 87 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17645,10 +16092,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     loadingColor: '#C8C8C8' } };exports.default = _default;
 
 /***/ }),
-/* 92 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
-  \*****************************************************************************************/
+/* 88 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17682,10 +16129,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     line: false } };exports.default = _default;
 
 /***/ }),
-/* 93 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
-  \**************************************************************************************/
+/* 89 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17720,10 +16167,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     confirmButtonShape: '' } };exports.default = _default;
 
 /***/ }),
-/* 94 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
-  \***************************************************************************************/
+/* 90 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17737,7 +16184,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 95));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 91));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                         * @Author       : LQ
                                                                                                                                                         * @Description  :
                                                                                                                                                         * @version      : 1.0
@@ -17759,10 +16206,10 @@ var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 95));fun
     titleStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 95 */
-/*!********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
-  \********************************************************************************/
+/* 91 */
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17786,10 +16233,10 @@ var color = {
 color;exports.default = _default;
 
 /***/ }),
-/* 96 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
-  \******************************************************************************************/
+/* 92 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17811,10 +16258,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     image: 'data:image/png;base64,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' } };exports.default = _default;
 
 /***/ }),
-/* 97 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
-  \******************************************************************************************/
+/* 93 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17846,10 +16293,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     linkType: 'navigateTo' } };exports.default = _default;
 
 /***/ }),
-/* 98 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
-  \***************************************************************************************/
+/* 94 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17876,10 +16323,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     safeAreaInsetTop: false } };exports.default = _default;
 
 /***/ }),
-/* 99 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
-  \******************************************************************************************/
+/* 95 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17919,10 +16366,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 100 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
-  \***********************************************************************************************/
+/* 96 */
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17944,10 +16391,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-/* 101 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
-  \****************************************************************************************/
+/* 97 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -17970,10 +16417,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     opacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-/* 102 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
-  \**************************************************************************************/
+/* 98 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18000,10 +16447,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showImgMenu: true } };exports.default = _default;
 
 /***/ }),
-/* 103 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
-  \***************************************************************************************/
+/* 99 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18038,10 +16485,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     immediateChange: false } };exports.default = _default;
 
 /***/ }),
-/* 104 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
-  \**************************************************************************************/
+/* 100 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18075,10 +16522,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     overlayOpacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-/* 105 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
-  \**************************************************************************************/
+/* 101 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18110,10 +16557,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placement: '' } };exports.default = _default;
 
 /***/ }),
-/* 106 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
-  \*******************************************************************************************/
+/* 102 */
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18148,10 +16595,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconPlacement: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 107 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
-  \*************************************************************************************/
+/* 103 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18182,10 +16629,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     touchable: true } };exports.default = _default;
 
 /***/ }),
-/* 108 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
-  \*****************************************************************************************/
+/* 104 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18212,10 +16659,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 109 */
-/*!************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
-  \************************************************************************************/
+/* 105 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18237,10 +16684,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'center' } };exports.default = _default;
 
 /***/ }),
-/* 110 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
-  \******************************************************************************************/
+/* 106 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18266,10 +16713,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     speed: 80 } };exports.default = _default;
 
 /***/ }),
-/* 111 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
-  \*******************************************************************************************/
+/* 107 */
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18294,10 +16741,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 112 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
-  \***************************************************************************************/
+/* 108 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18338,10 +16785,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     label: null } };exports.default = _default;
 
 /***/ }),
-/* 113 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
-  \****************************************************************************************/
+/* 109 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18370,10 +16817,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     arrow: true } };exports.default = _default;
 
 /***/ }),
-/* 114 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
-  \*****************************************************************************************/
+/* 110 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18403,10 +16850,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     avatarShape: 'circle' } };exports.default = _default;
 
 /***/ }),
-/* 115 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
-  \***************************************************************************************/
+/* 111 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18436,10 +16883,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     blockStyle: function blockStyle() {} } };exports.default = _default;
 
 /***/ }),
-/* 116 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
-  \******************************************************************************************/
+/* 112 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18459,10 +16906,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-/* 117 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
-  \**************************************************************************************/
+/* 113 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18488,10 +16935,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dot: false } };exports.default = _default;
 
 /***/ }),
-/* 118 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
-  \******************************************************************************************/
+/* 114 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18514,10 +16961,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     error: false } };exports.default = _default;
 
 /***/ }),
-/* 119 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
-  \***************************************************************************************/
+/* 115 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18542,10 +16989,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     index: '' } };exports.default = _default;
 
 /***/ }),
-/* 120 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
-  \*******************************************************************************************/
+/* 116 */
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18573,10 +17020,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-/* 121 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
-  \********************************************************************************************/
+/* 117 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18596,10 +17043,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoClose: true } };exports.default = _default;
 
 /***/ }),
-/* 122 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
-  \************************************************************************************************/
+/* 118 */
+/*!**********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18625,10 +17072,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-/* 123 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
-  \***************************************************************************************/
+/* 119 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18671,10 +17118,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showTitle: false } };exports.default = _default;
 
 /***/ }),
-/* 124 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
-  \*************************************************************************************************/
+/* 120 */
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18698,10 +17145,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorMode: 'line' } };exports.default = _default;
 
 /***/ }),
-/* 125 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
-  \***************************************************************************************/
+/* 121 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18730,10 +17177,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     space: 0 } };exports.default = _default;
 
 /***/ }),
-/* 126 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
-  \***************************************************************************************/
+/* 122 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18760,10 +17207,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placeholder: true } };exports.default = _default;
 
 /***/ }),
-/* 127 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
-  \*******************************************************************************************/
+/* 123 */
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18788,10 +17235,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     badgeStyle: 'top: 6px;right:2px;' } };exports.default = _default;
 
 /***/ }),
-/* 128 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
-  \*************************************************************************************/
+/* 124 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18827,10 +17274,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-/* 129 */
-/*!************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
-  \************************************************************************************/
+/* 125 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18864,10 +17311,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     icon: '' } };exports.default = _default;
 
 /***/ }),
-/* 130 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
-  \*************************************************************************************/
+/* 126 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18909,10 +17356,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     wordWrap: 'normal' } };exports.default = _default;
 
 /***/ }),
-/* 131 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
-  \*****************************************************************************************/
+/* 127 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18953,10 +17400,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-/* 132 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
-  \**************************************************************************************/
+/* 128 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18990,10 +17437,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     back: false } };exports.default = _default;
 
 /***/ }),
-/* 133 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
-  \****************************************************************************************/
+/* 129 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19018,10 +17465,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     title: '' } };exports.default = _default;
 
 /***/ }),
-/* 134 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
-  \****************************************************************************************/
+/* 130 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19051,10 +17498,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showToast: true } };exports.default = _default;
 
 /***/ }),
-/* 135 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
-  \*******************************************************************************************/
+/* 131 */
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19077,10 +17524,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     timingFunction: 'ease-out' } };exports.default = _default;
 
 /***/ }),
-/* 136 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
-  \***************************************************************************************/
+/* 132 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19121,10 +17568,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     previewImage: true } };exports.default = _default;
 
 /***/ }),
-/* 137 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
-  \*********************************************************************************/
+/* 133 */
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19150,10 +17597,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   indexListSticky: 965 };exports.default = _default;
 
 /***/ }),
-/* 138 */
-/*!*************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
-  \*************************************************************************************/
+/* 134 */
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19235,20 +17682,20 @@ platform = 'mp';var _default =
 platform;exports.default = _default;
 
 /***/ }),
+/* 135 */,
+/* 136 */,
+/* 137 */,
+/* 138 */,
 /* 139 */,
 /* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */
-/*!**************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/home.js ***!
-  \**************************************************/
+/* 141 */
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/home.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
 exports.fetchindexData = function () {
   return request({
@@ -19257,23 +17704,45 @@ exports.fetchindexData = function () {
 };
 
 /***/ }),
+/* 142 */
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/request.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
+  return new Promise(function (reslove, reject) {
+    uni.request(_objectSpread(_objectSpread({},
+    options), {}, {
+      success: function success(res) {
+        reslove(res.data);
+      },
+      fail: reject,
+      complete: function complete(res) {} }));
+
+  });
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 143 */,
+/* 144 */,
+/* 145 */,
 /* 146 */,
 /* 147 */,
 /* 148 */,
 /* 149 */,
 /* 150 */,
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */
-/*!**************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/sort.js ***!
-  \**************************************************/
+/* 151 */
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/sort.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 13);
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
 
 function fetch_sortData() {
   return request({
@@ -19282,10 +17751,10 @@ function fetch_sortData() {
 }
 
 /***/ }),
-/* 155 */
-/*!*****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/util/window.js ***!
-  \*****************************************************/
+/* 152 */
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/util/window.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19302,6 +17771,9 @@ function fetch_sortData() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
+/* 153 */,
+/* 154 */,
+/* 155 */,
 /* 156 */,
 /* 157 */,
 /* 158 */,
@@ -19310,30 +17782,7 @@ function fetch_sortData() {
 /* 161 */,
 /* 162 */,
 /* 163 */,
-/* 164 */
-/*!*****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/shopCar.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_ShopCar = fetch_ShopCar;
-var request = __webpack_require__(/*! ./request.js */ 13);
-
-
-function fetch_ShopCar(token, res) {
-  return request({
-    method: "POST",
-    header: {
-      Authorization: token },
-
-    data: res,
-    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
-
-}
-
-/***/ }),
+/* 164 */,
 /* 165 */,
 /* 166 */,
 /* 167 */,
@@ -19344,20 +17793,14 @@ function fetch_ShopCar(token, res) {
 /* 172 */,
 /* 173 */,
 /* 174 */,
-/* 175 */,
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */
-/*!****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/search.js ***!
-  \****************************************************/
+/* 175 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/search.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
 exports.fetchSearch = function (page, size, keyWord) {
   return request({
@@ -19370,6 +17813,12 @@ exports.fetchSearch = function (page, size, keyWord) {
 };
 
 /***/ }),
+/* 176 */,
+/* 177 */,
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
 /* 182 */,
 /* 183 */,
 /* 184 */,
@@ -19380,29 +17829,3912 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 189 */,
 /* 190 */,
 /* 191 */,
-/* 192 */,
-/* 193 */,
-/* 194 */,
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */
-/*!***********************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
-  \***********************************************************************/
+/* 192 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 207);
+Object.defineProperty(exports, "__esModule", { value: true });exports.areaList = void 0; // src/index.ts
+var areaList = {
+  province_list: {
+    11e4: "北京市",
+    12e4: "天津市",
+    13e4: "河北省",
+    14e4: "山西省",
+    15e4: "内蒙古自治区",
+    21e4: "辽宁省",
+    22e4: "吉林省",
+    23e4: "黑龙江省",
+    31e4: "上海市",
+    32e4: "江苏省",
+    33e4: "浙江省",
+    34e4: "安徽省",
+    35e4: "福建省",
+    36e4: "江西省",
+    37e4: "山东省",
+    41e4: "河南省",
+    42e4: "湖北省",
+    43e4: "湖南省",
+    44e4: "广东省",
+    45e4: "广西壮族自治区",
+    46e4: "海南省",
+    5e5: "重庆市",
+    51e4: "四川省",
+    52e4: "贵州省",
+    53e4: "云南省",
+    54e4: "西藏自治区",
+    61e4: "陕西省",
+    62e4: "甘肃省",
+    63e4: "青海省",
+    64e4: "宁夏回族自治区",
+    65e4: "新疆维吾尔自治区",
+    71e4: "台湾省",
+    81e4: "香港特别行政区",
+    82e4: "澳门特别行政区" },
+
+  city_list: {
+    110100: "北京市",
+    120100: "天津市",
+    130100: "石家庄市",
+    130200: "唐山市",
+    130300: "秦皇岛市",
+    130400: "邯郸市",
+    130500: "邢台市",
+    130600: "保定市",
+    130700: "张家口市",
+    130800: "承德市",
+    130900: "沧州市",
+    131e3: "廊坊市",
+    131100: "衡水市",
+    140100: "太原市",
+    140200: "大同市",
+    140300: "阳泉市",
+    140400: "长治市",
+    140500: "晋城市",
+    140600: "朔州市",
+    140700: "晋中市",
+    140800: "运城市",
+    140900: "忻州市",
+    141e3: "临汾市",
+    141100: "吕梁市",
+    150100: "呼和浩特市",
+    150200: "包头市",
+    150300: "乌海市",
+    150400: "赤峰市",
+    150500: "通辽市",
+    150600: "鄂尔多斯市",
+    150700: "呼伦贝尔市",
+    150800: "巴彦淖尔市",
+    150900: "乌兰察布市",
+    152200: "兴安盟",
+    152500: "锡林郭勒盟",
+    152900: "阿拉善盟",
+    210100: "沈阳市",
+    210200: "大连市",
+    210300: "鞍山市",
+    210400: "抚顺市",
+    210500: "本溪市",
+    210600: "丹东市",
+    210700: "锦州市",
+    210800: "营口市",
+    210900: "阜新市",
+    211e3: "辽阳市",
+    211100: "盘锦市",
+    211200: "铁岭市",
+    211300: "朝阳市",
+    211400: "葫芦岛市",
+    220100: "长春市",
+    220200: "吉林市",
+    220300: "四平市",
+    220400: "辽源市",
+    220500: "通化市",
+    220600: "白山市",
+    220700: "松原市",
+    220800: "白城市",
+    222400: "延边朝鲜族自治州",
+    230100: "哈尔滨市",
+    230200: "齐齐哈尔市",
+    230300: "鸡西市",
+    230400: "鹤岗市",
+    230500: "双鸭山市",
+    230600: "大庆市",
+    230700: "伊春市",
+    230800: "佳木斯市",
+    230900: "七台河市",
+    231e3: "牡丹江市",
+    231100: "黑河市",
+    231200: "绥化市",
+    232700: "大兴安岭地区",
+    310100: "上海市",
+    320100: "南京市",
+    320200: "无锡市",
+    320300: "徐州市",
+    320400: "常州市",
+    320500: "苏州市",
+    320600: "南通市",
+    320700: "连云港市",
+    320800: "淮安市",
+    320900: "盐城市",
+    321e3: "扬州市",
+    321100: "镇江市",
+    321200: "泰州市",
+    321300: "宿迁市",
+    330100: "杭州市",
+    330200: "宁波市",
+    330300: "温州市",
+    330400: "嘉兴市",
+    330500: "湖州市",
+    330600: "绍兴市",
+    330700: "金华市",
+    330800: "衢州市",
+    330900: "舟山市",
+    331e3: "台州市",
+    331100: "丽水市",
+    340100: "合肥市",
+    340200: "芜湖市",
+    340300: "蚌埠市",
+    340400: "淮南市",
+    340500: "马鞍山市",
+    340600: "淮北市",
+    340700: "铜陵市",
+    340800: "安庆市",
+    341e3: "黄山市",
+    341100: "滁州市",
+    341200: "阜阳市",
+    341300: "宿州市",
+    341500: "六安市",
+    341600: "亳州市",
+    341700: "池州市",
+    341800: "宣城市",
+    350100: "福州市",
+    350200: "厦门市",
+    350300: "莆田市",
+    350400: "三明市",
+    350500: "泉州市",
+    350600: "漳州市",
+    350700: "南平市",
+    350800: "龙岩市",
+    350900: "宁德市",
+    360100: "南昌市",
+    360200: "景德镇市",
+    360300: "萍乡市",
+    360400: "九江市",
+    360500: "新余市",
+    360600: "鹰潭市",
+    360700: "赣州市",
+    360800: "吉安市",
+    360900: "宜春市",
+    361e3: "抚州市",
+    361100: "上饶市",
+    370100: "济南市",
+    370200: "青岛市",
+    370300: "淄博市",
+    370400: "枣庄市",
+    370500: "东营市",
+    370600: "烟台市",
+    370700: "潍坊市",
+    370800: "济宁市",
+    370900: "泰安市",
+    371e3: "威海市",
+    371100: "日照市",
+    371300: "临沂市",
+    371400: "德州市",
+    371500: "聊城市",
+    371600: "滨州市",
+    371700: "菏泽市",
+    410100: "郑州市",
+    410200: "开封市",
+    410300: "洛阳市",
+    410400: "平顶山市",
+    410500: "安阳市",
+    410600: "鹤壁市",
+    410700: "新乡市",
+    410800: "焦作市",
+    410900: "濮阳市",
+    411e3: "许昌市",
+    411100: "漯河市",
+    411200: "三门峡市",
+    411300: "南阳市",
+    411400: "商丘市",
+    411500: "信阳市",
+    411600: "周口市",
+    411700: "驻马店市",
+    419e3: "省直辖县",
+    420100: "武汉市",
+    420200: "黄石市",
+    420300: "十堰市",
+    420500: "宜昌市",
+    420600: "襄阳市",
+    420700: "鄂州市",
+    420800: "荆门市",
+    420900: "孝感市",
+    421e3: "荆州市",
+    421100: "黄冈市",
+    421200: "咸宁市",
+    421300: "随州市",
+    422800: "恩施土家族苗族自治州",
+    429e3: "省直辖县",
+    430100: "长沙市",
+    430200: "株洲市",
+    430300: "湘潭市",
+    430400: "衡阳市",
+    430500: "邵阳市",
+    430600: "岳阳市",
+    430700: "常德市",
+    430800: "张家界市",
+    430900: "益阳市",
+    431e3: "郴州市",
+    431100: "永州市",
+    431200: "怀化市",
+    431300: "娄底市",
+    433100: "湘西土家族苗族自治州",
+    440100: "广州市",
+    440200: "韶关市",
+    440300: "深圳市",
+    440400: "珠海市",
+    440500: "汕头市",
+    440600: "佛山市",
+    440700: "江门市",
+    440800: "湛江市",
+    440900: "茂名市",
+    441200: "肇庆市",
+    441300: "惠州市",
+    441400: "梅州市",
+    441500: "汕尾市",
+    441600: "河源市",
+    441700: "阳江市",
+    441800: "清远市",
+    441900: "东莞市",
+    442e3: "中山市",
+    445100: "潮州市",
+    445200: "揭阳市",
+    445300: "云浮市",
+    450100: "南宁市",
+    450200: "柳州市",
+    450300: "桂林市",
+    450400: "梧州市",
+    450500: "北海市",
+    450600: "防城港市",
+    450700: "钦州市",
+    450800: "贵港市",
+    450900: "玉林市",
+    451e3: "百色市",
+    451100: "贺州市",
+    451200: "河池市",
+    451300: "来宾市",
+    451400: "崇左市",
+    460100: "海口市",
+    460200: "三亚市",
+    460300: "三沙市",
+    460400: "儋州市",
+    469e3: "省直辖县",
+    500100: "重庆市",
+    500200: "县",
+    510100: "成都市",
+    510300: "自贡市",
+    510400: "攀枝花市",
+    510500: "泸州市",
+    510600: "德阳市",
+    510700: "绵阳市",
+    510800: "广元市",
+    510900: "遂宁市",
+    511e3: "内江市",
+    511100: "乐山市",
+    511300: "南充市",
+    511400: "眉山市",
+    511500: "宜宾市",
+    511600: "广安市",
+    511700: "达州市",
+    511800: "雅安市",
+    511900: "巴中市",
+    512e3: "资阳市",
+    513200: "阿坝藏族羌族自治州",
+    513300: "甘孜藏族自治州",
+    513400: "凉山彝族自治州",
+    520100: "贵阳市",
+    520200: "六盘水市",
+    520300: "遵义市",
+    520400: "安顺市",
+    520500: "毕节市",
+    520600: "铜仁市",
+    522300: "黔西南布依族苗族自治州",
+    522600: "黔东南苗族侗族自治州",
+    522700: "黔南布依族苗族自治州",
+    530100: "昆明市",
+    530300: "曲靖市",
+    530400: "玉溪市",
+    530500: "保山市",
+    530600: "昭通市",
+    530700: "丽江市",
+    530800: "普洱市",
+    530900: "临沧市",
+    532300: "楚雄彝族自治州",
+    532500: "红河哈尼族彝族自治州",
+    532600: "文山壮族苗族自治州",
+    532800: "西双版纳傣族自治州",
+    532900: "大理白族自治州",
+    533100: "德宏傣族景颇族自治州",
+    533300: "怒江傈僳族自治州",
+    533400: "迪庆藏族自治州",
+    540100: "拉萨市",
+    540200: "日喀则市",
+    540300: "昌都市",
+    540400: "林芝市",
+    540500: "山南市",
+    540600: "那曲市",
+    542500: "阿里地区",
+    610100: "西安市",
+    610200: "铜川市",
+    610300: "宝鸡市",
+    610400: "咸阳市",
+    610500: "渭南市",
+    610600: "延安市",
+    610700: "汉中市",
+    610800: "榆林市",
+    610900: "安康市",
+    611e3: "商洛市",
+    620100: "兰州市",
+    620200: "嘉峪关市",
+    620300: "金昌市",
+    620400: "白银市",
+    620500: "天水市",
+    620600: "武威市",
+    620700: "张掖市",
+    620800: "平凉市",
+    620900: "酒泉市",
+    621e3: "庆阳市",
+    621100: "定西市",
+    621200: "陇南市",
+    622900: "临夏回族自治州",
+    623e3: "甘南藏族自治州",
+    630100: "西宁市",
+    630200: "海东市",
+    632200: "海北藏族自治州",
+    632300: "黄南藏族自治州",
+    632500: "海南藏族自治州",
+    632600: "果洛藏族自治州",
+    632700: "玉树藏族自治州",
+    632800: "海西蒙古族藏族自治州",
+    640100: "银川市",
+    640200: "石嘴山市",
+    640300: "吴忠市",
+    640400: "固原市",
+    640500: "中卫市",
+    650100: "乌鲁木齐市",
+    650200: "克拉玛依市",
+    650400: "吐鲁番市",
+    650500: "哈密市",
+    652300: "昌吉回族自治州",
+    652700: "博尔塔拉蒙古自治州",
+    652800: "巴音郭楞蒙古自治州",
+    652900: "阿克苏地区",
+    653e3: "克孜勒苏柯尔克孜自治州",
+    653100: "喀什地区",
+    653200: "和田地区",
+    654e3: "伊犁哈萨克自治州",
+    654200: "塔城地区",
+    654300: "阿勒泰地区",
+    659e3: "自治区直辖县级行政区划",
+    710100: "台北市",
+    710200: "高雄市",
+    710300: "台南市",
+    710400: "台中市",
+    710500: "金门县",
+    710600: "南投县",
+    710700: "基隆市",
+    710800: "新竹市",
+    710900: "嘉义市",
+    711100: "新北市",
+    711200: "宜兰县",
+    711300: "新竹县",
+    711400: "桃园市",
+    711500: "苗栗县",
+    711700: "彰化县",
+    711900: "嘉义县",
+    712100: "云林县",
+    712400: "屏东县",
+    712500: "台东县",
+    712600: "花莲县",
+    712700: "澎湖县",
+    712800: "连江县",
+    810100: "香港岛",
+    810200: "九龙",
+    810300: "新界",
+    820100: "澳门半岛",
+    820200: "离岛" },
+
+  county_list: {
+    110101: "东城区",
+    110102: "西城区",
+    110105: "朝阳区",
+    110106: "丰台区",
+    110107: "石景山区",
+    110108: "海淀区",
+    110109: "门头沟区",
+    110111: "房山区",
+    110112: "通州区",
+    110113: "顺义区",
+    110114: "昌平区",
+    110115: "大兴区",
+    110116: "怀柔区",
+    110117: "平谷区",
+    110118: "密云区",
+    110119: "延庆区",
+    120101: "和平区",
+    120102: "河东区",
+    120103: "河西区",
+    120104: "南开区",
+    120105: "河北区",
+    120106: "红桥区",
+    120110: "东丽区",
+    120111: "西青区",
+    120112: "津南区",
+    120113: "北辰区",
+    120114: "武清区",
+    120115: "宝坻区",
+    120116: "滨海新区",
+    120117: "宁河区",
+    120118: "静海区",
+    120119: "蓟州区",
+    130102: "长安区",
+    130104: "桥西区",
+    130105: "新华区",
+    130107: "井陉矿区",
+    130108: "裕华区",
+    130109: "藁城区",
+    130110: "鹿泉区",
+    130111: "栾城区",
+    130121: "井陉县",
+    130123: "正定县",
+    130125: "行唐县",
+    130126: "灵寿县",
+    130127: "高邑县",
+    130128: "深泽县",
+    130129: "赞皇县",
+    130130: "无极县",
+    130131: "平山县",
+    130132: "元氏县",
+    130133: "赵县",
+    130171: "石家庄高新技术产业开发区",
+    130172: "石家庄循环化工园区",
+    130181: "辛集市",
+    130183: "晋州市",
+    130184: "新乐市",
+    130202: "路南区",
+    130203: "路北区",
+    130204: "古冶区",
+    130205: "开平区",
+    130207: "丰南区",
+    130208: "丰润区",
+    130209: "曹妃甸区",
+    130224: "滦南县",
+    130225: "乐亭县",
+    130227: "迁西县",
+    130229: "玉田县",
+    130273: "唐山高新技术产业开发区",
+    130274: "河北唐山海港经济开发区",
+    130281: "遵化市",
+    130283: "迁安市",
+    130284: "滦州市",
+    130302: "海港区",
+    130303: "山海关区",
+    130304: "北戴河区",
+    130306: "抚宁区",
+    130321: "青龙满族自治县",
+    130322: "昌黎县",
+    130324: "卢龙县",
+    130371: "秦皇岛市经济技术开发区",
+    130372: "北戴河新区",
+    130390: "经济技术开发区",
+    130402: "邯山区",
+    130403: "丛台区",
+    130404: "复兴区",
+    130406: "峰峰矿区",
+    130407: "肥乡区",
+    130408: "永年区",
+    130423: "临漳县",
+    130424: "成安县",
+    130425: "大名县",
+    130426: "涉县",
+    130427: "磁县",
+    130430: "邱县",
+    130431: "鸡泽县",
+    130432: "广平县",
+    130433: "馆陶县",
+    130434: "魏县",
+    130435: "曲周县",
+    130471: "邯郸经济技术开发区",
+    130473: "邯郸冀南新区",
+    130481: "武安市",
+    130502: "桥东区",
+    130503: "桥西区",
+    130521: "邢台县",
+    130522: "临城县",
+    130523: "内丘县",
+    130524: "柏乡县",
+    130525: "隆尧县",
+    130526: "任县",
+    130527: "南和县",
+    130528: "宁晋县",
+    130529: "巨鹿县",
+    130530: "新河县",
+    130531: "广宗县",
+    130532: "平乡县",
+    130533: "威县",
+    130534: "清河县",
+    130535: "临西县",
+    130571: "河北邢台经济开发区",
+    130581: "南宫市",
+    130582: "沙河市",
+    130602: "竞秀区",
+    130606: "莲池区",
+    130607: "满城区",
+    130608: "清苑区",
+    130609: "徐水区",
+    130623: "涞水县",
+    130624: "阜平县",
+    130626: "定兴县",
+    130627: "唐县",
+    130628: "高阳县",
+    130629: "容城县",
+    130630: "涞源县",
+    130631: "望都县",
+    130632: "安新县",
+    130633: "易县",
+    130634: "曲阳县",
+    130635: "蠡县",
+    130636: "顺平县",
+    130637: "博野县",
+    130638: "雄县",
+    130671: "保定高新技术产业开发区",
+    130672: "保定白沟新城",
+    130681: "涿州市",
+    130682: "定州市",
+    130683: "安国市",
+    130684: "高碑店市",
+    130702: "桥东区",
+    130703: "桥西区",
+    130705: "宣化区",
+    130706: "下花园区",
+    130708: "万全区",
+    130709: "崇礼区",
+    130722: "张北县",
+    130723: "康保县",
+    130724: "沽源县",
+    130725: "尚义县",
+    130726: "蔚县",
+    130727: "阳原县",
+    130728: "怀安县",
+    130730: "怀来县",
+    130731: "涿鹿县",
+    130732: "赤城县",
+    130772: "张家口市察北管理区",
+    130802: "双桥区",
+    130803: "双滦区",
+    130804: "鹰手营子矿区",
+    130821: "承德县",
+    130822: "兴隆县",
+    130824: "滦平县",
+    130825: "隆化县",
+    130826: "丰宁满族自治县",
+    130827: "宽城满族自治县",
+    130828: "围场满族蒙古族自治县",
+    130871: "承德高新技术产业开发区",
+    130881: "平泉市",
+    130902: "新华区",
+    130903: "运河区",
+    130921: "沧县",
+    130922: "青县",
+    130923: "东光县",
+    130924: "海兴县",
+    130925: "盐山县",
+    130926: "肃宁县",
+    130927: "南皮县",
+    130928: "吴桥县",
+    130929: "献县",
+    130930: "孟村回族自治县",
+    130971: "河北沧州经济开发区",
+    130972: "沧州高新技术产业开发区",
+    130973: "沧州渤海新区",
+    130981: "泊头市",
+    130982: "任丘市",
+    130983: "黄骅市",
+    130984: "河间市",
+    131002: "安次区",
+    131003: "广阳区",
+    131022: "固安县",
+    131023: "永清县",
+    131024: "香河县",
+    131025: "大城县",
+    131026: "文安县",
+    131028: "大厂回族自治县",
+    131071: "廊坊经济技术开发区",
+    131081: "霸州市",
+    131082: "三河市",
+    131090: "开发区",
+    131102: "桃城区",
+    131103: "冀州区",
+    131121: "枣强县",
+    131122: "武邑县",
+    131123: "武强县",
+    131124: "饶阳县",
+    131125: "安平县",
+    131126: "故城县",
+    131127: "景县",
+    131128: "阜城县",
+    131171: "河北衡水经济开发区",
+    131172: "衡水滨湖新区",
+    131182: "深州市",
+    140105: "小店区",
+    140106: "迎泽区",
+    140107: "杏花岭区",
+    140108: "尖草坪区",
+    140109: "万柏林区",
+    140110: "晋源区",
+    140121: "清徐县",
+    140122: "阳曲县",
+    140123: "娄烦县",
+    140181: "古交市",
+    140212: "新荣区",
+    140213: "平城区",
+    140214: "云冈区",
+    140215: "云州区",
+    140221: "阳高县",
+    140222: "天镇县",
+    140223: "广灵县",
+    140224: "灵丘县",
+    140225: "浑源县",
+    140226: "左云县",
+    140271: "山西大同经济开发区",
+    140302: "城区",
+    140303: "矿区",
+    140311: "郊区",
+    140321: "平定县",
+    140322: "盂县",
+    140403: "潞州区",
+    140404: "上党区",
+    140405: "屯留区",
+    140406: "潞城区",
+    140423: "襄垣县",
+    140425: "平顺县",
+    140426: "黎城县",
+    140427: "壶关县",
+    140428: "长子县",
+    140429: "武乡县",
+    140430: "沁县",
+    140431: "沁源县",
+    140471: "山西长治高新技术产业园区",
+    140502: "城区",
+    140521: "沁水县",
+    140522: "阳城县",
+    140524: "陵川县",
+    140525: "泽州县",
+    140581: "高平市",
+    140602: "朔城区",
+    140603: "平鲁区",
+    140621: "山阴县",
+    140622: "应县",
+    140623: "右玉县",
+    140671: "山西朔州经济开发区",
+    140681: "怀仁市",
+    140702: "榆次区",
+    140703: "太谷区",
+    140721: "榆社县",
+    140722: "左权县",
+    140723: "和顺县",
+    140724: "昔阳县",
+    140725: "寿阳县",
+    140727: "祁县",
+    140728: "平遥县",
+    140729: "灵石县",
+    140781: "介休市",
+    140802: "盐湖区",
+    140821: "临猗县",
+    140822: "万荣县",
+    140823: "闻喜县",
+    140824: "稷山县",
+    140825: "新绛县",
+    140826: "绛县",
+    140827: "垣曲县",
+    140828: "夏县",
+    140829: "平陆县",
+    140830: "芮城县",
+    140881: "永济市",
+    140882: "河津市",
+    140902: "忻府区",
+    140921: "定襄县",
+    140922: "五台县",
+    140923: "代县",
+    140924: "繁峙县",
+    140925: "宁武县",
+    140926: "静乐县",
+    140927: "神池县",
+    140928: "五寨县",
+    140929: "岢岚县",
+    140930: "河曲县",
+    140931: "保德县",
+    140932: "偏关县",
+    140971: "五台山风景名胜区",
+    140981: "原平市",
+    141002: "尧都区",
+    141021: "曲沃县",
+    141022: "翼城县",
+    141023: "襄汾县",
+    141024: "洪洞县",
+    141025: "古县",
+    141026: "安泽县",
+    141027: "浮山县",
+    141028: "吉县",
+    141029: "乡宁县",
+    141030: "大宁县",
+    141031: "隰县",
+    141032: "永和县",
+    141033: "蒲县",
+    141034: "汾西县",
+    141081: "侯马市",
+    141082: "霍州市",
+    141102: "离石区",
+    141121: "文水县",
+    141122: "交城县",
+    141123: "兴县",
+    141124: "临县",
+    141125: "柳林县",
+    141126: "石楼县",
+    141127: "岚县",
+    141128: "方山县",
+    141129: "中阳县",
+    141130: "交口县",
+    141181: "孝义市",
+    141182: "汾阳市",
+    150102: "新城区",
+    150103: "回民区",
+    150104: "玉泉区",
+    150105: "赛罕区",
+    150121: "土默特左旗",
+    150122: "托克托县",
+    150123: "和林格尔县",
+    150124: "清水河县",
+    150125: "武川县",
+    150172: "呼和浩特经济技术开发区",
+    150202: "东河区",
+    150203: "昆都仑区",
+    150204: "青山区",
+    150205: "石拐区",
+    150206: "白云鄂博矿区",
+    150207: "九原区",
+    150221: "土默特右旗",
+    150222: "固阳县",
+    150223: "达尔罕茂明安联合旗",
+    150271: "包头稀土高新技术产业开发区",
+    150302: "海勃湾区",
+    150303: "海南区",
+    150304: "乌达区",
+    150402: "红山区",
+    150403: "元宝山区",
+    150404: "松山区",
+    150421: "阿鲁科尔沁旗",
+    150422: "巴林左旗",
+    150423: "巴林右旗",
+    150424: "林西县",
+    150425: "克什克腾旗",
+    150426: "翁牛特旗",
+    150428: "喀喇沁旗",
+    150429: "宁城县",
+    150430: "敖汉旗",
+    150502: "科尔沁区",
+    150521: "科尔沁左翼中旗",
+    150522: "科尔沁左翼后旗",
+    150523: "开鲁县",
+    150524: "库伦旗",
+    150525: "奈曼旗",
+    150526: "扎鲁特旗",
+    150571: "通辽经济技术开发区",
+    150581: "霍林郭勒市",
+    150602: "东胜区",
+    150603: "康巴什区",
+    150621: "达拉特旗",
+    150622: "准格尔旗",
+    150623: "鄂托克前旗",
+    150624: "鄂托克旗",
+    150625: "杭锦旗",
+    150626: "乌审旗",
+    150627: "伊金霍洛旗",
+    150702: "海拉尔区",
+    150703: "扎赉诺尔区",
+    150721: "阿荣旗",
+    150722: "莫力达瓦达斡尔族自治旗",
+    150723: "鄂伦春自治旗",
+    150724: "鄂温克族自治旗",
+    150725: "陈巴尔虎旗",
+    150726: "新巴尔虎左旗",
+    150727: "新巴尔虎右旗",
+    150781: "满洲里市",
+    150782: "牙克石市",
+    150783: "扎兰屯市",
+    150784: "额尔古纳市",
+    150785: "根河市",
+    150802: "临河区",
+    150821: "五原县",
+    150822: "磴口县",
+    150823: "乌拉特前旗",
+    150824: "乌拉特中旗",
+    150825: "乌拉特后旗",
+    150826: "杭锦后旗",
+    150902: "集宁区",
+    150921: "卓资县",
+    150922: "化德县",
+    150923: "商都县",
+    150924: "兴和县",
+    150925: "凉城县",
+    150926: "察哈尔右翼前旗",
+    150927: "察哈尔右翼中旗",
+    150928: "察哈尔右翼后旗",
+    150929: "四子王旗",
+    150981: "丰镇市",
+    152201: "乌兰浩特市",
+    152202: "阿尔山市",
+    152221: "科尔沁右翼前旗",
+    152222: "科尔沁右翼中旗",
+    152223: "扎赉特旗",
+    152224: "突泉县",
+    152501: "二连浩特市",
+    152502: "锡林浩特市",
+    152522: "阿巴嘎旗",
+    152523: "苏尼特左旗",
+    152524: "苏尼特右旗",
+    152525: "东乌珠穆沁旗",
+    152526: "西乌珠穆沁旗",
+    152527: "太仆寺旗",
+    152528: "镶黄旗",
+    152529: "正镶白旗",
+    152530: "正蓝旗",
+    152531: "多伦县",
+    152571: "乌拉盖管委会",
+    152921: "阿拉善左旗",
+    152922: "阿拉善右旗",
+    152923: "额济纳旗",
+    152971: "内蒙古阿拉善经济开发区",
+    210102: "和平区",
+    210103: "沈河区",
+    210104: "大东区",
+    210105: "皇姑区",
+    210106: "铁西区",
+    210111: "苏家屯区",
+    210112: "浑南区",
+    210113: "沈北新区",
+    210114: "于洪区",
+    210115: "辽中区",
+    210123: "康平县",
+    210124: "法库县",
+    210181: "新民市",
+    210190: "经济技术开发区",
+    210202: "中山区",
+    210203: "西岗区",
+    210204: "沙河口区",
+    210211: "甘井子区",
+    210212: "旅顺口区",
+    210213: "金州区",
+    210214: "普兰店区",
+    210224: "长海县",
+    210281: "瓦房店市",
+    210283: "庄河市",
+    210302: "铁东区",
+    210303: "铁西区",
+    210304: "立山区",
+    210311: "千山区",
+    210321: "台安县",
+    210323: "岫岩满族自治县",
+    210381: "海城市",
+    210390: "高新区",
+    210402: "新抚区",
+    210403: "东洲区",
+    210404: "望花区",
+    210411: "顺城区",
+    210421: "抚顺县",
+    210422: "新宾满族自治县",
+    210423: "清原满族自治县",
+    210502: "平山区",
+    210503: "溪湖区",
+    210504: "明山区",
+    210505: "南芬区",
+    210521: "本溪满族自治县",
+    210522: "桓仁满族自治县",
+    210602: "元宝区",
+    210603: "振兴区",
+    210604: "振安区",
+    210624: "宽甸满族自治县",
+    210681: "东港市",
+    210682: "凤城市",
+    210702: "古塔区",
+    210703: "凌河区",
+    210711: "太和区",
+    210726: "黑山县",
+    210727: "义县",
+    210781: "凌海市",
+    210782: "北镇市",
+    210793: "经济技术开发区",
+    210802: "站前区",
+    210803: "西市区",
+    210804: "鲅鱼圈区",
+    210811: "老边区",
+    210881: "盖州市",
+    210882: "大石桥市",
+    210902: "海州区",
+    210903: "新邱区",
+    210904: "太平区",
+    210905: "清河门区",
+    210911: "细河区",
+    210921: "阜新蒙古族自治县",
+    210922: "彰武县",
+    211002: "白塔区",
+    211003: "文圣区",
+    211004: "宏伟区",
+    211005: "弓长岭区",
+    211011: "太子河区",
+    211021: "辽阳县",
+    211081: "灯塔市",
+    211102: "双台子区",
+    211103: "兴隆台区",
+    211104: "大洼区",
+    211122: "盘山县",
+    211202: "银州区",
+    211204: "清河区",
+    211221: "铁岭县",
+    211223: "西丰县",
+    211224: "昌图县",
+    211281: "调兵山市",
+    211282: "开原市",
+    211302: "双塔区",
+    211303: "龙城区",
+    211321: "朝阳县",
+    211322: "建平县",
+    211324: "喀喇沁左翼蒙古族自治县",
+    211381: "北票市",
+    211382: "凌源市",
+    211402: "连山区",
+    211403: "龙港区",
+    211404: "南票区",
+    211421: "绥中县",
+    211422: "建昌县",
+    211481: "兴城市",
+    220102: "南关区",
+    220103: "宽城区",
+    220104: "朝阳区",
+    220105: "二道区",
+    220106: "绿园区",
+    220112: "双阳区",
+    220113: "九台区",
+    220122: "农安县",
+    220171: "长春经济技术开发区",
+    220172: "长春净月高新技术产业开发区",
+    220173: "长春高新技术产业开发区",
+    220174: "长春汽车经济技术开发区",
+    220182: "榆树市",
+    220183: "德惠市",
+    220192: "经济技术开发区",
+    220202: "昌邑区",
+    220203: "龙潭区",
+    220204: "船营区",
+    220211: "丰满区",
+    220221: "永吉县",
+    220271: "吉林经济开发区",
+    220272: "吉林高新技术产业开发区",
+    220281: "蛟河市",
+    220282: "桦甸市",
+    220283: "舒兰市",
+    220284: "磐石市",
+    220302: "铁西区",
+    220303: "铁东区",
+    220322: "梨树县",
+    220323: "伊通满族自治县",
+    220381: "公主岭市",
+    220382: "双辽市",
+    220402: "龙山区",
+    220403: "西安区",
+    220421: "东丰县",
+    220422: "东辽县",
+    220502: "东昌区",
+    220503: "二道江区",
+    220521: "通化县",
+    220523: "辉南县",
+    220524: "柳河县",
+    220581: "梅河口市",
+    220582: "集安市",
+    220602: "浑江区",
+    220605: "江源区",
+    220621: "抚松县",
+    220622: "靖宇县",
+    220623: "长白朝鲜族自治县",
+    220681: "临江市",
+    220702: "宁江区",
+    220721: "前郭尔罗斯蒙古族自治县",
+    220722: "长岭县",
+    220723: "乾安县",
+    220771: "吉林松原经济开发区",
+    220781: "扶余市",
+    220802: "洮北区",
+    220821: "镇赉县",
+    220822: "通榆县",
+    220871: "吉林白城经济开发区",
+    220881: "洮南市",
+    220882: "大安市",
+    222401: "延吉市",
+    222402: "图们市",
+    222403: "敦化市",
+    222404: "珲春市",
+    222405: "龙井市",
+    222406: "和龙市",
+    222424: "汪清县",
+    222426: "安图县",
+    230102: "道里区",
+    230103: "南岗区",
+    230104: "道外区",
+    230108: "平房区",
+    230109: "松北区",
+    230110: "香坊区",
+    230111: "呼兰区",
+    230112: "阿城区",
+    230113: "双城区",
+    230123: "依兰县",
+    230124: "方正县",
+    230125: "宾县",
+    230126: "巴彦县",
+    230127: "木兰县",
+    230128: "通河县",
+    230129: "延寿县",
+    230183: "尚志市",
+    230184: "五常市",
+    230202: "龙沙区",
+    230203: "建华区",
+    230204: "铁锋区",
+    230205: "昂昂溪区",
+    230206: "富拉尔基区",
+    230207: "碾子山区",
+    230208: "梅里斯达斡尔族区",
+    230221: "龙江县",
+    230223: "依安县",
+    230224: "泰来县",
+    230225: "甘南县",
+    230227: "富裕县",
+    230229: "克山县",
+    230230: "克东县",
+    230231: "拜泉县",
+    230281: "讷河市",
+    230302: "鸡冠区",
+    230303: "恒山区",
+    230304: "滴道区",
+    230305: "梨树区",
+    230306: "城子河区",
+    230307: "麻山区",
+    230321: "鸡东县",
+    230381: "虎林市",
+    230382: "密山市",
+    230402: "向阳区",
+    230403: "工农区",
+    230404: "南山区",
+    230405: "兴安区",
+    230406: "东山区",
+    230407: "兴山区",
+    230421: "萝北县",
+    230422: "绥滨县",
+    230502: "尖山区",
+    230503: "岭东区",
+    230505: "四方台区",
+    230506: "宝山区",
+    230521: "集贤县",
+    230522: "友谊县",
+    230523: "宝清县",
+    230524: "饶河县",
+    230602: "萨尔图区",
+    230603: "龙凤区",
+    230604: "让胡路区",
+    230605: "红岗区",
+    230606: "大同区",
+    230621: "肇州县",
+    230622: "肇源县",
+    230623: "林甸县",
+    230624: "杜尔伯特蒙古族自治县",
+    230671: "大庆高新技术产业开发区",
+    230717: "伊美区",
+    230718: "乌翠区",
+    230719: "友好区",
+    230722: "嘉荫县",
+    230723: "汤旺县",
+    230724: "丰林县",
+    230725: "大箐山县",
+    230726: "南岔县",
+    230751: "金林区",
+    230781: "铁力市",
+    230803: "向阳区",
+    230804: "前进区",
+    230805: "东风区",
+    230811: "郊区",
+    230822: "桦南县",
+    230826: "桦川县",
+    230828: "汤原县",
+    230881: "同江市",
+    230882: "富锦市",
+    230883: "抚远市",
+    230902: "新兴区",
+    230903: "桃山区",
+    230904: "茄子河区",
+    230921: "勃利县",
+    231002: "东安区",
+    231003: "阳明区",
+    231004: "爱民区",
+    231005: "西安区",
+    231025: "林口县",
+    231081: "绥芬河市",
+    231083: "海林市",
+    231084: "宁安市",
+    231085: "穆棱市",
+    231086: "东宁市",
+    231102: "爱辉区",
+    231123: "逊克县",
+    231124: "孙吴县",
+    231181: "北安市",
+    231182: "五大连池市",
+    231183: "嫩江市",
+    231202: "北林区",
+    231221: "望奎县",
+    231222: "兰西县",
+    231223: "青冈县",
+    231224: "庆安县",
+    231225: "明水县",
+    231226: "绥棱县",
+    231281: "安达市",
+    231282: "肇东市",
+    231283: "海伦市",
+    232701: "漠河市",
+    232721: "呼玛县",
+    232722: "塔河县",
+    232790: "松岭区",
+    232791: "呼中区",
+    232792: "加格达奇区",
+    232793: "新林区",
+    310101: "黄浦区",
+    310104: "徐汇区",
+    310105: "长宁区",
+    310106: "静安区",
+    310107: "普陀区",
+    310109: "虹口区",
+    310110: "杨浦区",
+    310112: "闵行区",
+    310113: "宝山区",
+    310114: "嘉定区",
+    310115: "浦东新区",
+    310116: "金山区",
+    310117: "松江区",
+    310118: "青浦区",
+    310120: "奉贤区",
+    310151: "崇明区",
+    320102: "玄武区",
+    320104: "秦淮区",
+    320105: "建邺区",
+    320106: "鼓楼区",
+    320111: "浦口区",
+    320113: "栖霞区",
+    320114: "雨花台区",
+    320115: "江宁区",
+    320116: "六合区",
+    320117: "溧水区",
+    320118: "高淳区",
+    320205: "锡山区",
+    320206: "惠山区",
+    320211: "滨湖区",
+    320213: "梁溪区",
+    320214: "新吴区",
+    320281: "江阴市",
+    320282: "宜兴市",
+    320302: "鼓楼区",
+    320303: "云龙区",
+    320305: "贾汪区",
+    320311: "泉山区",
+    320312: "铜山区",
+    320321: "丰县",
+    320322: "沛县",
+    320324: "睢宁县",
+    320371: "徐州经济技术开发区",
+    320381: "新沂市",
+    320382: "邳州市",
+    320391: "工业园区",
+    320402: "天宁区",
+    320404: "钟楼区",
+    320411: "新北区",
+    320412: "武进区",
+    320413: "金坛区",
+    320481: "溧阳市",
+    320505: "虎丘区",
+    320506: "吴中区",
+    320507: "相城区",
+    320508: "姑苏区",
+    320509: "吴江区",
+    320571: "苏州工业园区",
+    320581: "常熟市",
+    320582: "张家港市",
+    320583: "昆山市",
+    320585: "太仓市",
+    320590: "工业园区",
+    320591: "高新区",
+    320602: "崇川区",
+    320611: "港闸区",
+    320612: "通州区",
+    320623: "如东县",
+    320681: "启东市",
+    320682: "如皋市",
+    320684: "海门市",
+    320685: "海安市",
+    320691: "高新区",
+    320703: "连云区",
+    320706: "海州区",
+    320707: "赣榆区",
+    320722: "东海县",
+    320723: "灌云县",
+    320724: "灌南县",
+    320771: "连云港经济技术开发区",
+    320803: "淮安区",
+    320804: "淮阴区",
+    320812: "清江浦区",
+    320813: "洪泽区",
+    320826: "涟水县",
+    320830: "盱眙县",
+    320831: "金湖县",
+    320871: "淮安经济技术开发区",
+    320890: "经济开发区",
+    320902: "亭湖区",
+    320903: "盐都区",
+    320904: "大丰区",
+    320921: "响水县",
+    320922: "滨海县",
+    320923: "阜宁县",
+    320924: "射阳县",
+    320925: "建湖县",
+    320971: "盐城经济技术开发区",
+    320981: "东台市",
+    321002: "广陵区",
+    321003: "邗江区",
+    321012: "江都区",
+    321023: "宝应县",
+    321071: "扬州经济技术开发区",
+    321081: "仪征市",
+    321084: "高邮市",
+    321090: "经济开发区",
+    321102: "京口区",
+    321111: "润州区",
+    321112: "丹徒区",
+    321150: "镇江新区",
+    321181: "丹阳市",
+    321182: "扬中市",
+    321183: "句容市",
+    321202: "海陵区",
+    321203: "高港区",
+    321204: "姜堰区",
+    321271: "泰州医药高新技术产业开发区",
+    321281: "兴化市",
+    321282: "靖江市",
+    321283: "泰兴市",
+    321302: "宿城区",
+    321311: "宿豫区",
+    321322: "沭阳县",
+    321323: "泗阳县",
+    321324: "泗洪县",
+    321371: "宿迁经济技术开发区",
+    330102: "上城区",
+    330105: "拱墅区",
+    330106: "西湖区",
+    330108: "滨江区",
+    330109: "萧山区",
+    330110: "余杭区",
+    330111: "富阳区",
+    330112: "临安区",
+    330113: "临平区",
+    330114: "钱塘区",
+    330122: "桐庐县",
+    330127: "淳安县",
+    330182: "建德市",
+    330203: "海曙区",
+    330205: "江北区",
+    330206: "北仑区",
+    330211: "镇海区",
+    330212: "鄞州区",
+    330213: "奉化区",
+    330225: "象山县",
+    330226: "宁海县",
+    330281: "余姚市",
+    330282: "慈溪市",
+    330302: "鹿城区",
+    330303: "龙湾区",
+    330304: "瓯海区",
+    330305: "洞头区",
+    330324: "永嘉县",
+    330326: "平阳县",
+    330327: "苍南县",
+    330328: "文成县",
+    330329: "泰顺县",
+    330381: "瑞安市",
+    330382: "乐清市",
+    330383: "龙港市",
+    330402: "南湖区",
+    330411: "秀洲区",
+    330421: "嘉善县",
+    330424: "海盐县",
+    330481: "海宁市",
+    330482: "平湖市",
+    330483: "桐乡市",
+    330502: "吴兴区",
+    330503: "南浔区",
+    330521: "德清县",
+    330522: "长兴县",
+    330523: "安吉县",
+    330602: "越城区",
+    330603: "柯桥区",
+    330604: "上虞区",
+    330624: "新昌县",
+    330681: "诸暨市",
+    330683: "嵊州市",
+    330702: "婺城区",
+    330703: "金东区",
+    330723: "武义县",
+    330726: "浦江县",
+    330727: "磐安县",
+    330781: "兰溪市",
+    330782: "义乌市",
+    330783: "东阳市",
+    330784: "永康市",
+    330802: "柯城区",
+    330803: "衢江区",
+    330822: "常山县",
+    330824: "开化县",
+    330825: "龙游县",
+    330881: "江山市",
+    330902: "定海区",
+    330903: "普陀区",
+    330921: "岱山县",
+    330922: "嵊泗县",
+    331002: "椒江区",
+    331003: "黄岩区",
+    331004: "路桥区",
+    331022: "三门县",
+    331023: "天台县",
+    331024: "仙居县",
+    331081: "温岭市",
+    331082: "临海市",
+    331083: "玉环市",
+    331102: "莲都区",
+    331121: "青田县",
+    331122: "缙云县",
+    331123: "遂昌县",
+    331124: "松阳县",
+    331125: "云和县",
+    331126: "庆元县",
+    331127: "景宁畲族自治县",
+    331181: "龙泉市",
+    340102: "瑶海区",
+    340103: "庐阳区",
+    340104: "蜀山区",
+    340111: "包河区",
+    340121: "长丰县",
+    340122: "肥东县",
+    340123: "肥西县",
+    340124: "庐江县",
+    340171: "合肥高新技术产业开发区",
+    340172: "合肥经济技术开发区",
+    340173: "合肥新站高新技术产业开发区",
+    340181: "巢湖市",
+    340190: "高新技术开发区",
+    340191: "经济技术开发区",
+    340202: "镜湖区",
+    340203: "弋江区",
+    340207: "鸠江区",
+    340208: "三山区",
+    340221: "芜湖县",
+    340222: "繁昌县",
+    340223: "南陵县",
+    340281: "无为市",
+    340302: "龙子湖区",
+    340303: "蚌山区",
+    340304: "禹会区",
+    340311: "淮上区",
+    340321: "怀远县",
+    340322: "五河县",
+    340323: "固镇县",
+    340371: "蚌埠市高新技术开发区",
+    340372: "蚌埠市经济开发区",
+    340402: "大通区",
+    340403: "田家庵区",
+    340404: "谢家集区",
+    340405: "八公山区",
+    340406: "潘集区",
+    340421: "凤台县",
+    340422: "寿县",
+    340503: "花山区",
+    340504: "雨山区",
+    340506: "博望区",
+    340521: "当涂县",
+    340522: "含山县",
+    340523: "和县",
+    340602: "杜集区",
+    340603: "相山区",
+    340604: "烈山区",
+    340621: "濉溪县",
+    340705: "铜官区",
+    340706: "义安区",
+    340711: "郊区",
+    340722: "枞阳县",
+    340802: "迎江区",
+    340803: "大观区",
+    340811: "宜秀区",
+    340822: "怀宁县",
+    340825: "太湖县",
+    340826: "宿松县",
+    340827: "望江县",
+    340828: "岳西县",
+    340881: "桐城市",
+    340882: "潜山市",
+    341002: "屯溪区",
+    341003: "黄山区",
+    341004: "徽州区",
+    341021: "歙县",
+    341022: "休宁县",
+    341023: "黟县",
+    341024: "祁门县",
+    341102: "琅琊区",
+    341103: "南谯区",
+    341122: "来安县",
+    341124: "全椒县",
+    341125: "定远县",
+    341126: "凤阳县",
+    341181: "天长市",
+    341182: "明光市",
+    341202: "颍州区",
+    341203: "颍东区",
+    341204: "颍泉区",
+    341221: "临泉县",
+    341222: "太和县",
+    341225: "阜南县",
+    341226: "颍上县",
+    341271: "阜阳合肥现代产业园区",
+    341282: "界首市",
+    341302: "埇桥区",
+    341321: "砀山县",
+    341322: "萧县",
+    341323: "灵璧县",
+    341324: "泗县",
+    341371: "宿州马鞍山现代产业园区",
+    341372: "宿州经济技术开发区",
+    341390: "经济开发区",
+    341502: "金安区",
+    341503: "裕安区",
+    341504: "叶集区",
+    341522: "霍邱县",
+    341523: "舒城县",
+    341524: "金寨县",
+    341525: "霍山县",
+    341602: "谯城区",
+    341621: "涡阳县",
+    341622: "蒙城县",
+    341623: "利辛县",
+    341702: "贵池区",
+    341721: "东至县",
+    341722: "石台县",
+    341723: "青阳县",
+    341802: "宣州区",
+    341821: "郎溪县",
+    341823: "泾县",
+    341824: "绩溪县",
+    341825: "旌德县",
+    341871: "宣城市经济开发区",
+    341881: "宁国市",
+    341882: "广德市",
+    350102: "鼓楼区",
+    350103: "台江区",
+    350104: "仓山区",
+    350105: "马尾区",
+    350111: "晋安区",
+    350112: "长乐区",
+    350121: "闽侯县",
+    350122: "连江县",
+    350123: "罗源县",
+    350124: "闽清县",
+    350125: "永泰县",
+    350128: "平潭县",
+    350181: "福清市",
+    350203: "思明区",
+    350205: "海沧区",
+    350206: "湖里区",
+    350211: "集美区",
+    350212: "同安区",
+    350213: "翔安区",
+    350302: "城厢区",
+    350303: "涵江区",
+    350304: "荔城区",
+    350305: "秀屿区",
+    350322: "仙游县",
+    350402: "梅列区",
+    350403: "三元区",
+    350421: "明溪县",
+    350423: "清流县",
+    350424: "宁化县",
+    350425: "大田县",
+    350426: "尤溪县",
+    350427: "沙县",
+    350428: "将乐县",
+    350429: "泰宁县",
+    350430: "建宁县",
+    350481: "永安市",
+    350502: "鲤城区",
+    350503: "丰泽区",
+    350504: "洛江区",
+    350505: "泉港区",
+    350521: "惠安县",
+    350524: "安溪县",
+    350525: "永春县",
+    350526: "德化县",
+    350527: "金门县",
+    350581: "石狮市",
+    350582: "晋江市",
+    350583: "南安市",
+    350602: "芗城区",
+    350603: "龙文区",
+    350622: "云霄县",
+    350623: "漳浦县",
+    350624: "诏安县",
+    350625: "长泰县",
+    350626: "东山县",
+    350627: "南靖县",
+    350628: "平和县",
+    350629: "华安县",
+    350681: "龙海市",
+    350702: "延平区",
+    350703: "建阳区",
+    350721: "顺昌县",
+    350722: "浦城县",
+    350723: "光泽县",
+    350724: "松溪县",
+    350725: "政和县",
+    350781: "邵武市",
+    350782: "武夷山市",
+    350783: "建瓯市",
+    350802: "新罗区",
+    350803: "永定区",
+    350821: "长汀县",
+    350823: "上杭县",
+    350824: "武平县",
+    350825: "连城县",
+    350881: "漳平市",
+    350902: "蕉城区",
+    350921: "霞浦县",
+    350922: "古田县",
+    350923: "屏南县",
+    350924: "寿宁县",
+    350925: "周宁县",
+    350926: "柘荣县",
+    350981: "福安市",
+    350982: "福鼎市",
+    360102: "东湖区",
+    360103: "西湖区",
+    360104: "青云谱区",
+    360111: "青山湖区",
+    360112: "新建区",
+    360113: "红谷滩区",
+    360121: "南昌县",
+    360123: "安义县",
+    360124: "进贤县",
+    360190: "经济技术开发区",
+    360192: "高新区",
+    360202: "昌江区",
+    360203: "珠山区",
+    360222: "浮梁县",
+    360281: "乐平市",
+    360302: "安源区",
+    360313: "湘东区",
+    360321: "莲花县",
+    360322: "上栗县",
+    360323: "芦溪县",
+    360402: "濂溪区",
+    360403: "浔阳区",
+    360404: "柴桑区",
+    360423: "武宁县",
+    360424: "修水县",
+    360425: "永修县",
+    360426: "德安县",
+    360428: "都昌县",
+    360429: "湖口县",
+    360430: "彭泽县",
+    360481: "瑞昌市",
+    360482: "共青城市",
+    360483: "庐山市",
+    360490: "经济技术开发区",
+    360502: "渝水区",
+    360521: "分宜县",
+    360602: "月湖区",
+    360603: "余江区",
+    360681: "贵溪市",
+    360702: "章贡区",
+    360703: "南康区",
+    360704: "赣县区",
+    360722: "信丰县",
+    360723: "大余县",
+    360724: "上犹县",
+    360725: "崇义县",
+    360726: "安远县",
+    360727: "龙南县",
+    360728: "定南县",
+    360729: "全南县",
+    360730: "宁都县",
+    360731: "于都县",
+    360732: "兴国县",
+    360733: "会昌县",
+    360734: "寻乌县",
+    360735: "石城县",
+    360781: "瑞金市",
+    360802: "吉州区",
+    360803: "青原区",
+    360821: "吉安县",
+    360822: "吉水县",
+    360823: "峡江县",
+    360824: "新干县",
+    360825: "永丰县",
+    360826: "泰和县",
+    360827: "遂川县",
+    360828: "万安县",
+    360829: "安福县",
+    360830: "永新县",
+    360881: "井冈山市",
+    360902: "袁州区",
+    360921: "奉新县",
+    360922: "万载县",
+    360923: "上高县",
+    360924: "宜丰县",
+    360925: "靖安县",
+    360926: "铜鼓县",
+    360981: "丰城市",
+    360982: "樟树市",
+    360983: "高安市",
+    361002: "临川区",
+    361003: "东乡区",
+    361021: "南城县",
+    361022: "黎川县",
+    361023: "南丰县",
+    361024: "崇仁县",
+    361025: "乐安县",
+    361026: "宜黄县",
+    361027: "金溪县",
+    361028: "资溪县",
+    361030: "广昌县",
+    361102: "信州区",
+    361103: "广丰区",
+    361104: "广信区",
+    361123: "玉山县",
+    361124: "铅山县",
+    361125: "横峰县",
+    361126: "弋阳县",
+    361127: "余干县",
+    361128: "鄱阳县",
+    361129: "万年县",
+    361130: "婺源县",
+    361181: "德兴市",
+    370102: "历下区",
+    370103: "市中区",
+    370104: "槐荫区",
+    370105: "天桥区",
+    370112: "历城区",
+    370113: "长清区",
+    370114: "章丘区",
+    370115: "济阳区",
+    370116: "莱芜区",
+    370117: "钢城区",
+    370124: "平阴县",
+    370126: "商河县",
+    370171: "济南高新技术产业开发区",
+    370190: "高新区",
+    370202: "市南区",
+    370203: "市北区",
+    370211: "黄岛区",
+    370212: "崂山区",
+    370213: "李沧区",
+    370214: "城阳区",
+    370215: "即墨区",
+    370271: "青岛高新技术产业开发区",
+    370281: "胶州市",
+    370283: "平度市",
+    370285: "莱西市",
+    370290: "开发区",
+    370302: "淄川区",
+    370303: "张店区",
+    370304: "博山区",
+    370305: "临淄区",
+    370306: "周村区",
+    370321: "桓台县",
+    370322: "高青县",
+    370323: "沂源县",
+    370402: "市中区",
+    370403: "薛城区",
+    370404: "峄城区",
+    370405: "台儿庄区",
+    370406: "山亭区",
+    370481: "滕州市",
+    370502: "东营区",
+    370503: "河口区",
+    370505: "垦利区",
+    370522: "利津县",
+    370523: "广饶县",
+    370571: "东营经济技术开发区",
+    370572: "东营港经济开发区",
+    370602: "芝罘区",
+    370611: "福山区",
+    370612: "牟平区",
+    370613: "莱山区",
+    370634: "长岛县",
+    370671: "烟台高新技术产业开发区",
+    370672: "烟台经济技术开发区",
+    370681: "龙口市",
+    370682: "莱阳市",
+    370683: "莱州市",
+    370684: "蓬莱市",
+    370685: "招远市",
+    370686: "栖霞市",
+    370687: "海阳市",
+    370690: "开发区",
+    370702: "潍城区",
+    370703: "寒亭区",
+    370704: "坊子区",
+    370705: "奎文区",
+    370724: "临朐县",
+    370725: "昌乐县",
+    370772: "潍坊滨海经济技术开发区",
+    370781: "青州市",
+    370782: "诸城市",
+    370783: "寿光市",
+    370784: "安丘市",
+    370785: "高密市",
+    370786: "昌邑市",
+    370790: "开发区",
+    370791: "高新区",
+    370811: "任城区",
+    370812: "兖州区",
+    370826: "微山县",
+    370827: "鱼台县",
+    370828: "金乡县",
+    370829: "嘉祥县",
+    370830: "汶上县",
+    370831: "泗水县",
+    370832: "梁山县",
+    370871: "济宁高新技术产业开发区",
+    370881: "曲阜市",
+    370883: "邹城市",
+    370890: "高新区",
+    370902: "泰山区",
+    370911: "岱岳区",
+    370921: "宁阳县",
+    370923: "东平县",
+    370982: "新泰市",
+    370983: "肥城市",
+    371002: "环翠区",
+    371003: "文登区",
+    371071: "威海火炬高技术产业开发区",
+    371072: "威海经济技术开发区",
+    371082: "荣成市",
+    371083: "乳山市",
+    371091: "经济技术开发区",
+    371102: "东港区",
+    371103: "岚山区",
+    371121: "五莲县",
+    371122: "莒县",
+    371171: "日照经济技术开发区",
+    371302: "兰山区",
+    371311: "罗庄区",
+    371312: "河东区",
+    371321: "沂南县",
+    371322: "郯城县",
+    371323: "沂水县",
+    371324: "兰陵县",
+    371325: "费县",
+    371326: "平邑县",
+    371327: "莒南县",
+    371328: "蒙阴县",
+    371329: "临沭县",
+    371371: "临沂高新技术产业开发区",
+    371402: "德城区",
+    371403: "陵城区",
+    371422: "宁津县",
+    371423: "庆云县",
+    371424: "临邑县",
+    371425: "齐河县",
+    371426: "平原县",
+    371427: "夏津县",
+    371428: "武城县",
+    371472: "德州运河经济开发区",
+    371481: "乐陵市",
+    371482: "禹城市",
+    371502: "东昌府区",
+    371503: "茌平区",
+    371521: "阳谷县",
+    371522: "莘县",
+    371524: "东阿县",
+    371525: "冠县",
+    371526: "高唐县",
+    371581: "临清市",
+    371602: "滨城区",
+    371603: "沾化区",
+    371621: "惠民县",
+    371622: "阳信县",
+    371623: "无棣县",
+    371625: "博兴县",
+    371681: "邹平市",
+    371702: "牡丹区",
+    371703: "定陶区",
+    371721: "曹县",
+    371722: "单县",
+    371723: "成武县",
+    371724: "巨野县",
+    371725: "郓城县",
+    371726: "鄄城县",
+    371728: "东明县",
+    371771: "菏泽经济技术开发区",
+    371772: "菏泽高新技术开发区",
+    410102: "中原区",
+    410103: "二七区",
+    410104: "管城回族区",
+    410105: "金水区",
+    410106: "上街区",
+    410108: "惠济区",
+    410122: "中牟县",
+    410171: "郑州经济技术开发区",
+    410172: "郑州高新技术产业开发区",
+    410173: "郑州航空港经济综合实验区",
+    410181: "巩义市",
+    410182: "荥阳市",
+    410183: "新密市",
+    410184: "新郑市",
+    410185: "登封市",
+    410190: "高新技术开发区",
+    410191: "经济技术开发区",
+    410202: "龙亭区",
+    410203: "顺河回族区",
+    410204: "鼓楼区",
+    410205: "禹王台区",
+    410212: "祥符区",
+    410221: "杞县",
+    410222: "通许县",
+    410223: "尉氏县",
+    410225: "兰考县",
+    410302: "老城区",
+    410303: "西工区",
+    410304: "瀍河回族区",
+    410305: "涧西区",
+    410306: "吉利区",
+    410311: "洛龙区",
+    410322: "孟津县",
+    410323: "新安县",
+    410324: "栾川县",
+    410325: "嵩县",
+    410326: "汝阳县",
+    410327: "宜阳县",
+    410328: "洛宁县",
+    410329: "伊川县",
+    410381: "偃师市",
+    410402: "新华区",
+    410403: "卫东区",
+    410404: "石龙区",
+    410411: "湛河区",
+    410421: "宝丰县",
+    410422: "叶县",
+    410423: "鲁山县",
+    410425: "郏县",
+    410471: "平顶山高新技术产业开发区",
+    410481: "舞钢市",
+    410482: "汝州市",
+    410502: "文峰区",
+    410503: "北关区",
+    410505: "殷都区",
+    410506: "龙安区",
+    410522: "安阳县",
+    410523: "汤阴县",
+    410526: "滑县",
+    410527: "内黄县",
+    410581: "林州市",
+    410590: "开发区",
+    410602: "鹤山区",
+    410603: "山城区",
+    410611: "淇滨区",
+    410621: "浚县",
+    410622: "淇县",
+    410702: "红旗区",
+    410703: "卫滨区",
+    410704: "凤泉区",
+    410711: "牧野区",
+    410721: "新乡县",
+    410724: "获嘉县",
+    410725: "原阳县",
+    410726: "延津县",
+    410727: "封丘县",
+    410771: "新乡高新技术产业开发区",
+    410772: "新乡经济技术开发区",
+    410781: "卫辉市",
+    410782: "辉县市",
+    410783: "长垣市",
+    410802: "解放区",
+    410803: "中站区",
+    410804: "马村区",
+    410811: "山阳区",
+    410821: "修武县",
+    410822: "博爱县",
+    410823: "武陟县",
+    410825: "温县",
+    410871: "焦作城乡一体化示范区",
+    410882: "沁阳市",
+    410883: "孟州市",
+    410902: "华龙区",
+    410922: "清丰县",
+    410923: "南乐县",
+    410926: "范县",
+    410927: "台前县",
+    410928: "濮阳县",
+    410971: "河南濮阳工业园区",
+    411002: "魏都区",
+    411003: "建安区",
+    411024: "鄢陵县",
+    411025: "襄城县",
+    411071: "许昌经济技术开发区",
+    411081: "禹州市",
+    411082: "长葛市",
+    411102: "源汇区",
+    411103: "郾城区",
+    411104: "召陵区",
+    411121: "舞阳县",
+    411122: "临颍县",
+    411171: "漯河经济技术开发区",
+    411202: "湖滨区",
+    411203: "陕州区",
+    411221: "渑池县",
+    411224: "卢氏县",
+    411271: "河南三门峡经济开发区",
+    411281: "义马市",
+    411282: "灵宝市",
+    411302: "宛城区",
+    411303: "卧龙区",
+    411321: "南召县",
+    411322: "方城县",
+    411323: "西峡县",
+    411324: "镇平县",
+    411325: "内乡县",
+    411326: "淅川县",
+    411327: "社旗县",
+    411328: "唐河县",
+    411329: "新野县",
+    411330: "桐柏县",
+    411372: "南阳市城乡一体化示范区",
+    411381: "邓州市",
+    411402: "梁园区",
+    411403: "睢阳区",
+    411421: "民权县",
+    411422: "睢县",
+    411423: "宁陵县",
+    411424: "柘城县",
+    411425: "虞城县",
+    411426: "夏邑县",
+    411481: "永城市",
+    411502: "浉河区",
+    411503: "平桥区",
+    411521: "罗山县",
+    411522: "光山县",
+    411523: "新县",
+    411524: "商城县",
+    411525: "固始县",
+    411526: "潢川县",
+    411527: "淮滨县",
+    411528: "息县",
+    411602: "川汇区",
+    411603: "淮阳区",
+    411621: "扶沟县",
+    411622: "西华县",
+    411623: "商水县",
+    411624: "沈丘县",
+    411625: "郸城县",
+    411627: "太康县",
+    411628: "鹿邑县",
+    411671: "河南周口经济开发区",
+    411681: "项城市",
+    411690: "经济开发区",
+    411702: "驿城区",
+    411721: "西平县",
+    411722: "上蔡县",
+    411723: "平舆县",
+    411724: "正阳县",
+    411725: "确山县",
+    411726: "泌阳县",
+    411727: "汝南县",
+    411728: "遂平县",
+    411729: "新蔡县",
+    419001: "济源市",
+    420102: "江岸区",
+    420103: "江汉区",
+    420104: "硚口区",
+    420105: "汉阳区",
+    420106: "武昌区",
+    420107: "青山区",
+    420111: "洪山区",
+    420112: "东西湖区",
+    420113: "汉南区",
+    420114: "蔡甸区",
+    420115: "江夏区",
+    420116: "黄陂区",
+    420117: "新洲区",
+    420202: "黄石港区",
+    420203: "西塞山区",
+    420204: "下陆区",
+    420205: "铁山区",
+    420222: "阳新县",
+    420281: "大冶市",
+    420302: "茅箭区",
+    420303: "张湾区",
+    420304: "郧阳区",
+    420322: "郧西县",
+    420323: "竹山县",
+    420324: "竹溪县",
+    420325: "房县",
+    420381: "丹江口市",
+    420502: "西陵区",
+    420503: "伍家岗区",
+    420504: "点军区",
+    420505: "猇亭区",
+    420506: "夷陵区",
+    420525: "远安县",
+    420526: "兴山县",
+    420527: "秭归县",
+    420528: "长阳土家族自治县",
+    420529: "五峰土家族自治县",
+    420581: "宜都市",
+    420582: "当阳市",
+    420583: "枝江市",
+    420590: "经济开发区",
+    420602: "襄城区",
+    420606: "樊城区",
+    420607: "襄州区",
+    420624: "南漳县",
+    420625: "谷城县",
+    420626: "保康县",
+    420682: "老河口市",
+    420683: "枣阳市",
+    420684: "宜城市",
+    420702: "梁子湖区",
+    420703: "华容区",
+    420704: "鄂城区",
+    420802: "东宝区",
+    420804: "掇刀区",
+    420822: "沙洋县",
+    420881: "钟祥市",
+    420882: "京山市",
+    420902: "孝南区",
+    420921: "孝昌县",
+    420922: "大悟县",
+    420923: "云梦县",
+    420981: "应城市",
+    420982: "安陆市",
+    420984: "汉川市",
+    421002: "沙市区",
+    421003: "荆州区",
+    421022: "公安县",
+    421023: "监利县",
+    421024: "江陵县",
+    421081: "石首市",
+    421083: "洪湖市",
+    421087: "松滋市",
+    421102: "黄州区",
+    421121: "团风县",
+    421122: "红安县",
+    421123: "罗田县",
+    421124: "英山县",
+    421125: "浠水县",
+    421126: "蕲春县",
+    421127: "黄梅县",
+    421171: "龙感湖管理区",
+    421181: "麻城市",
+    421182: "武穴市",
+    421202: "咸安区",
+    421221: "嘉鱼县",
+    421222: "通城县",
+    421223: "崇阳县",
+    421224: "通山县",
+    421281: "赤壁市",
+    421303: "曾都区",
+    421321: "随县",
+    421381: "广水市",
+    422801: "恩施市",
+    422802: "利川市",
+    422822: "建始县",
+    422823: "巴东县",
+    422825: "宣恩县",
+    422826: "咸丰县",
+    422827: "来凤县",
+    422828: "鹤峰县",
+    429004: "仙桃市",
+    429005: "潜江市",
+    429006: "天门市",
+    429021: "神农架林区",
+    430102: "芙蓉区",
+    430103: "天心区",
+    430104: "岳麓区",
+    430105: "开福区",
+    430111: "雨花区",
+    430112: "望城区",
+    430121: "长沙县",
+    430181: "浏阳市",
+    430182: "宁乡市",
+    430202: "荷塘区",
+    430203: "芦淞区",
+    430204: "石峰区",
+    430211: "天元区",
+    430212: "渌口区",
+    430223: "攸县",
+    430224: "茶陵县",
+    430225: "炎陵县",
+    430271: "云龙示范区",
+    430281: "醴陵市",
+    430302: "雨湖区",
+    430304: "岳塘区",
+    430321: "湘潭县",
+    430373: "湘潭九华示范区",
+    430381: "湘乡市",
+    430382: "韶山市",
+    430405: "珠晖区",
+    430406: "雁峰区",
+    430407: "石鼓区",
+    430408: "蒸湘区",
+    430412: "南岳区",
+    430421: "衡阳县",
+    430422: "衡南县",
+    430423: "衡山县",
+    430424: "衡东县",
+    430426: "祁东县",
+    430481: "耒阳市",
+    430482: "常宁市",
+    430502: "双清区",
+    430503: "大祥区",
+    430511: "北塔区",
+    430522: "新邵县",
+    430523: "邵阳县",
+    430524: "隆回县",
+    430525: "洞口县",
+    430527: "绥宁县",
+    430528: "新宁县",
+    430529: "城步苗族自治县",
+    430581: "武冈市",
+    430582: "邵东市",
+    430602: "岳阳楼区",
+    430603: "云溪区",
+    430611: "君山区",
+    430621: "岳阳县",
+    430623: "华容县",
+    430624: "湘阴县",
+    430626: "平江县",
+    430681: "汨罗市",
+    430682: "临湘市",
+    430702: "武陵区",
+    430703: "鼎城区",
+    430721: "安乡县",
+    430722: "汉寿县",
+    430723: "澧县",
+    430724: "临澧县",
+    430725: "桃源县",
+    430726: "石门县",
+    430781: "津市市",
+    430802: "永定区",
+    430811: "武陵源区",
+    430821: "慈利县",
+    430822: "桑植县",
+    430902: "资阳区",
+    430903: "赫山区",
+    430921: "南县",
+    430922: "桃江县",
+    430923: "安化县",
+    430971: "益阳市大通湖管理区",
+    430981: "沅江市",
+    431002: "北湖区",
+    431003: "苏仙区",
+    431021: "桂阳县",
+    431022: "宜章县",
+    431023: "永兴县",
+    431024: "嘉禾县",
+    431025: "临武县",
+    431026: "汝城县",
+    431027: "桂东县",
+    431028: "安仁县",
+    431081: "资兴市",
+    431102: "零陵区",
+    431103: "冷水滩区",
+    431121: "祁阳县",
+    431122: "东安县",
+    431123: "双牌县",
+    431124: "道县",
+    431125: "江永县",
+    431126: "宁远县",
+    431127: "蓝山县",
+    431128: "新田县",
+    431129: "江华瑶族自治县",
+    431202: "鹤城区",
+    431221: "中方县",
+    431222: "沅陵县",
+    431223: "辰溪县",
+    431224: "溆浦县",
+    431225: "会同县",
+    431226: "麻阳苗族自治县",
+    431227: "新晃侗族自治县",
+    431228: "芷江侗族自治县",
+    431229: "靖州苗族侗族自治县",
+    431230: "通道侗族自治县",
+    431271: "怀化市洪江管理区",
+    431281: "洪江市",
+    431302: "娄星区",
+    431321: "双峰县",
+    431322: "新化县",
+    431381: "冷水江市",
+    431382: "涟源市",
+    433101: "吉首市",
+    433122: "泸溪县",
+    433123: "凤凰县",
+    433124: "花垣县",
+    433125: "保靖县",
+    433126: "古丈县",
+    433127: "永顺县",
+    433130: "龙山县",
+    440103: "荔湾区",
+    440104: "越秀区",
+    440105: "海珠区",
+    440106: "天河区",
+    440111: "白云区",
+    440112: "黄埔区",
+    440113: "番禺区",
+    440114: "花都区",
+    440115: "南沙区",
+    440117: "从化区",
+    440118: "增城区",
+    440203: "武江区",
+    440204: "浈江区",
+    440205: "曲江区",
+    440222: "始兴县",
+    440224: "仁化县",
+    440229: "翁源县",
+    440232: "乳源瑶族自治县",
+    440233: "新丰县",
+    440281: "乐昌市",
+    440282: "南雄市",
+    440303: "罗湖区",
+    440304: "福田区",
+    440305: "南山区",
+    440306: "宝安区",
+    440307: "龙岗区",
+    440308: "盐田区",
+    440309: "龙华区",
+    440310: "坪山区",
+    440311: "光明区",
+    440402: "香洲区",
+    440403: "斗门区",
+    440404: "金湾区",
+    440507: "龙湖区",
+    440511: "金平区",
+    440512: "濠江区",
+    440513: "潮阳区",
+    440514: "潮南区",
+    440515: "澄海区",
+    440523: "南澳县",
+    440604: "禅城区",
+    440605: "南海区",
+    440606: "顺德区",
+    440607: "三水区",
+    440608: "高明区",
+    440703: "蓬江区",
+    440704: "江海区",
+    440705: "新会区",
+    440781: "台山市",
+    440783: "开平市",
+    440784: "鹤山市",
+    440785: "恩平市",
+    440802: "赤坎区",
+    440803: "霞山区",
+    440804: "坡头区",
+    440811: "麻章区",
+    440823: "遂溪县",
+    440825: "徐闻县",
+    440881: "廉江市",
+    440882: "雷州市",
+    440883: "吴川市",
+    440890: "经济技术开发区",
+    440902: "茂南区",
+    440904: "电白区",
+    440981: "高州市",
+    440982: "化州市",
+    440983: "信宜市",
+    441202: "端州区",
+    441203: "鼎湖区",
+    441204: "高要区",
+    441223: "广宁县",
+    441224: "怀集县",
+    441225: "封开县",
+    441226: "德庆县",
+    441284: "四会市",
+    441302: "惠城区",
+    441303: "惠阳区",
+    441322: "博罗县",
+    441323: "惠东县",
+    441324: "龙门县",
+    441402: "梅江区",
+    441403: "梅县区",
+    441422: "大埔县",
+    441423: "丰顺县",
+    441424: "五华县",
+    441426: "平远县",
+    441427: "蕉岭县",
+    441481: "兴宁市",
+    441502: "城区",
+    441521: "海丰县",
+    441523: "陆河县",
+    441581: "陆丰市",
+    441602: "源城区",
+    441621: "紫金县",
+    441622: "龙川县",
+    441623: "连平县",
+    441624: "和平县",
+    441625: "东源县",
+    441702: "江城区",
+    441704: "阳东区",
+    441721: "阳西县",
+    441781: "阳春市",
+    441802: "清城区",
+    441803: "清新区",
+    441821: "佛冈县",
+    441823: "阳山县",
+    441825: "连山壮族瑶族自治县",
+    441826: "连南瑶族自治县",
+    441881: "英德市",
+    441882: "连州市",
+    441901: "中堂镇",
+    441903: "南城街道",
+    441904: "长安镇",
+    441905: "东坑镇",
+    441906: "樟木头镇",
+    441907: "莞城街道",
+    441908: "石龙镇",
+    441909: "桥头镇",
+    441910: "万江街道",
+    441911: "麻涌镇",
+    441912: "虎门镇",
+    441913: "谢岗镇",
+    441914: "石碣镇",
+    441915: "茶山镇",
+    441916: "东城街道",
+    441917: "洪梅镇",
+    441918: "道滘镇",
+    441919: "高埗镇",
+    441920: "企石镇",
+    441921: "凤岗镇",
+    441922: "大岭山镇",
+    441923: "松山湖",
+    441924: "清溪镇",
+    441925: "望牛墩镇",
+    441926: "厚街镇",
+    441927: "常平镇",
+    441928: "寮步镇",
+    441929: "石排镇",
+    441930: "横沥镇",
+    441931: "塘厦镇",
+    441932: "黄江镇",
+    441933: "大朗镇",
+    441934: "东莞港",
+    441935: "东莞生态园",
+    441990: "沙田镇",
+    442001: "南头镇",
+    442002: "神湾镇",
+    442003: "东凤镇",
+    442004: "五桂山街道",
+    442005: "黄圃镇",
+    442006: "小榄镇",
+    442007: "石岐街道",
+    442008: "横栏镇",
+    442009: "三角镇",
+    442010: "三乡镇",
+    442011: "港口镇",
+    442012: "沙溪镇",
+    442013: "板芙镇",
+    442015: "东升镇",
+    442016: "阜沙镇",
+    442017: "民众镇",
+    442018: "东区街道",
+    442019: "火炬开发区街道办事处",
+    442020: "西区街道",
+    442021: "南区街道",
+    442022: "古镇镇",
+    442023: "坦洲镇",
+    442024: "大涌镇",
+    442025: "南朗镇",
+    445102: "湘桥区",
+    445103: "潮安区",
+    445122: "饶平县",
+    445202: "榕城区",
+    445203: "揭东区",
+    445222: "揭西县",
+    445224: "惠来县",
+    445281: "普宁市",
+    445302: "云城区",
+    445303: "云安区",
+    445321: "新兴县",
+    445322: "郁南县",
+    445381: "罗定市",
+    450102: "兴宁区",
+    450103: "青秀区",
+    450105: "江南区",
+    450107: "西乡塘区",
+    450108: "良庆区",
+    450109: "邕宁区",
+    450110: "武鸣区",
+    450123: "隆安县",
+    450124: "马山县",
+    450125: "上林县",
+    450126: "宾阳县",
+    450127: "横县",
+    450202: "城中区",
+    450203: "鱼峰区",
+    450204: "柳南区",
+    450205: "柳北区",
+    450206: "柳江区",
+    450222: "柳城县",
+    450223: "鹿寨县",
+    450224: "融安县",
+    450225: "融水苗族自治县",
+    450226: "三江侗族自治县",
+    450302: "秀峰区",
+    450303: "叠彩区",
+    450304: "象山区",
+    450305: "七星区",
+    450311: "雁山区",
+    450312: "临桂区",
+    450321: "阳朔县",
+    450323: "灵川县",
+    450324: "全州县",
+    450325: "兴安县",
+    450326: "永福县",
+    450327: "灌阳县",
+    450328: "龙胜各族自治县",
+    450329: "资源县",
+    450330: "平乐县",
+    450332: "恭城瑶族自治县",
+    450381: "荔浦市",
+    450403: "万秀区",
+    450405: "长洲区",
+    450406: "龙圩区",
+    450421: "苍梧县",
+    450422: "藤县",
+    450423: "蒙山县",
+    450481: "岑溪市",
+    450502: "海城区",
+    450503: "银海区",
+    450512: "铁山港区",
+    450521: "合浦县",
+    450602: "港口区",
+    450603: "防城区",
+    450621: "上思县",
+    450681: "东兴市",
+    450702: "钦南区",
+    450703: "钦北区",
+    450721: "灵山县",
+    450722: "浦北县",
+    450802: "港北区",
+    450803: "港南区",
+    450804: "覃塘区",
+    450821: "平南县",
+    450881: "桂平市",
+    450902: "玉州区",
+    450903: "福绵区",
+    450921: "容县",
+    450922: "陆川县",
+    450923: "博白县",
+    450924: "兴业县",
+    450981: "北流市",
+    451002: "右江区",
+    451003: "田阳区",
+    451022: "田东县",
+    451024: "德保县",
+    451026: "那坡县",
+    451027: "凌云县",
+    451028: "乐业县",
+    451029: "田林县",
+    451030: "西林县",
+    451031: "隆林各族自治县",
+    451081: "靖西市",
+    451082: "平果市",
+    451102: "八步区",
+    451103: "平桂区",
+    451121: "昭平县",
+    451122: "钟山县",
+    451123: "富川瑶族自治县",
+    451202: "金城江区",
+    451203: "宜州区",
+    451221: "南丹县",
+    451222: "天峨县",
+    451223: "凤山县",
+    451224: "东兰县",
+    451225: "罗城仫佬族自治县",
+    451226: "环江毛南族自治县",
+    451227: "巴马瑶族自治县",
+    451228: "都安瑶族自治县",
+    451229: "大化瑶族自治县",
+    451302: "兴宾区",
+    451321: "忻城县",
+    451322: "象州县",
+    451323: "武宣县",
+    451324: "金秀瑶族自治县",
+    451381: "合山市",
+    451402: "江州区",
+    451421: "扶绥县",
+    451422: "宁明县",
+    451423: "龙州县",
+    451424: "大新县",
+    451425: "天等县",
+    451481: "凭祥市",
+    460105: "秀英区",
+    460106: "龙华区",
+    460107: "琼山区",
+    460108: "美兰区",
+    460202: "海棠区",
+    460203: "吉阳区",
+    460204: "天涯区",
+    460205: "崖州区",
+    460321: "西沙区",
+    460322: "南沙区",
+    460401: "那大镇",
+    460402: "和庆镇",
+    460403: "南丰镇",
+    460404: "大成镇",
+    460405: "雅星镇",
+    460406: "兰洋镇",
+    460407: "光村镇",
+    460408: "木棠镇",
+    460409: "海头镇",
+    460410: "峨蔓镇",
+    460411: "王五镇",
+    460412: "白马井镇",
+    460413: "中和镇",
+    460414: "排浦镇",
+    460415: "东成镇",
+    460416: "新州镇",
+    460417: "洋浦经济开发区",
+    460418: "华南热作学院",
+    469001: "五指山市",
+    469002: "琼海市",
+    469005: "文昌市",
+    469006: "万宁市",
+    469007: "东方市",
+    469021: "定安县",
+    469022: "屯昌县",
+    469023: "澄迈县",
+    469024: "临高县",
+    469025: "白沙黎族自治县",
+    469026: "昌江黎族自治县",
+    469027: "乐东黎族自治县",
+    469028: "陵水黎族自治县",
+    469029: "保亭黎族苗族自治县",
+    469030: "琼中黎族苗族自治县",
+    500101: "万州区",
+    500102: "涪陵区",
+    500103: "渝中区",
+    500104: "大渡口区",
+    500105: "江北区",
+    500106: "沙坪坝区",
+    500107: "九龙坡区",
+    500108: "南岸区",
+    500109: "北碚区",
+    500110: "綦江区",
+    500111: "大足区",
+    500112: "渝北区",
+    500113: "巴南区",
+    500114: "黔江区",
+    500115: "长寿区",
+    500116: "江津区",
+    500117: "合川区",
+    500118: "永川区",
+    500119: "南川区",
+    500120: "璧山区",
+    500151: "铜梁区",
+    500152: "潼南区",
+    500153: "荣昌区",
+    500154: "开州区",
+    500155: "梁平区",
+    500156: "武隆区",
+    500229: "城口县",
+    500230: "丰都县",
+    500231: "垫江县",
+    500233: "忠县",
+    500235: "云阳县",
+    500236: "奉节县",
+    500237: "巫山县",
+    500238: "巫溪县",
+    500240: "石柱土家族自治县",
+    500241: "秀山土家族苗族自治县",
+    500242: "酉阳土家族苗族自治县",
+    500243: "彭水苗族土家族自治县",
+    510104: "锦江区",
+    510105: "青羊区",
+    510106: "金牛区",
+    510107: "武侯区",
+    510108: "成华区",
+    510112: "龙泉驿区",
+    510113: "青白江区",
+    510114: "新都区",
+    510115: "温江区",
+    510116: "双流区",
+    510117: "郫都区",
+    510121: "金堂县",
+    510129: "大邑县",
+    510131: "蒲江县",
+    510132: "新津县",
+    510181: "都江堰市",
+    510182: "彭州市",
+    510183: "邛崃市",
+    510184: "崇州市",
+    510185: "简阳市",
+    510191: "高新区",
+    510302: "自流井区",
+    510303: "贡井区",
+    510304: "大安区",
+    510311: "沿滩区",
+    510321: "荣县",
+    510322: "富顺县",
+    510402: "东区",
+    510403: "西区",
+    510411: "仁和区",
+    510421: "米易县",
+    510422: "盐边县",
+    510502: "江阳区",
+    510503: "纳溪区",
+    510504: "龙马潭区",
+    510521: "泸县",
+    510522: "合江县",
+    510524: "叙永县",
+    510525: "古蔺县",
+    510603: "旌阳区",
+    510604: "罗江区",
+    510623: "中江县",
+    510681: "广汉市",
+    510682: "什邡市",
+    510683: "绵竹市",
+    510703: "涪城区",
+    510704: "游仙区",
+    510705: "安州区",
+    510722: "三台县",
+    510723: "盐亭县",
+    510725: "梓潼县",
+    510726: "北川羌族自治县",
+    510727: "平武县",
+    510781: "江油市",
+    510791: "高新区",
+    510802: "利州区",
+    510811: "昭化区",
+    510812: "朝天区",
+    510821: "旺苍县",
+    510822: "青川县",
+    510823: "剑阁县",
+    510824: "苍溪县",
+    510903: "船山区",
+    510904: "安居区",
+    510921: "蓬溪县",
+    510923: "大英县",
+    510981: "射洪市",
+    511002: "市中区",
+    511011: "东兴区",
+    511024: "威远县",
+    511025: "资中县",
+    511083: "隆昌市",
+    511102: "市中区",
+    511111: "沙湾区",
+    511112: "五通桥区",
+    511113: "金口河区",
+    511123: "犍为县",
+    511124: "井研县",
+    511126: "夹江县",
+    511129: "沐川县",
+    511132: "峨边彝族自治县",
+    511133: "马边彝族自治县",
+    511181: "峨眉山市",
+    511302: "顺庆区",
+    511303: "高坪区",
+    511304: "嘉陵区",
+    511321: "南部县",
+    511322: "营山县",
+    511323: "蓬安县",
+    511324: "仪陇县",
+    511325: "西充县",
+    511381: "阆中市",
+    511402: "东坡区",
+    511403: "彭山区",
+    511421: "仁寿县",
+    511423: "洪雅县",
+    511424: "丹棱县",
+    511425: "青神县",
+    511502: "翠屏区",
+    511503: "南溪区",
+    511504: "叙州区",
+    511523: "江安县",
+    511524: "长宁县",
+    511525: "高县",
+    511526: "珙县",
+    511527: "筠连县",
+    511528: "兴文县",
+    511529: "屏山县",
+    511602: "广安区",
+    511603: "前锋区",
+    511621: "岳池县",
+    511622: "武胜县",
+    511623: "邻水县",
+    511681: "华蓥市",
+    511702: "通川区",
+    511703: "达川区",
+    511722: "宣汉县",
+    511723: "开江县",
+    511724: "大竹县",
+    511725: "渠县",
+    511781: "万源市",
+    511802: "雨城区",
+    511803: "名山区",
+    511822: "荥经县",
+    511823: "汉源县",
+    511824: "石棉县",
+    511825: "天全县",
+    511826: "芦山县",
+    511827: "宝兴县",
+    511902: "巴州区",
+    511903: "恩阳区",
+    511921: "通江县",
+    511922: "南江县",
+    511923: "平昌县",
+    511971: "巴中经济开发区",
+    512002: "雁江区",
+    512021: "安岳县",
+    512022: "乐至县",
+    513201: "马尔康市",
+    513221: "汶川县",
+    513222: "理县",
+    513223: "茂县",
+    513224: "松潘县",
+    513225: "九寨沟县",
+    513226: "金川县",
+    513227: "小金县",
+    513228: "黑水县",
+    513230: "壤塘县",
+    513231: "阿坝县",
+    513232: "若尔盖县",
+    513233: "红原县",
+    513301: "康定市",
+    513322: "泸定县",
+    513323: "丹巴县",
+    513324: "九龙县",
+    513325: "雅江县",
+    513326: "道孚县",
+    513327: "炉霍县",
+    513328: "甘孜县",
+    513329: "新龙县",
+    513330: "德格县",
+    513331: "白玉县",
+    513332: "石渠县",
+    513333: "色达县",
+    513334: "理塘县",
+    513335: "巴塘县",
+    513336: "乡城县",
+    513337: "稻城县",
+    513338: "得荣县",
+    513401: "西昌市",
+    513422: "木里藏族自治县",
+    513423: "盐源县",
+    513424: "德昌县",
+    513425: "会理县",
+    513426: "会东县",
+    513427: "宁南县",
+    513428: "普格县",
+    513429: "布拖县",
+    513430: "金阳县",
+    513431: "昭觉县",
+    513432: "喜德县",
+    513433: "冕宁县",
+    513434: "越西县",
+    513435: "甘洛县",
+    513436: "美姑县",
+    513437: "雷波县",
+    520102: "南明区",
+    520103: "云岩区",
+    520111: "花溪区",
+    520112: "乌当区",
+    520113: "白云区",
+    520115: "观山湖区",
+    520121: "开阳县",
+    520122: "息烽县",
+    520123: "修文县",
+    520181: "清镇市",
+    520201: "钟山区",
+    520203: "六枝特区",
+    520221: "水城县",
+    520281: "盘州市",
+    520302: "红花岗区",
+    520303: "汇川区",
+    520304: "播州区",
+    520322: "桐梓县",
+    520323: "绥阳县",
+    520324: "正安县",
+    520325: "道真仡佬族苗族自治县",
+    520326: "务川仡佬族苗族自治县",
+    520327: "凤冈县",
+    520328: "湄潭县",
+    520329: "余庆县",
+    520330: "习水县",
+    520381: "赤水市",
+    520382: "仁怀市",
+    520402: "西秀区",
+    520403: "平坝区",
+    520422: "普定县",
+    520423: "镇宁布依族苗族自治县",
+    520424: "关岭布依族苗族自治县",
+    520425: "紫云苗族布依族自治县",
+    520502: "七星关区",
+    520521: "大方县",
+    520522: "黔西县",
+    520523: "金沙县",
+    520524: "织金县",
+    520525: "纳雍县",
+    520526: "威宁彝族回族苗族自治县",
+    520527: "赫章县",
+    520602: "碧江区",
+    520603: "万山区",
+    520621: "江口县",
+    520622: "玉屏侗族自治县",
+    520623: "石阡县",
+    520624: "思南县",
+    520625: "印江土家族苗族自治县",
+    520626: "德江县",
+    520627: "沿河土家族自治县",
+    520628: "松桃苗族自治县",
+    522301: "兴义市",
+    522302: "兴仁市",
+    522323: "普安县",
+    522324: "晴隆县",
+    522325: "贞丰县",
+    522326: "望谟县",
+    522327: "册亨县",
+    522328: "安龙县",
+    522601: "凯里市",
+    522622: "黄平县",
+    522623: "施秉县",
+    522624: "三穗县",
+    522625: "镇远县",
+    522626: "岑巩县",
+    522627: "天柱县",
+    522628: "锦屏县",
+    522629: "剑河县",
+    522630: "台江县",
+    522631: "黎平县",
+    522632: "榕江县",
+    522633: "从江县",
+    522634: "雷山县",
+    522635: "麻江县",
+    522636: "丹寨县",
+    522701: "都匀市",
+    522702: "福泉市",
+    522722: "荔波县",
+    522723: "贵定县",
+    522725: "瓮安县",
+    522726: "独山县",
+    522727: "平塘县",
+    522728: "罗甸县",
+    522729: "长顺县",
+    522730: "龙里县",
+    522731: "惠水县",
+    522732: "三都水族自治县",
+    530102: "五华区",
+    530103: "盘龙区",
+    530111: "官渡区",
+    530112: "西山区",
+    530113: "东川区",
+    530114: "呈贡区",
+    530115: "晋宁区",
+    530124: "富民县",
+    530125: "宜良县",
+    530126: "石林彝族自治县",
+    530127: "嵩明县",
+    530128: "禄劝彝族苗族自治县",
+    530129: "寻甸回族彝族自治县",
+    530181: "安宁市",
+    530302: "麒麟区",
+    530303: "沾益区",
+    530304: "马龙区",
+    530322: "陆良县",
+    530323: "师宗县",
+    530324: "罗平县",
+    530325: "富源县",
+    530326: "会泽县",
+    530381: "宣威市",
+    530402: "红塔区",
+    530403: "江川区",
+    530423: "通海县",
+    530424: "华宁县",
+    530425: "易门县",
+    530426: "峨山彝族自治县",
+    530427: "新平彝族傣族自治县",
+    530428: "元江哈尼族彝族傣族自治县",
+    530481: "澄江市",
+    530502: "隆阳区",
+    530521: "施甸县",
+    530523: "龙陵县",
+    530524: "昌宁县",
+    530581: "腾冲市",
+    530602: "昭阳区",
+    530621: "鲁甸县",
+    530622: "巧家县",
+    530623: "盐津县",
+    530624: "大关县",
+    530625: "永善县",
+    530626: "绥江县",
+    530627: "镇雄县",
+    530628: "彝良县",
+    530629: "威信县",
+    530681: "水富市",
+    530702: "古城区",
+    530721: "玉龙纳西族自治县",
+    530722: "永胜县",
+    530723: "华坪县",
+    530724: "宁蒗彝族自治县",
+    530802: "思茅区",
+    530821: "宁洱哈尼族彝族自治县",
+    530822: "墨江哈尼族自治县",
+    530823: "景东彝族自治县",
+    530824: "景谷傣族彝族自治县",
+    530825: "镇沅彝族哈尼族拉祜族自治县",
+    530826: "江城哈尼族彝族自治县",
+    530827: "孟连傣族拉祜族佤族自治县",
+    530828: "澜沧拉祜族自治县",
+    530829: "西盟佤族自治县",
+    530902: "临翔区",
+    530921: "凤庆县",
+    530922: "云县",
+    530923: "永德县",
+    530924: "镇康县",
+    530925: "双江拉祜族佤族布朗族傣族自治县",
+    530926: "耿马傣族佤族自治县",
+    530927: "沧源佤族自治县",
+    532301: "楚雄市",
+    532322: "双柏县",
+    532323: "牟定县",
+    532324: "南华县",
+    532325: "姚安县",
+    532326: "大姚县",
+    532327: "永仁县",
+    532328: "元谋县",
+    532329: "武定县",
+    532331: "禄丰县",
+    532501: "个旧市",
+    532502: "开远市",
+    532503: "蒙自市",
+    532504: "弥勒市",
+    532523: "屏边苗族自治县",
+    532524: "建水县",
+    532525: "石屏县",
+    532527: "泸西县",
+    532528: "元阳县",
+    532529: "红河县",
+    532530: "金平苗族瑶族傣族自治县",
+    532531: "绿春县",
+    532532: "河口瑶族自治县",
+    532601: "文山市",
+    532622: "砚山县",
+    532623: "西畴县",
+    532624: "麻栗坡县",
+    532625: "马关县",
+    532626: "丘北县",
+    532627: "广南县",
+    532628: "富宁县",
+    532801: "景洪市",
+    532822: "勐海县",
+    532823: "勐腊县",
+    532901: "大理市",
+    532922: "漾濞彝族自治县",
+    532923: "祥云县",
+    532924: "宾川县",
+    532925: "弥渡县",
+    532926: "南涧彝族自治县",
+    532927: "巍山彝族回族自治县",
+    532928: "永平县",
+    532929: "云龙县",
+    532930: "洱源县",
+    532931: "剑川县",
+    532932: "鹤庆县",
+    533102: "瑞丽市",
+    533103: "芒市",
+    533122: "梁河县",
+    533123: "盈江县",
+    533124: "陇川县",
+    533301: "泸水市",
+    533323: "福贡县",
+    533324: "贡山独龙族怒族自治县",
+    533325: "兰坪白族普米族自治县",
+    533401: "香格里拉市",
+    533422: "德钦县",
+    533423: "维西傈僳族自治县",
+    540102: "城关区",
+    540103: "堆龙德庆区",
+    540104: "达孜区",
+    540121: "林周县",
+    540122: "当雄县",
+    540123: "尼木县",
+    540124: "曲水县",
+    540127: "墨竹工卡县",
+    540202: "桑珠孜区",
+    540221: "南木林县",
+    540222: "江孜县",
+    540223: "定日县",
+    540224: "萨迦县",
+    540225: "拉孜县",
+    540226: "昂仁县",
+    540227: "谢通门县",
+    540228: "白朗县",
+    540229: "仁布县",
+    540230: "康马县",
+    540231: "定结县",
+    540232: "仲巴县",
+    540233: "亚东县",
+    540234: "吉隆县",
+    540235: "聂拉木县",
+    540236: "萨嘎县",
+    540237: "岗巴县",
+    540302: "卡若区",
+    540321: "江达县",
+    540322: "贡觉县",
+    540323: "类乌齐县",
+    540324: "丁青县",
+    540325: "察雅县",
+    540326: "八宿县",
+    540327: "左贡县",
+    540328: "芒康县",
+    540329: "洛隆县",
+    540330: "边坝县",
+    540402: "巴宜区",
+    540421: "工布江达县",
+    540422: "米林县",
+    540423: "墨脱县",
+    540424: "波密县",
+    540425: "察隅县",
+    540426: "朗县",
+    540502: "乃东区",
+    540521: "扎囊县",
+    540522: "贡嘎县",
+    540523: "桑日县",
+    540524: "琼结县",
+    540525: "曲松县",
+    540526: "措美县",
+    540527: "洛扎县",
+    540528: "加查县",
+    540529: "隆子县",
+    540530: "错那县",
+    540531: "浪卡子县",
+    540602: "色尼区",
+    540621: "嘉黎县",
+    540622: "比如县",
+    540623: "聂荣县",
+    540624: "安多县",
+    540625: "申扎县",
+    540626: "索县",
+    540627: "班戈县",
+    540628: "巴青县",
+    540629: "尼玛县",
+    540630: "双湖县",
+    542521: "普兰县",
+    542522: "札达县",
+    542523: "噶尔县",
+    542524: "日土县",
+    542525: "革吉县",
+    542526: "改则县",
+    542527: "措勤县",
+    610102: "新城区",
+    610103: "碑林区",
+    610104: "莲湖区",
+    610111: "灞桥区",
+    610112: "未央区",
+    610113: "雁塔区",
+    610114: "阎良区",
+    610115: "临潼区",
+    610116: "长安区",
+    610117: "高陵区",
+    610118: "鄠邑区",
+    610122: "蓝田县",
+    610124: "周至县",
+    610202: "王益区",
+    610203: "印台区",
+    610204: "耀州区",
+    610222: "宜君县",
+    610302: "渭滨区",
+    610303: "金台区",
+    610304: "陈仓区",
+    610322: "凤翔县",
+    610323: "岐山县",
+    610324: "扶风县",
+    610326: "眉县",
+    610327: "陇县",
+    610328: "千阳县",
+    610329: "麟游县",
+    610330: "凤县",
+    610331: "太白县",
+    610402: "秦都区",
+    610403: "杨陵区",
+    610404: "渭城区",
+    610422: "三原县",
+    610423: "泾阳县",
+    610424: "乾县",
+    610425: "礼泉县",
+    610426: "永寿县",
+    610428: "长武县",
+    610429: "旬邑县",
+    610430: "淳化县",
+    610431: "武功县",
+    610481: "兴平市",
+    610482: "彬州市",
+    610502: "临渭区",
+    610503: "华州区",
+    610522: "潼关县",
+    610523: "大荔县",
+    610524: "合阳县",
+    610525: "澄城县",
+    610526: "蒲城县",
+    610527: "白水县",
+    610528: "富平县",
+    610581: "韩城市",
+    610582: "华阴市",
+    610602: "宝塔区",
+    610603: "安塞区",
+    610621: "延长县",
+    610622: "延川县",
+    610625: "志丹县",
+    610626: "吴起县",
+    610627: "甘泉县",
+    610628: "富县",
+    610629: "洛川县",
+    610630: "宜川县",
+    610631: "黄龙县",
+    610632: "黄陵县",
+    610681: "子长市",
+    610702: "汉台区",
+    610703: "南郑区",
+    610722: "城固县",
+    610723: "洋县",
+    610724: "西乡县",
+    610725: "勉县",
+    610726: "宁强县",
+    610727: "略阳县",
+    610728: "镇巴县",
+    610729: "留坝县",
+    610730: "佛坪县",
+    610802: "榆阳区",
+    610803: "横山区",
+    610822: "府谷县",
+    610824: "靖边县",
+    610825: "定边县",
+    610826: "绥德县",
+    610827: "米脂县",
+    610828: "佳县",
+    610829: "吴堡县",
+    610830: "清涧县",
+    610831: "子洲县",
+    610881: "神木市",
+    610902: "汉滨区",
+    610921: "汉阴县",
+    610922: "石泉县",
+    610923: "宁陕县",
+    610924: "紫阳县",
+    610925: "岚皋县",
+    610926: "平利县",
+    610927: "镇坪县",
+    610928: "旬阳县",
+    610929: "白河县",
+    611002: "商州区",
+    611021: "洛南县",
+    611022: "丹凤县",
+    611023: "商南县",
+    611024: "山阳县",
+    611025: "镇安县",
+    611026: "柞水县",
+    620102: "城关区",
+    620103: "七里河区",
+    620104: "西固区",
+    620105: "安宁区",
+    620111: "红古区",
+    620121: "永登县",
+    620122: "皋兰县",
+    620123: "榆中县",
+    620171: "兰州新区",
+    620201: "市辖区",
+    620290: "雄关区",
+    620291: "长城区",
+    620292: "镜铁区",
+    620293: "新城镇",
+    620294: "峪泉镇",
+    620295: "文殊镇",
+    620302: "金川区",
+    620321: "永昌县",
+    620402: "白银区",
+    620403: "平川区",
+    620421: "靖远县",
+    620422: "会宁县",
+    620423: "景泰县",
+    620502: "秦州区",
+    620503: "麦积区",
+    620521: "清水县",
+    620522: "秦安县",
+    620523: "甘谷县",
+    620524: "武山县",
+    620525: "张家川回族自治县",
+    620602: "凉州区",
+    620621: "民勤县",
+    620622: "古浪县",
+    620623: "天祝藏族自治县",
+    620702: "甘州区",
+    620721: "肃南裕固族自治县",
+    620722: "民乐县",
+    620723: "临泽县",
+    620724: "高台县",
+    620725: "山丹县",
+    620802: "崆峒区",
+    620821: "泾川县",
+    620822: "灵台县",
+    620823: "崇信县",
+    620825: "庄浪县",
+    620826: "静宁县",
+    620881: "华亭市",
+    620902: "肃州区",
+    620921: "金塔县",
+    620922: "瓜州县",
+    620923: "肃北蒙古族自治县",
+    620924: "阿克塞哈萨克族自治县",
+    620981: "玉门市",
+    620982: "敦煌市",
+    621002: "西峰区",
+    621021: "庆城县",
+    621022: "环县",
+    621023: "华池县",
+    621024: "合水县",
+    621025: "正宁县",
+    621026: "宁县",
+    621027: "镇原县",
+    621102: "安定区",
+    621121: "通渭县",
+    621122: "陇西县",
+    621123: "渭源县",
+    621124: "临洮县",
+    621125: "漳县",
+    621126: "岷县",
+    621202: "武都区",
+    621221: "成县",
+    621222: "文县",
+    621223: "宕昌县",
+    621224: "康县",
+    621225: "西和县",
+    621226: "礼县",
+    621227: "徽县",
+    621228: "两当县",
+    622901: "临夏市",
+    622921: "临夏县",
+    622922: "康乐县",
+    622923: "永靖县",
+    622924: "广河县",
+    622925: "和政县",
+    622926: "东乡族自治县",
+    622927: "积石山保安族东乡族撒拉族自治县",
+    623001: "合作市",
+    623021: "临潭县",
+    623022: "卓尼县",
+    623023: "舟曲县",
+    623024: "迭部县",
+    623025: "玛曲县",
+    623026: "碌曲县",
+    623027: "夏河县",
+    630102: "城东区",
+    630103: "城中区",
+    630104: "城西区",
+    630105: "城北区",
+    630106: "湟中区",
+    630121: "大通回族土族自治县",
+    630123: "湟源县",
+    630202: "乐都区",
+    630203: "平安区",
+    630222: "民和回族土族自治县",
+    630223: "互助土族自治县",
+    630224: "化隆回族自治县",
+    630225: "循化撒拉族自治县",
+    632221: "门源回族自治县",
+    632222: "祁连县",
+    632223: "海晏县",
+    632224: "刚察县",
+    632321: "同仁县",
+    632322: "尖扎县",
+    632323: "泽库县",
+    632324: "河南蒙古族自治县",
+    632521: "共和县",
+    632522: "同德县",
+    632523: "贵德县",
+    632524: "兴海县",
+    632525: "贵南县",
+    632621: "玛沁县",
+    632622: "班玛县",
+    632623: "甘德县",
+    632624: "达日县",
+    632625: "久治县",
+    632626: "玛多县",
+    632701: "玉树市",
+    632722: "杂多县",
+    632723: "称多县",
+    632724: "治多县",
+    632725: "囊谦县",
+    632726: "曲麻莱县",
+    632801: "格尔木市",
+    632802: "德令哈市",
+    632803: "茫崖市",
+    632821: "乌兰县",
+    632822: "都兰县",
+    632823: "天峻县",
+    632857: "大柴旦行政委员会",
+    640104: "兴庆区",
+    640105: "西夏区",
+    640106: "金凤区",
+    640121: "永宁县",
+    640122: "贺兰县",
+    640181: "灵武市",
+    640202: "大武口区",
+    640205: "惠农区",
+    640221: "平罗县",
+    640302: "利通区",
+    640303: "红寺堡区",
+    640323: "盐池县",
+    640324: "同心县",
+    640381: "青铜峡市",
+    640402: "原州区",
+    640422: "西吉县",
+    640423: "隆德县",
+    640424: "泾源县",
+    640425: "彭阳县",
+    640502: "沙坡头区",
+    640521: "中宁县",
+    640522: "海原县",
+    650102: "天山区",
+    650103: "沙依巴克区",
+    650104: "新市区",
+    650105: "水磨沟区",
+    650106: "头屯河区",
+    650107: "达坂城区",
+    650109: "米东区",
+    650121: "乌鲁木齐县",
+    650202: "独山子区",
+    650203: "克拉玛依区",
+    650204: "白碱滩区",
+    650205: "乌尔禾区",
+    650402: "高昌区",
+    650421: "鄯善县",
+    650422: "托克逊县",
+    650502: "伊州区",
+    650521: "巴里坤哈萨克自治县",
+    650522: "伊吾县",
+    652301: "昌吉市",
+    652302: "阜康市",
+    652323: "呼图壁县",
+    652324: "玛纳斯县",
+    652325: "奇台县",
+    652327: "吉木萨尔县",
+    652328: "木垒哈萨克自治县",
+    652701: "博乐市",
+    652702: "阿拉山口市",
+    652722: "精河县",
+    652723: "温泉县",
+    652801: "库尔勒市",
+    652822: "轮台县",
+    652823: "尉犁县",
+    652824: "若羌县",
+    652825: "且末县",
+    652826: "焉耆回族自治县",
+    652827: "和静县",
+    652828: "和硕县",
+    652829: "博湖县",
+    652901: "阿克苏市",
+    652902: "库车市",
+    652922: "温宿县",
+    652924: "沙雅县",
+    652925: "新和县",
+    652926: "拜城县",
+    652927: "乌什县",
+    652928: "阿瓦提县",
+    652929: "柯坪县",
+    653001: "阿图什市",
+    653022: "阿克陶县",
+    653023: "阿合奇县",
+    653024: "乌恰县",
+    653101: "喀什市",
+    653121: "疏附县",
+    653122: "疏勒县",
+    653123: "英吉沙县",
+    653124: "泽普县",
+    653125: "莎车县",
+    653126: "叶城县",
+    653127: "麦盖提县",
+    653128: "岳普湖县",
+    653129: "伽师县",
+    653130: "巴楚县",
+    653131: "塔什库尔干塔吉克自治县",
+    653201: "和田市",
+    653221: "和田县",
+    653222: "墨玉县",
+    653223: "皮山县",
+    653224: "洛浦县",
+    653225: "策勒县",
+    653226: "于田县",
+    653227: "民丰县",
+    654002: "伊宁市",
+    654003: "奎屯市",
+    654004: "霍尔果斯市",
+    654021: "伊宁县",
+    654022: "察布查尔锡伯自治县",
+    654023: "霍城县",
+    654024: "巩留县",
+    654025: "新源县",
+    654026: "昭苏县",
+    654027: "特克斯县",
+    654028: "尼勒克县",
+    654201: "塔城市",
+    654202: "乌苏市",
+    654221: "额敏县",
+    654223: "沙湾县",
+    654224: "托里县",
+    654225: "裕民县",
+    654226: "和布克赛尔蒙古自治县",
+    654301: "阿勒泰市",
+    654321: "布尔津县",
+    654322: "富蕴县",
+    654323: "福海县",
+    654324: "哈巴河县",
+    654325: "青河县",
+    654326: "吉木乃县",
+    659001: "石河子市",
+    659002: "阿拉尔市",
+    659003: "图木舒克市",
+    659004: "五家渠市",
+    659005: "北屯市",
+    659006: "铁门关市",
+    659007: "双河市",
+    659008: "可克达拉市",
+    659009: "昆玉市",
+    659010: "胡杨河市",
+    710101: "中正区",
+    710102: "大同区",
+    710103: "中山区",
+    710104: "松山区",
+    710105: "大安区",
+    710106: "万华区",
+    710107: "信义区",
+    710108: "士林区",
+    710109: "北投区",
+    710110: "内湖区",
+    710111: "南港区",
+    710112: "文山区",
+    710199: "其它区",
+    710201: "新兴区",
+    710202: "前金区",
+    710203: "芩雅区",
+    710204: "盐埕区",
+    710205: "鼓山区",
+    710206: "旗津区",
+    710207: "前镇区",
+    710208: "三民区",
+    710209: "左营区",
+    710210: "楠梓区",
+    710211: "小港区",
+    710241: "苓雅区",
+    710242: "仁武区",
+    710243: "大社区",
+    710244: "冈山区",
+    710245: "路竹区",
+    710246: "阿莲区",
+    710247: "田寮区",
+    710248: "燕巢区",
+    710249: "桥头区",
+    710250: "梓官区",
+    710251: "弥陀区",
+    710252: "永安区",
+    710253: "湖内区",
+    710254: "凤山区",
+    710255: "大寮区",
+    710256: "林园区",
+    710257: "鸟松区",
+    710258: "大树区",
+    710259: "旗山区",
+    710260: "美浓区",
+    710261: "六龟区",
+    710262: "内门区",
+    710263: "杉林区",
+    710264: "甲仙区",
+    710265: "桃源区",
+    710266: "那玛夏区",
+    710267: "茂林区",
+    710268: "茄萣区",
+    710299: "其它区",
+    710301: "中西区",
+    710302: "东区",
+    710303: "南区",
+    710304: "北区",
+    710305: "安平区",
+    710306: "安南区",
+    710339: "永康区",
+    710340: "归仁区",
+    710341: "新化区",
+    710342: "左镇区",
+    710343: "玉井区",
+    710344: "楠西区",
+    710345: "南化区",
+    710346: "仁德区",
+    710347: "关庙区",
+    710348: "龙崎区",
+    710349: "官田区",
+    710350: "麻豆区",
+    710351: "佳里区",
+    710352: "西港区",
+    710353: "七股区",
+    710354: "将军区",
+    710355: "学甲区",
+    710356: "北门区",
+    710357: "新营区",
+    710358: "后壁区",
+    710359: "白河区",
+    710360: "东山区",
+    710361: "六甲区",
+    710362: "下营区",
+    710363: "柳营区",
+    710364: "盐水区",
+    710365: "善化区",
+    710366: "大内区",
+    710367: "山上区",
+    710368: "新市区",
+    710369: "安定区",
+    710399: "其它区",
+    710401: "中区",
+    710402: "东区",
+    710403: "南区",
+    710404: "西区",
+    710405: "北区",
+    710406: "北屯区",
+    710407: "西屯区",
+    710408: "南屯区",
+    710431: "太平区",
+    710432: "大里区",
+    710433: "雾峰区",
+    710434: "乌日区",
+    710435: "丰原区",
+    710436: "后里区",
+    710437: "石冈区",
+    710438: "东势区",
+    710439: "和平区",
+    710440: "新社区",
+    710441: "潭子区",
+    710442: "大雅区",
+    710443: "神冈区",
+    710444: "大肚区",
+    710445: "沙鹿区",
+    710446: "龙井区",
+    710447: "梧栖区",
+    710448: "清水区",
+    710449: "大甲区",
+    710450: "外埔区",
+    710451: "大安区",
+    710499: "其它区",
+    710507: "金沙镇",
+    710508: "金湖镇",
+    710509: "金宁乡",
+    710510: "金城镇",
+    710511: "烈屿乡",
+    710512: "乌坵乡",
+    710614: "南投市",
+    710615: "中寮乡",
+    710616: "草屯镇",
+    710617: "国姓乡",
+    710618: "埔里镇",
+    710619: "仁爱乡",
+    710620: "名间乡",
+    710621: "集集镇",
+    710622: "水里乡",
+    710623: "鱼池乡",
+    710624: "信义乡",
+    710625: "竹山镇",
+    710626: "鹿谷乡",
+    710701: "仁爱区",
+    710702: "信义区",
+    710703: "中正区",
+    710704: "中山区",
+    710705: "安乐区",
+    710706: "暖暖区",
+    710707: "七堵区",
+    710799: "其它区",
+    710801: "东区",
+    710802: "北区",
+    710803: "香山区",
+    710899: "其它区",
+    710901: "东区",
+    710902: "西区",
+    710999: "其它区",
+    711130: "万里区",
+    711132: "板桥区",
+    711133: "汐止区",
+    711134: "深坑区",
+    711135: "石碇区",
+    711136: "瑞芳区",
+    711137: "平溪区",
+    711138: "双溪区",
+    711139: "贡寮区",
+    711140: "新店区",
+    711141: "坪林区",
+    711142: "乌来区",
+    711143: "永和区",
+    711144: "中和区",
+    711145: "土城区",
+    711146: "三峡区",
+    711147: "树林区",
+    711148: "莺歌区",
+    711149: "三重区",
+    711150: "新庄区",
+    711151: "泰山区",
+    711152: "林口区",
+    711153: "芦洲区",
+    711154: "五股区",
+    711155: "八里区",
+    711156: "淡水区",
+    711157: "三芝区",
+    711158: "石门区",
+    711287: "宜兰市",
+    711288: "头城镇",
+    711289: "礁溪乡",
+    711290: "壮围乡",
+    711291: "员山乡",
+    711292: "罗东镇",
+    711293: "三星乡",
+    711294: "大同乡",
+    711295: "五结乡",
+    711296: "冬山乡",
+    711297: "苏澳镇",
+    711298: "南澳乡",
+    711299: "钓鱼台",
+    711387: "竹北市",
+    711388: "湖口乡",
+    711389: "新丰乡",
+    711390: "新埔镇",
+    711391: "关西镇",
+    711392: "芎林乡",
+    711393: "宝山乡",
+    711394: "竹东镇",
+    711395: "五峰乡",
+    711396: "横山乡",
+    711397: "尖石乡",
+    711398: "北埔乡",
+    711399: "峨眉乡",
+    711414: "中坜区",
+    711415: "平镇区",
+    711417: "杨梅区",
+    711418: "新屋区",
+    711419: "观音区",
+    711420: "桃园区",
+    711421: "龟山区",
+    711422: "八德区",
+    711423: "大溪区",
+    711425: "大园区",
+    711426: "芦竹区",
+    711487: "中坜市",
+    711488: "平镇市",
+    711489: "龙潭乡",
+    711490: "杨梅市",
+    711491: "新屋乡",
+    711492: "观音乡",
+    711493: "桃园市",
+    711494: "龟山乡",
+    711495: "八德市",
+    711496: "大溪镇",
+    711497: "复兴乡",
+    711498: "大园乡",
+    711499: "芦竹乡",
+    711520: "头份市",
+    711582: "竹南镇",
+    711583: "头份镇",
+    711584: "三湾乡",
+    711585: "南庄乡",
+    711586: "狮潭乡",
+    711587: "后龙镇",
+    711588: "通霄镇",
+    711589: "苑里镇",
+    711590: "苗栗市",
+    711591: "造桥乡",
+    711592: "头屋乡",
+    711593: "公馆乡",
+    711594: "大湖乡",
+    711595: "泰安乡",
+    711596: "铜锣乡",
+    711597: "三义乡",
+    711598: "西湖乡",
+    711599: "卓兰镇",
+    711736: "员林市",
+    711774: "彰化市",
+    711775: "芬园乡",
+    711776: "花坛乡",
+    711777: "秀水乡",
+    711778: "鹿港镇",
+    711779: "福兴乡",
+    711780: "线西乡",
+    711781: "和美镇",
+    711782: "伸港乡",
+    711783: "员林镇",
+    711784: "社头乡",
+    711785: "永靖乡",
+    711786: "埔心乡",
+    711787: "溪湖镇",
+    711788: "大村乡",
+    711789: "埔盐乡",
+    711790: "田中镇",
+    711791: "北斗镇",
+    711792: "田尾乡",
+    711793: "埤头乡",
+    711794: "溪州乡",
+    711795: "竹塘乡",
+    711796: "二林镇",
+    711797: "大城乡",
+    711798: "芳苑乡",
+    711799: "二水乡",
+    711982: "番路乡",
+    711983: "梅山乡",
+    711984: "竹崎乡",
+    711985: "阿里山乡",
+    711986: "中埔乡",
+    711987: "大埔乡",
+    711988: "水上乡",
+    711989: "鹿草乡",
+    711990: "太保市",
+    711991: "朴子市",
+    711992: "东石乡",
+    711993: "六脚乡",
+    711994: "新港乡",
+    711995: "民雄乡",
+    711996: "大林镇",
+    711997: "溪口乡",
+    711998: "义竹乡",
+    711999: "布袋镇",
+    712180: "斗南镇",
+    712181: "大埤乡",
+    712182: "虎尾镇",
+    712183: "土库镇",
+    712184: "褒忠乡",
+    712185: "东势乡",
+    712186: "台西乡",
+    712187: "仑背乡",
+    712188: "麦寮乡",
+    712189: "斗六市",
+    712190: "林内乡",
+    712191: "古坑乡",
+    712192: "莿桐乡",
+    712193: "西螺镇",
+    712194: "二仑乡",
+    712195: "北港镇",
+    712196: "水林乡",
+    712197: "口湖乡",
+    712198: "四湖乡",
+    712199: "元长乡",
+    712451: "崁顶乡",
+    712467: "屏东市",
+    712468: "三地门乡",
+    712469: "雾台乡",
+    712470: "玛家乡",
+    712471: "九如乡",
+    712472: "里港乡",
+    712473: "高树乡",
+    712474: "盐埔乡",
+    712475: "长治乡",
+    712476: "麟洛乡",
+    712477: "竹田乡",
+    712478: "内埔乡",
+    712479: "万丹乡",
+    712480: "潮州镇",
+    712481: "泰武乡",
+    712482: "来义乡",
+    712483: "万峦乡",
+    712484: "莰顶乡",
+    712485: "新埤乡",
+    712486: "南州乡",
+    712487: "林边乡",
+    712488: "东港镇",
+    712489: "琉球乡",
+    712490: "佳冬乡",
+    712491: "新园乡",
+    712492: "枋寮乡",
+    712493: "枋山乡",
+    712494: "春日乡",
+    712495: "狮子乡",
+    712496: "车城乡",
+    712497: "牡丹乡",
+    712498: "恒春镇",
+    712499: "满州乡",
+    712584: "台东市",
+    712585: "绿岛乡",
+    712586: "兰屿乡",
+    712587: "延平乡",
+    712588: "卑南乡",
+    712589: "鹿野乡",
+    712590: "关山镇",
+    712591: "海端乡",
+    712592: "池上乡",
+    712593: "东河乡",
+    712594: "成功镇",
+    712595: "长滨乡",
+    712596: "金峰乡",
+    712597: "大武乡",
+    712598: "达仁乡",
+    712599: "太麻里乡",
+    712686: "花莲市",
+    712687: "新城乡",
+    712688: "太鲁阁",
+    712689: "秀林乡",
+    712690: "吉安乡",
+    712691: "寿丰乡",
+    712692: "凤林镇",
+    712693: "光复乡",
+    712694: "丰滨乡",
+    712695: "瑞穗乡",
+    712696: "万荣乡",
+    712697: "玉里镇",
+    712698: "卓溪乡",
+    712699: "富里乡",
+    712794: "马公市",
+    712795: "西屿乡",
+    712796: "望安乡",
+    712797: "七美乡",
+    712798: "白沙乡",
+    712799: "湖西乡",
+    712896: "南竿乡",
+    712897: "北竿乡",
+    712898: "东引乡",
+    712899: "莒光乡",
+    810101: "中西区",
+    810102: "湾仔区",
+    810103: "东区",
+    810104: "南区",
+    810201: "九龙城区",
+    810202: "油尖旺区",
+    810203: "深水埗区",
+    810204: "黄大仙区",
+    810205: "观塘区",
+    810301: "北区",
+    810302: "大埔区",
+    810303: "沙田区",
+    810304: "西贡区",
+    810305: "元朗区",
+    810306: "屯门区",
+    810307: "荃湾区",
+    810308: "葵青区",
+    810309: "离岛区",
+    820102: "花地玛堂区",
+    820103: "花王堂区",
+    820104: "望德堂区",
+    820105: "大堂区",
+    820106: "风顺堂区",
+    820202: "嘉模堂区",
+    820203: "路氹填海区",
+    820204: "圣方济各堂区" } };exports.areaList = areaList;
+
+/***/ }),
+/* 193 */
+/*!*********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 194);
 var defaultOptions = {
   type: 'text',
   mask: false,
@@ -19470,10 +21802,10 @@ Toast.resetDefaultOptions = function () {
 Toast;exports.default = _default;
 
 /***/ }),
-/* 207 */
-/*!****************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
-  \****************************************************************************/
+/* 194 */
+/*!**************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19511,10 +21843,109 @@ function isVideoUrl(url) {
 }
 
 /***/ }),
+/* 195 */,
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */,
+/* 202 */,
+/* 203 */,
+/* 204 */,
+/* 205 */,
+/* 206 */,
+/* 207 */,
 /* 208 */,
 /* 209 */,
 /* 210 */,
-/* 211 */,
+/* 211 */
+/*!*************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/login.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var request = __webpack_require__(/*! ./request.js */ 142);
+
+// 自动登录 (用来获取token)
+
+function autologin(wxCode) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/wxlogin",
+    method: 'POST',
+    data: wxCode });
+
+
+}
+
+// 第一次登录 (录入用户基本信息)
+
+function newlogin(res, token) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo",
+    method: 'POST',
+    header: {
+      Authorization: token },
+
+    data: res });
+
+
+}
+
+// 用户手机号
+
+function phoneNumber(code, token) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
+    method: 'POST',
+    header: {
+      Authorization: token },
+
+    data: { code: code } });
+
+
+
+}
+
+
+
+
+// h5
+
+// 获取图形验证码
+function captcha() {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
+    method: 'get' });
+
+
+}
+// 校验图形验证码
+function checkImgYzm(tell, captchaId, verifyCode) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
+    method: 'post',
+    data: {
+      tell: tell,
+      captchaId: captchaId,
+      verifyCode: verifyCode } });
+
+
+
+}
+// 登录
+function h5login(tell, code) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login",
+    method: 'post',
+    data: { tell: tell, code: code } });
+
+
+}
+
+/***/ }),
 /* 212 */,
 /* 213 */,
 /* 214 */,
@@ -19533,26 +21964,22 @@ function isVideoUrl(url) {
 /* 227 */,
 /* 228 */,
 /* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */
-/*!****************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/api/detail.js ***!
-  \****************************************************/
+/* 230 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/detail.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
-// 获取详情数据
-exports.fetchDetailData = function (id) {
-  console.log('id', id);
-  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=".concat(id);
+exports.fetchDetailData = function () {
+  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=115";
   return request({
     url: url });
 
 };
-// 加入购物车
+
 exports.fetchAddCart = function (token, _id, number) {
   return request({
     method: "POST",
@@ -19565,38 +21992,10 @@ exports.fetchAddCart = function (token, _id, number) {
 
 
 };
-// 获取购物车
-exports.fetchGetCart = function (token) {
-  return request({
-    method: "POST",
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
-
-};
-
-// 收藏
-exports.fetchJionCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/add/collection?goods_id=".concat(id) });
-
-};
-
-// 取消收藏
-exports.fetchCancelCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/delete/collection?goods_id=".concat(id) });
-
-};
 
 /***/ }),
+/* 231 */,
+/* 232 */,
 /* 233 */,
 /* 234 */,
 /* 235 */,
@@ -19634,12 +22033,10 @@ exports.fetchCancelCollect = function (token, id) {
 /* 267 */,
 /* 268 */,
 /* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
-  \****************************************************************************************/
+/* 270 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19684,17 +22081,17 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
+/* 271 */,
+/* 272 */,
 /* 273 */,
 /* 274 */,
 /* 275 */,
 /* 276 */,
 /* 277 */,
-/* 278 */,
-/* 279 */,
-/* 280 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
-  \****************************************************************************************/
+/* 278 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19813,6 +22210,8 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
+/* 279 */,
+/* 280 */,
 /* 281 */,
 /* 282 */,
 /* 283 */,
@@ -19839,12 +22238,10 @@ exports.fetchCancelCollect = function (token, id) {
 /* 304 */,
 /* 305 */,
 /* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
-  \*****************************************************************************************/
+/* 307 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19893,6 +22290,8 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
+/* 308 */,
+/* 309 */,
 /* 310 */,
 /* 311 */,
 /* 312 */,
@@ -19900,95 +22299,7 @@ exports.fetchCancelCollect = function (token, id) {
 /* 314 */,
 /* 315 */,
 /* 316 */,
-/* 317 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-checkbox-group/props.js ***!
-  \************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 标识符
-    name: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.name },
-
-    // 绑定的值
-    value: {
-      type: Array,
-      default: uni.$u.props.checkboxGroup.value },
-
-    // 形状，circle-圆形，square-方形
-    shape: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.shape },
-
-    // 是否禁用全部checkbox
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.disabled },
-
-
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.activeColor },
-
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.inactiveColor },
-
-
-    // 整个组件的尺寸，默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.size },
-
-    // 布局方式，row-横向，column-纵向
-    placement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.placement },
-
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.labelSize },
-
-    // label的字体颜色
-    labelColor: {
-      type: [String],
-      default: uni.$u.props.checkboxGroup.labelColor },
-
-    // 是否禁止点击文本操作
-    labelDisabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.labelDisabled },
-
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconColor },
-
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.iconSize },
-
-    // 勾选图标的对齐方式，left-左边，right-右边
-    iconPlacement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconPlacement },
-
-    // 竖向配列时，是否显示下划线
-    borderBottom: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.borderBottom } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
+/* 317 */,
 /* 318 */,
 /* 319 */,
 /* 320 */,
@@ -19996,83 +22307,7 @@ exports.fetchCancelCollect = function (token, id) {
 /* 322 */,
 /* 323 */,
 /* 324 */,
-/* 325 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-checkbox/props.js ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // checkbox的名称
-    name: {
-      type: [String, Number, Boolean],
-      default: uni.$u.props.checkbox.name },
-
-    // 形状，square为方形，circle为圆型
-    shape: {
-      type: String,
-      default: uni.$u.props.checkbox.shape },
-
-    // 整体的大小
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.size },
-
-    // 是否默认选中
-    checked: {
-      type: Boolean,
-      default: uni.$u.props.checkbox.checked },
-
-    // 是否禁用
-    disabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.disabled },
-
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkbox.activeColor },
-
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkbox.inactiveColor },
-
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.iconSize },
-
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkbox.iconColor },
-
-    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
-    label: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.label },
-
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.labelSize },
-
-    // label的颜色
-    labelColor: {
-      type: String,
-      default: uni.$u.props.checkbox.labelColor },
-
-    // 是否禁止点击提示语选中复选框
-    labelDisabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.labelDisabled } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
+/* 325 */,
 /* 326 */,
 /* 327 */,
 /* 328 */,
@@ -20080,123 +22315,7 @@ exports.fetchCancelCollect = function (token, id) {
 /* 330 */,
 /* 331 */,
 /* 332 */,
-/* 333 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-number-box/props.js ***!
-  \********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 步进器标识符，在change回调返回
-    name: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.name },
-
-    // 用于双向绑定的值，初始化时设置设为默认min值(最小值)
-    value: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.value },
-
-    // 最小值
-    min: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.min },
-
-    // 最大值
-    max: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.max },
-
-    // 加减的步长，可为小数
-    step: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.step },
-
-    // 是否只允许输入整数
-    integer: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.integer },
-
-    // 是否禁用，包括输入框，加减按钮
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disabled },
-
-    // 是否禁用输入框
-    disabledInput: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disabledInput },
-
-    // 是否开启异步变更，开启后需要手动控制输入值
-    asyncChange: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.asyncChange },
-
-    // 输入框宽度，单位为px
-    inputWidth: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.inputWidth },
-
-    // 是否显示减少按钮
-    showMinus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.showMinus },
-
-    // 是否显示增加按钮
-    showPlus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.showPlus },
-
-    // 显示的小数位数
-    decimalLength: {
-      type: [String, Number, null],
-      default: uni.$u.props.numberBox.decimalLength },
-
-    // 是否开启长按加减手势
-    longPress: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.longPress },
-
-    // 输入框文字和加减按钮图标的颜色
-    color: {
-      type: String,
-      default: uni.$u.props.numberBox.color },
-
-    // 按钮大小，宽高等于此值，单位px，输入框高度和此值保持一致
-    buttonSize: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.buttonSize },
-
-    // 输入框和按钮的背景颜色
-    bgColor: {
-      type: String,
-      default: uni.$u.props.numberBox.bgColor },
-
-    // 指定光标于键盘的距离，避免键盘遮挡输入框，单位px
-    cursorSpacing: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.cursorSpacing },
-
-    // 是否禁用增加按钮
-    disablePlus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disablePlus },
-
-    // 是否禁用减少按钮
-    disableMinus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disableMinus },
-
-    // 加减按钮图标的样式
-    iconStyle: {
-      type: [Object, String],
-      default: uni.$u.props.numberBox.iconStyle } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
+/* 333 */,
 /* 334 */,
 /* 335 */,
 /* 336 */,
@@ -20204,268 +22323,12 @@ exports.fetchCancelCollect = function (token, id) {
 /* 338 */,
 /* 339 */,
 /* 340 */,
-/* 341 */
-/*!********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/button.js ***!
-  \********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    lang: String,
-    sessionFrom: String,
-    sendMessageTitle: String,
-    sendMessagePath: String,
-    sendMessageImg: String,
-    showMessageCard: Boolean,
-    appParameter: String,
-    formType: String,
-    openType: String } };exports.default = _default;
-
-/***/ }),
-/* 342 */
-/*!**********************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/openType.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    openType: String },
-
-  methods: {
-    onGetUserInfo: function onGetUserInfo(event) {
-      this.$emit('getuserinfo', event.detail);
-    },
-    onContact: function onContact(event) {
-      this.$emit('contact', event.detail);
-    },
-    onGetPhoneNumber: function onGetPhoneNumber(event) {
-      this.$emit('getphonenumber', event.detail);
-    },
-    onError: function onError(event) {
-      this.$emit('error', event.detail);
-    },
-    onLaunchApp: function onLaunchApp(event) {
-      this.$emit('launchapp', event.detail);
-    },
-    onOpenSetting: function onOpenSetting(event) {
-      this.$emit('opensetting', event.detail);
-    } } };exports.default = _default;
-
-/***/ }),
+/* 341 */,
+/* 342 */,
 /* 343 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-button/props.js ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /*
-                                                                                                      * @Author       : LQ
-                                                                                                      * @Description  :
-                                                                                                      * @version      : 1.0
-                                                                                                      * @Date         : 2021-08-16 10:04:04
-                                                                                                      * @LastAuthor   : LQ
-                                                                                                      * @lastTime     : 2021-08-16 10:04:24
-                                                                                                      * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
-                                                                                                      */var _default =
-{
-  props: {
-    // 是否细边框
-    hairline: {
-      type: Boolean,
-      default: uni.$u.props.button.hairline },
-
-    // 按钮的预置样式，info，primary，error，warning，success
-    type: {
-      type: String,
-      default: uni.$u.props.button.type },
-
-    // 按钮尺寸，large，normal，small，mini
-    size: {
-      type: String,
-      default: uni.$u.props.button.size },
-
-    // 按钮形状，circle（两边为半圆），square（带圆角）
-    shape: {
-      type: String,
-      default: uni.$u.props.button.shape },
-
-    // 按钮是否镂空
-    plain: {
-      type: Boolean,
-      default: uni.$u.props.button.plain },
-
-    // 是否禁止状态
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.button.disabled },
-
-    // 是否加载中
-    loading: {
-      type: Boolean,
-      default: uni.$u.props.button.loading },
-
-    // 加载中提示文字
-    loadingText: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingText },
-
-    // 加载状态图标类型
-    loadingMode: {
-      type: String,
-      default: uni.$u.props.button.loadingMode },
-
-    // 加载图标大小
-    loadingSize: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingSize },
-
-    // 开放能力，具体请看uniapp稳定关于button组件部分说明
-    // https://uniapp.dcloud.io/component/button
-    openType: {
-      type: String,
-      default: uni.$u.props.button.openType },
-
-    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
-    // 取值为submit（提交表单），reset（重置表单）
-    formType: {
-      type: String,
-      default: uni.$u.props.button.formType },
-
-    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
-    // 只微信小程序、QQ小程序有效
-    appParameter: {
-      type: String,
-      default: uni.$u.props.button.appParameter },
-
-    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
-    hoverStopPropagation: {
-      type: Boolean,
-      default: uni.$u.props.button.hoverStopPropagation },
-
-    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
-    lang: {
-      type: String,
-      default: uni.$u.props.button.lang },
-
-    // 会话来源，open-type="contact"时有效。只微信小程序有效
-    sessionFrom: {
-      type: String,
-      default: uni.$u.props.button.sessionFrom },
-
-    // 会话内消息卡片标题，open-type="contact"时有效
-    // 默认当前标题，只微信小程序有效
-    sendMessageTitle: {
-      type: String,
-      default: uni.$u.props.button.sendMessageTitle },
-
-    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
-    // 默认当前分享路径，只微信小程序有效
-    sendMessagePath: {
-      type: String,
-      default: uni.$u.props.button.sendMessagePath },
-
-    // 会话内消息卡片图片，open-type="contact"时有效
-    // 默认当前页面截图，只微信小程序有效
-    sendMessageImg: {
-      type: String,
-      default: uni.$u.props.button.sendMessageImg },
-
-    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
-    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
-    showMessageCard: {
-      type: Boolean,
-      default: uni.$u.props.button.showMessageCard },
-
-    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
-    dataName: {
-      type: String,
-      default: uni.$u.props.button.dataName },
-
-    // 节流，一定时间内只能触发一次
-    throttleTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.throttleTime },
-
-    // 按住后多久出现点击态，单位毫秒
-    hoverStartTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.hoverStartTime },
-
-    // 手指松开后点击态保留时间，单位毫秒
-    hoverStayTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.hoverStayTime },
-
-    // 按钮文字，之所以通过props传入，是因为slot传入的话
-    // nvue中无法控制文字的样式
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.button.text },
-
-    // 按钮图标
-    icon: {
-      type: String,
-      default: uni.$u.props.button.icon },
-
-    // 按钮图标
-    iconColor: {
-      type: String,
-      default: uni.$u.props.button.icon },
-
-    // 按钮颜色，支持传入linear-gradient渐变色
-    color: {
-      type: String,
-      default: uni.$u.props.button.color } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 344 */,
-/* 345 */,
-/* 346 */,
-/* 347 */,
-/* 348 */,
-/* 349 */,
-/* 350 */,
-/* 351 */,
-/* 352 */,
-/* 353 */,
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */,
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */,
-/* 371 */,
-/* 372 */,
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \******************************************************************************************/
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21638,301 +23501,52 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
 /* 380 */,
 /* 381 */,
 /* 382 */,
 /* 383 */,
 /* 384 */,
 /* 385 */,
-/* 386 */,
-/* 387 */,
-/* 388 */,
-/* 389 */,
-/* 390 */,
-/* 391 */,
-/* 392 */,
-/* 393 */,
-/* 394 */,
-/* 395 */,
-/* 396 */,
-/* 397 */,
-/* 398 */,
-/* 399 */,
-/* 400 */,
-/* 401 */,
-/* 402 */,
-/* 403 */,
-/* 404 */,
-/* 405 */,
-/* 406 */
-/*!*************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/node_modules/cl-uni/utils/index.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.isArray = isArray;exports.isObject = isObject;exports.isFunction = isFunction;exports.isString = isString;exports.isNull = isNull;exports.isBoolean = isBoolean;exports.isNumber = isNumber;exports.isDecimal = isDecimal;exports.isPromise = isPromise;exports.isEmpty = isEmpty;exports.last = last;exports.firstUpperCase = firstUpperCase;exports.debounce = debounce;exports.compareValue = compareValue;exports.cloneDeep = cloneDeep;exports.deepMerge = deepMerge;exports.getCurrentPage = getCurrentPage;exports.parseRpx = parseRpx;exports.getParent = getParent;exports.getCurrentColor = getCurrentColor;exports.getUrlParam = getUrlParam;exports.orderBy = orderBy;exports.isDev = void 0; // 是否开发模式
-var isDev = "development" == "development";
-
-// 是否Array类型
-exports.isDev = isDev;function isArray(value) {
-  if (typeof Array.isArray === "function") {
-    return Array.isArray(value);
-  } else {
-    return Object.prototype.toString.call(value) === "[object Array]";
-  }
-}
-
-// 是否Object类型
-function isObject(value) {
-  return Object.prototype.toString.call(value) === "[object Object]";
-}
-
-// 是否Function类型
-function isFunction(value) {
-  return typeof value === "function";
-}
-
-// 是否String类型
-function isString(value) {
-  return typeof value === "string";
-}
-
-// 是否null类型
-function isNull(value) {
-  return !value && value !== 0;
-}
-
-// 是否Boolean类型
-function isBoolean(value) {
-  return typeof value === "boolean";
-}
-
-// 是否数字类型
-function isNumber(value) {
-  return typeof value === "number" && !isNaN(value);
-}
-
-// 是否小数
-function isDecimal(value) {
-  return String(value).length - String(value).indexOf(".") + 1;
-}
-
-// 是否Promise类型
-function isPromise(obj) {
-  obj !== null && (
-  typeof obj === "object" || typeof obj === "function") &&
-  typeof obj.then === "function";
-}
-
-// 是否为空
-function isEmpty(value) {
-  if (isArray(value)) {
-    return value.length === 0;
-  }
-
-  if (isObject(value)) {
-    return Object.keys(value).length === 0;
-  }
-
-  return value === "" || value === undefined || value === null;
-}
-
-// 取最后一个值
-function last(data) {
-  if (isArray(data) || isString(data)) {
-    return data[data.length - 1];
-  }
-}
-
-// 首字母大写
-function firstUpperCase(value) {
-  return value.replace(/\b(\w)(\w*)/g, function ($0, $1, $2) {
-    return $1.toUpperCase() + $2.toLowerCase();
-  });
-}
-
-// 防抖
-function debounce(fn, wait, immediate) {
-  var timer;
-  return function () {var _arguments = arguments,_this = this;
-    if (timer) clearTimeout(timer);
-    if (immediate) {
-      var callNow = !timer;
-      timer = setTimeout(function () {
-        timer = null;
-      }, wait);
-      if (callNow) {
-        fn.apply(this, arguments);
-      }
-    } else {
-      timer = setTimeout(function () {
-        fn.apply(_this, _arguments);
-      }, wait);
-    }
-  };
-}
-
-// 比较值
-function compareValue(a, b) {
-  return String(a) === String(b);
-}
-
-// 深拷贝
-function cloneDeep(v) {
-  if (isObject(v)) {
-    var d = {};
-
-    for (var k in v) {
-      if (v.hasOwnProperty && v.hasOwnProperty(k)) {
-        if (v[k] && typeof v[k] === "object") {
-          d[k] = cloneDeep(v[k]);
-        } else {
-          d[k] = v[k];
-        }
-      }
-    }
-
-    return d;
-  } else if (isArray(v)) {
-    return v.map(cloneDeep);
-  } else {
-    return v;
-  }
-}
-
-// 深度合并
-function deepMerge(a, b) {
-  var k;
-  for (k in b) {
-    a[k] =
-    a[k] && a[k].toString() === "[object Object]" ? deepMerge(a[k], b[k]) : a[k] = b[k];
-  }
-  return a;
-}
-
-// 获取当前页面信息
-function getCurrentPage() {var _last =
-  last(getCurrentPages()),route = _last.route,$page = _last.$page,options = _last.options,$route = _last.$route;
-
-  return {
-    path: "/".concat(route),
-    fullPath: $page.fullPath,
-
-    query: options };
-
-
-
-
-
-}
-
-/**
-   * 解析rpx
-   * @param {*} val
-   */
-function parseRpx(val) {
-  return isArray(val) ? val.map(parseRpx).join(" ") : isNumber(val) ? val + "rpx" : val;
-}
-
-/**
-   * 获取父级节点
-   * @param {*} name componentName
-   * @param {*} keys 保留的参数，避免 computed 非 H5 解析失败
-   */
-function getParent(name, keys) {
-  var parent = this.$parent;
-
-  while (parent) {
-    if (parent.$options.componentName !== name) {
-      parent = parent.$parent;
-    } else {
-      return keys.reduce(function (result, key) {
-        result[key] = parent[key];
-        return result;
-      }, {});
-    }
-  }
-
-  return null;
-}
-
-/**
-   * 获取当前颜色
-   *
-   * @param {*} { color, max, value }
-   */
-function getCurrentColor(_ref) {var color = _ref.color,max = _ref.max,value = _ref.value;
-  if (isString(color)) {
-    return color;
-  } else {
-    var colorArray = color.
-    map(function (item, index) {
-      if (isString(item)) {
-        return {
-          color: item,
-          value: (index + 1) * (max / color.length) };
-
-      }
-      return item;
-    }).
-    sort(function (a, b) {return a.value - b.value;});
-
-    for (var i = 0; i < colorArray.length; i++) {
-      if (colorArray[i].value >= value) {
-        return colorArray[i].color;
-      }
-    }
-
-    return colorArray[colorArray.length - 1].color;
-  }
-}
-
-// 获取地址栏参数
-function getUrlParam(name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg);
-  if (r != null) return decodeURIComponent(r[2]);
-  return null;
-}
-
-// 根据某个字段排序
-function orderBy(list, key) {
-  return list.sort(function (a, b) {return a[key] - b[key];});
-}
-
-/***/ }),
-/* 407 */,
-/* 408 */,
-/* 409 */,
-/* 410 */,
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */,
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */,
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */,
-/* 431 */,
-/* 432 */,
-/* 433 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-tabs/props.js ***!
-  \**************************************************************************************/
+/* 386 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-tabs/props.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21996,17 +23610,247 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 434 */,
-/* 435 */,
-/* 436 */,
-/* 437 */,
-/* 438 */,
-/* 439 */,
-/* 440 */,
-/* 441 */
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */
 /*!******************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-back-top/props.js ***!
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/button.js ***!
   \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    lang: String,
+    sessionFrom: String,
+    sendMessageTitle: String,
+    sendMessagePath: String,
+    sendMessageImg: String,
+    showMessageCard: Boolean,
+    appParameter: String,
+    formType: String,
+    openType: String } };exports.default = _default;
+
+/***/ }),
+/* 395 */
+/*!********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/openType.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    openType: String },
+
+  methods: {
+    onGetUserInfo: function onGetUserInfo(event) {
+      this.$emit('getuserinfo', event.detail);
+    },
+    onContact: function onContact(event) {
+      this.$emit('contact', event.detail);
+    },
+    onGetPhoneNumber: function onGetPhoneNumber(event) {
+      this.$emit('getphonenumber', event.detail);
+    },
+    onError: function onError(event) {
+      this.$emit('error', event.detail);
+    },
+    onLaunchApp: function onLaunchApp(event) {
+      this.$emit('launchapp', event.detail);
+    },
+    onOpenSetting: function onOpenSetting(event) {
+      this.$emit('opensetting', event.detail);
+    } } };exports.default = _default;
+
+/***/ }),
+/* 396 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-button/props.js ***!
+  \**************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /*
+                                                                                                      * @Author       : LQ
+                                                                                                      * @Description  :
+                                                                                                      * @version      : 1.0
+                                                                                                      * @Date         : 2021-08-16 10:04:04
+                                                                                                      * @LastAuthor   : LQ
+                                                                                                      * @lastTime     : 2021-08-16 10:04:24
+                                                                                                      * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
+                                                                                                      */var _default =
+{
+  props: {
+    // 是否细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.button.hairline },
+
+    // 按钮的预置样式，info，primary，error，warning，success
+    type: {
+      type: String,
+      default: uni.$u.props.button.type },
+
+    // 按钮尺寸，large，normal，small，mini
+    size: {
+      type: String,
+      default: uni.$u.props.button.size },
+
+    // 按钮形状，circle（两边为半圆），square（带圆角）
+    shape: {
+      type: String,
+      default: uni.$u.props.button.shape },
+
+    // 按钮是否镂空
+    plain: {
+      type: Boolean,
+      default: uni.$u.props.button.plain },
+
+    // 是否禁止状态
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.button.disabled },
+
+    // 是否加载中
+    loading: {
+      type: Boolean,
+      default: uni.$u.props.button.loading },
+
+    // 加载中提示文字
+    loadingText: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingText },
+
+    // 加载状态图标类型
+    loadingMode: {
+      type: String,
+      default: uni.$u.props.button.loadingMode },
+
+    // 加载图标大小
+    loadingSize: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingSize },
+
+    // 开放能力，具体请看uniapp稳定关于button组件部分说明
+    // https://uniapp.dcloud.io/component/button
+    openType: {
+      type: String,
+      default: uni.$u.props.button.openType },
+
+    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
+    // 取值为submit（提交表单），reset（重置表单）
+    formType: {
+      type: String,
+      default: uni.$u.props.button.formType },
+
+    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+    // 只微信小程序、QQ小程序有效
+    appParameter: {
+      type: String,
+      default: uni.$u.props.button.appParameter },
+
+    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
+    hoverStopPropagation: {
+      type: Boolean,
+      default: uni.$u.props.button.hoverStopPropagation },
+
+    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
+    lang: {
+      type: String,
+      default: uni.$u.props.button.lang },
+
+    // 会话来源，open-type="contact"时有效。只微信小程序有效
+    sessionFrom: {
+      type: String,
+      default: uni.$u.props.button.sessionFrom },
+
+    // 会话内消息卡片标题，open-type="contact"时有效
+    // 默认当前标题，只微信小程序有效
+    sendMessageTitle: {
+      type: String,
+      default: uni.$u.props.button.sendMessageTitle },
+
+    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+    // 默认当前分享路径，只微信小程序有效
+    sendMessagePath: {
+      type: String,
+      default: uni.$u.props.button.sendMessagePath },
+
+    // 会话内消息卡片图片，open-type="contact"时有效
+    // 默认当前页面截图，只微信小程序有效
+    sendMessageImg: {
+      type: String,
+      default: uni.$u.props.button.sendMessageImg },
+
+    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
+    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
+    showMessageCard: {
+      type: Boolean,
+      default: uni.$u.props.button.showMessageCard },
+
+    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
+    dataName: {
+      type: String,
+      default: uni.$u.props.button.dataName },
+
+    // 节流，一定时间内只能触发一次
+    throttleTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.throttleTime },
+
+    // 按住后多久出现点击态，单位毫秒
+    hoverStartTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStartTime },
+
+    // 手指松开后点击态保留时间，单位毫秒
+    hoverStayTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStayTime },
+
+    // 按钮文字，之所以通过props传入，是因为slot传入的话
+    // nvue中无法控制文字的样式
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.button.text },
+
+    // 按钮图标
+    icon: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮图标
+    iconColor: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮颜色，支持传入linear-gradient渐变色
+    color: {
+      type: String,
+      default: uni.$u.props.button.color } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-back-top/props.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22065,17 +23909,17 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 442 */,
-/* 443 */,
-/* 444 */,
-/* 445 */,
-/* 446 */,
-/* 447 */,
-/* 448 */,
-/* 449 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-modal/props.js ***!
-  \***************************************************************************************/
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-modal/props.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22164,17 +24008,17 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 450 */,
-/* 451 */,
-/* 452 */,
-/* 453 */,
-/* 454 */,
-/* 455 */,
-/* 456 */,
-/* 457 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-popup/props.js ***!
-  \***************************************************************************************/
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-popup/props.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22258,17 +24102,17 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 458 */,
-/* 459 */,
-/* 460 */,
-/* 461 */,
-/* 462 */,
-/* 463 */,
-/* 464 */,
-/* 465 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-radio-group/props.js ***!
-  \*********************************************************************************************/
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */,
+/* 428 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-radio-group/props.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22358,17 +24202,17 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 466 */,
-/* 467 */,
-/* 468 */,
-/* 469 */,
-/* 470 */,
-/* 471 */,
-/* 472 */,
-/* 473 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-radio/props.js ***!
-  \***************************************************************************************/
+/* 429 */,
+/* 430 */,
+/* 431 */,
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-radio/props.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22437,17 +24281,17 @@ function orderBy(list, key) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 474 */,
-/* 475 */,
-/* 476 */,
-/* 477 */,
-/* 478 */,
-/* 479 */,
-/* 480 */,
-/* 481 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
-  \**************************************************************************************/
+/* 437 */,
+/* 438 */,
+/* 439 */,
+/* 440 */,
+/* 441 */,
+/* 442 */,
+/* 443 */,
+/* 444 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22667,10 +24511,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 482 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
-  \**************************************************************************************/
+/* 445 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22764,17 +24608,17 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 483 */,
-/* 484 */,
-/* 485 */,
-/* 486 */,
-/* 487 */,
-/* 488 */,
-/* 489 */,
-/* 490 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-input/props.js ***!
-  \***************************************************************************************/
+/* 446 */,
+/* 447 */,
+/* 448 */,
+/* 449 */,
+/* 450 */,
+/* 451 */,
+/* 452 */,
+/* 453 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-input/props.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22961,15 +24805,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 491 */,
-/* 492 */,
-/* 493 */,
-/* 494 */,
-/* 495 */,
-/* 496 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
-  \**************************************************************************************/
+/* 454 */,
+/* 455 */,
+/* 456 */,
+/* 457 */,
+/* 458 */,
+/* 459 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23007,136 +24851,24 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 497 */,
-/* 498 */,
-/* 499 */,
-/* 500 */,
-/* 501 */,
-/* 502 */,
-/* 503 */,
-/* 504 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
-  \**********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.show },
-
-    // 颜色
-    color: {
-      type: String,
-      default: uni.$u.props.loadingIcon.color },
-
-    // 提示文字颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.textColor },
-
-    // 文字和图标是否垂直排列
-    vertical: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.vertical },
-
-    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
-    mode: {
-      type: String,
-      default: uni.$u.props.loadingIcon.mode },
-
-    // 图标大小，单位默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.size },
-
-    // 文字大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.textSize },
-
-    // 文字内容
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.text },
-
-    // 动画模式
-    timingFunction: {
-      type: String,
-      default: uni.$u.props.loadingIcon.timingFunction },
-
-    // 动画执行周期时间
-    duration: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.duration },
-
-    // mode=circle时的暗边颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.inactiveColor } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 505 */,
-/* 506 */,
-/* 507 */,
-/* 508 */,
-/* 509 */,
-/* 510 */,
-/* 511 */,
-/* 512 */,
-/* 513 */,
-/* 514 */,
-/* 515 */,
-/* 516 */,
-/* 517 */,
-/* 518 */,
-/* 519 */
-/*!*************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/node_modules/cl-uni/mixins/form.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 406);var _default =
-
-{
-  computed: {
-    $form: function $form() {
-      return _utils.getParent.call(this, "ClForm", [
-      "labelWidth",
-      "labelPosition",
-      "showMessage",
-      "model",
-      "validateOnValueChange",
-      "disabled"]);
-
-    },
-
-    isDisabled: function isDisabled() {
-      return this.$form ? this.$form.disabled || this.disabled : this.disabled;
-    } } };exports.default = _default;
-
-/***/ }),
-/* 520 */,
-/* 521 */,
-/* 522 */,
-/* 523 */,
-/* 524 */,
-/* 525 */,
-/* 526 */,
-/* 527 */,
-/* 528 */,
-/* 529 */,
-/* 530 */
-/*!**************************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \**************************************************************************************************************/
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */,
+/* 464 */,
+/* 465 */,
+/* 466 */,
+/* 467 */,
+/* 468 */,
+/* 469 */,
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */,
+/* 474 */
+/*!************************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23272,22 +25004,22 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 531 */,
-/* 532 */,
-/* 533 */,
-/* 534 */,
-/* 535 */,
-/* 536 */,
-/* 537 */,
-/* 538 */,
-/* 539 */,
-/* 540 */,
-/* 541 */,
-/* 542 */,
-/* 543 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-badge/props.js ***!
-  \***************************************************************************************/
+/* 475 */,
+/* 476 */,
+/* 477 */,
+/* 478 */,
+/* 479 */,
+/* 480 */,
+/* 481 */,
+/* 482 */,
+/* 483 */,
+/* 484 */,
+/* 485 */,
+/* 486 */,
+/* 487 */
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-badge/props.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23364,17 +25096,91 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 544 */,
-/* 545 */,
-/* 546 */,
-/* 547 */,
-/* 548 */,
-/* 549 */,
-/* 550 */,
-/* 551 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/props.js ***!
-  \********************************************************************************************/
+/* 488 */,
+/* 489 */,
+/* 490 */,
+/* 491 */,
+/* 492 */,
+/* 493 */,
+/* 494 */,
+/* 495 */
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
+  \********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.show },
+
+    // 颜色
+    color: {
+      type: String,
+      default: uni.$u.props.loadingIcon.color },
+
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.textColor },
+
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.vertical },
+
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: uni.$u.props.loadingIcon.mode },
+
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.size },
+
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.textSize },
+
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.text },
+
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.loadingIcon.timingFunction },
+
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.duration },
+
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.inactiveColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 496 */,
+/* 497 */,
+/* 498 */,
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/props.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23403,18 +25209,18 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 552 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/transition.js ***!
-  \*************************************************************************************************/
+/* 504 */
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/transition.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));
 
 
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 553));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 505));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {return new Promise(function (resolve) {return setTimeout(resolve, 1000 / 50);});}; // nvue动画模块实现细节抽离在外部文件
 
 // 定义类名，通过给元素动态切换类名，赋予元素一定的css动画样式
@@ -23566,10 +25372,10 @@ var getClassNames = function getClassNames(name) {return {
     } } };exports.default = _default;
 
 /***/ }),
-/* 553 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
-  \***************************************************************************************************/
+/* 505 */
+/*!*************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
+  \*************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23642,17 +25448,17 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     'leave-to': { opacity: 0, transform: 'scale(0.95)' } } };exports.default = _default;
 
 /***/ }),
-/* 554 */,
-/* 555 */,
-/* 556 */,
-/* 557 */,
-/* 558 */,
-/* 559 */,
-/* 560 */,
-/* 561 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-overlay/props.js ***!
-  \*****************************************************************************************/
+/* 506 */,
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */,
+/* 513 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-overlay/props.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23681,17 +25487,17 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 562 */,
-/* 563 */,
-/* 564 */,
-/* 565 */,
-/* 566 */,
-/* 567 */,
-/* 568 */,
-/* 569 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-status-bar/props.js ***!
-  \********************************************************************************************/
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */,
+/* 519 */,
+/* 520 */,
+/* 521 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-status-bar/props.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23704,17 +25510,17 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 570 */,
-/* 571 */,
-/* 572 */,
-/* 573 */,
-/* 574 */,
-/* 575 */,
-/* 576 */,
-/* 577 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/急先锋/Desktop/mdmeimall/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
-  \*********************************************************************************************/
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */,
+/* 527 */,
+/* 528 */,
+/* 529 */
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

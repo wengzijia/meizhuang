@@ -1,6 +1,6 @@
 {
     "name" : "zlemei",
-    "appid" : "__UNI__4426E09",
+    "appid" : "",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -55,6 +55,7 @@
             "urlCheck" : false,
             "minified" : true,
             "es6" : false
+
         },
         "usingComponents" : true
     },

@@ -115,7 +115,7 @@
 				display: flex;
 				flex-direction: row;
 				flex-wrap: wrap;
-				width: 1600rpx;
+				width: 1380rpx;
 			}
 		}
 
