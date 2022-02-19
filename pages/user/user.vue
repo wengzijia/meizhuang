@@ -1,5 +1,4 @@
 <template>
-
 	<view class="bg-set">
 		<view class="all">
 			<view>
