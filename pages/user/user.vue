@@ -10,7 +10,7 @@
 			</view>
 		</view>
 		<uni-list class="allOrder">
-			<uni-list-item  title="我的订单"  link rightText="查看全部订单" class="label"></uni-list-item>
+			<uni-list-item  title="我的订单"  link rightText="查看全部订单" class="label" @click='goSearch'></uni-list-item>
 			<view  class="myOrder">
 			<uni-grid :column="5" :showBorder="false"  :square="false" class="allTransport">
 				<uni-grid-item class="transport" >
@@ -58,6 +58,22 @@
 	</view>
 </template>
 <script>
+	export default{
+		data(){
+			return{
+				
+			}
+		},
+		methods:{
+			// 跳转到搜索页面
+			goSearch() {
+				uni.navigateTo({
+					url: "../orderpage/orderpage"
+				})
+			},
+		}
+	}
+	
 </script>
 <style lang="scss" scoped>
 	@import "../../static/Rose-iconfont.css";

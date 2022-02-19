@@ -94,6 +94,45 @@
 					}
 				}
 			}
+		},
+		{
+			"path": "pages/orderpage/orderpage",
+			"style": {
+				"navigationBarTitleText": "订单列表",
+				"navigationBarBackgroundColor":"#2b2e3d",
+				"navigationBarTextStyle":"white",
+				"enablePullDownRefresh":false
+			}
+		
+		},
+		{
+			"path": "pages/ordedetli/ordedetli",
+			"style": {
+				"navigationBarTitleText": "订单详情",
+				"navigationBarBackgroundColor": "#2b2e3d",
+				"navigationBarTextStyle":"white",
+				"enablePullDownRefresh": false
+			}
+		
+		},
+		{
+			"path": "pages/payresult/payresult",
+			"style": {
+				"navigationBarTitleText": "支付结果",
+				"navigationBarBackgroundColor": "#2b2e3d",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+		    "path" : "pages/confirmorder/confirmorder",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "确认订单",
+				"navigationBarBackgroundColor": "#2b2e3d",
+		        "enablePullDownRefresh": false,
+				"navigationBarTextStyle":"white"
+		    }
+		    
 		}
 	],
 	"tabBar": {
