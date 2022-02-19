@@ -245,11 +245,11 @@ var _login = __webpack_require__(/*! api/login.js */ 214);function _interopRequi
     obtainYzm: function obtainYzm() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$checkImgYzm, data, num, setInt;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:if (!(
 
 
-                _this.phoneState == false && _this.imgYzm.length == 4)) {_context.next = 16;break;}_context.next = 3;return (
+                _this.phoneState == false && _this.imgYzm.length == 4)) {_context.next = 15;break;}_context.next = 3;return (
 
-                  (0, _login.checkImgYzm)(_this.phone, _this.captchaId, _this.imgYzm));case 3:_yield$checkImgYzm = _context.sent;data = _yield$checkImgYzm.data;
-                console.log(data);if (!(
-                data.code == 2000)) {_context.next = 12;break;}
+                  (0, _login.checkImgYzm)(_this.phone, _this.captchaId, _this.imgYzm));case 3:_yield$checkImgYzm = _context.sent;data = _yield$checkImgYzm.data;if (!(
+
+                data.code == 2000)) {_context.next = 11;break;}
                 _this.imgYzmCatch = true;
                 _this.$refs["toast"].open({
                   message: "验证码发送成功,注意查看手机",
@@ -267,7 +267,7 @@ var _login = __webpack_require__(/*! api/login.js */ 214);function _interopRequi
                     _this.yzmBtn = "发送验证码";
                   }
 
-                }, 1000);return _context.abrupt("return");case 12:
+                }, 1000);return _context.abrupt("return");case 11:
 
 
                 _this.$refs["toast"].open({
@@ -277,13 +277,13 @@ var _login = __webpack_require__(/*! api/login.js */ 214);function _interopRequi
 
                 if (data.message == "短信未过期") {
                   _this.obtainImgYzm();
-                }_context.next = 17;break;case 16:
+                }_context.next = 16;break;case 15:
 
 
                 _this.$refs["toast"].open({
                   message: "手机号码或图片验证格式不对",
                   position: "middle",
-                  icon: "error" });case 17:case "end":return _context.stop();}}}, _callee);}))();
+                  icon: "error" });case 16:case "end":return _context.stop();}}}, _callee);}))();
 
 
 
@@ -291,9 +291,9 @@ var _login = __webpack_require__(/*! api/login.js */ 214);function _interopRequi
     // 登录
     login: function login() {var _this2 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2() {var _yield$h5login, result;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:if (!(
 
-                _this2.phone != '' && _this2.phoneYzm != '' && _this2.imgYzmCatch == true)) {_context2.next = 9;break;}_context2.next = 3;return (
+                _this2.phone != '' && _this2.phoneYzm != '' && _this2.imgYzmCatch == true)) {_context2.next = 8;break;}_context2.next = 3;return (
                   (0, _login.h5login)(_this2.phone, _this2.phoneYzm));case 3:_yield$h5login = _context2.sent;result = _yield$h5login.result;
-                console.log(result);
+
                 if (result.code == 20000) {
                   _this2.$refs["toast"].open({
                     message: "登录成功",
@@ -309,14 +309,14 @@ var _login = __webpack_require__(/*! api/login.js */ 214);function _interopRequi
                     position: "middle",
                     icon: "error" });
 
-                }_context2.next = 10;break;case 9:
+                }_context2.next = 9;break;case 8:
 
 
 
                 _this2.$refs["toast"].open({
                   message: "手机号或手机验证码错误",
                   position: "middle",
-                  icon: "error" });case 10:case "end":return _context2.stop();}}}, _callee2);}))();
+                  icon: "error" });case 9:case "end":return _context2.stop();}}}, _callee2);}))();
 
 
 

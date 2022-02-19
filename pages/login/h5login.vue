@@ -93,7 +93,7 @@
 				if(this.phoneState == false && this.imgYzm.length == 4){
 				
 				let {data} = await checkImgYzm(this.phone,this.captchaId,this.imgYzm)
-				console.log(data)
+			
 				if(data.code == 2000){
 					this.imgYzmCatch = true
 					this.$refs["toast"].open({
@@ -138,7 +138,7 @@
 				
 				if(this.phone != '' && this.phoneYzm != '' && this.imgYzmCatch == true){
 					let {result} = await h5login(this.phone,this.phoneYzm)
-					console.log(result)
+					
 					if(result.code == 20000){
 						this.$refs["toast"].open({
 						          message: "登录成功",
