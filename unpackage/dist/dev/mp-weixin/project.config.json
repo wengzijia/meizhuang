@@ -6,6 +6,7 @@
   },
   "setting": {
     "urlCheck": false,
+<<<<<<< HEAD
     "es6": true,
     "enhance": false,
     "postcss": true,
@@ -35,6 +36,10 @@
     "useStaticServer": true,
     "showES6CompileOption": false,
     "useCompilerPlugins": false
+=======
+    "minified": true,
+    "es6": true
+>>>>>>> feng
   },
   "compileType": "miniprogram",
   "libVersion": "2.22.0",
@@ -54,8 +59,20 @@
       "list": []
     },
     "miniprogram": {
+<<<<<<< HEAD
       "current": -1,
       "list": []
+=======
+      "current": 0,
+      "list": [
+        {
+          "id": 0,
+          "name": "pages/orderpage/orderpage",
+          "pathName": "pages/orderpage/orderpage",
+          "query": ""
+        }
+      ]
+>>>>>>> feng
     }
   },
   "scripts": {},

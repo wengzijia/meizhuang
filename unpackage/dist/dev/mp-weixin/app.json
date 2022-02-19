@@ -10,7 +10,11 @@
     "pages/address/addressList",
     "pages/login/h5login",
     "pages/login/login",
-    "pages/goodsDetail/goodsDetail"
+    "pages/goodsDetail/goodsDetail",
+    "pages/orderpage/orderpage",
+    "pages/ordedetli/ordedetli",
+    "pages/payresult/payresult",
+    "pages/confirmorder/confirmorder"
   ],
   "subPackages": [],
   "window": {
@@ -44,7 +48,14 @@
     ]
   },
   "usingComponents": {
+<<<<<<< HEAD
     "van-area": "wxcomponents/vant/area/index"
   },
   "sitemapLocation": "sitemap.json"
+=======
+    "van-area": "wxcomponents/vant/area/index",
+    "van-toast": "wxcomponents/vant/toast/index",
+    "van-field": "wxcomponents/vant/field/index"
+  }
+>>>>>>> feng
 }

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "支付结果",
+  "navigationBarBackgroundColor": "#2b2e3d",
+  "enablePullDownRefresh": false,
+  "usingComponents": {}
+}
