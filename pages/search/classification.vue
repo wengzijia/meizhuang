@@ -1,10 +1,6 @@
 <template>
 	<view class="tab">
-		<block v-for="(item,index) in searchData" :key="index">
-		<navigator open-type="navigate" :url="'/pages/goodsDetail/goodsDetail?id='+item.id">
-		<Goods :goodsList="item"></Goods>
-		</navigator>
-		</block>
+		<Goods v-for="(item,index) in searchData" :goodsList="item"></Goods>
 	</view>
 </template>
 

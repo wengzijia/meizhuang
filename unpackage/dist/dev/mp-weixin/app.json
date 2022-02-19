@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/preferentialPrice/preferential",
+    "pages/preferentialPrice/receiveaCoupon",
     "pages/sort/sort",
     "pages/shopCar/car",
     "pages/user/user",
@@ -44,7 +46,9 @@
     ]
   },
   "usingComponents": {
-    "van-area": "wxcomponents/vant/area/index"
+    "van-area": "wxcomponents/vant/area/index",
+    "van-toast": "wxcomponents/vant/toast/index",
+    "van-field": "wxcomponents/vant/field/index"
   },
   "sitemapLocation": "sitemap.json"
 }

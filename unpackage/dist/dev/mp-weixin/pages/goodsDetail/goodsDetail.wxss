@@ -11,7 +11,6 @@
  *
  * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
  */
-/* COOL-UNI 颜色变量 */
 /* 颜色变量 */
 /* 行为相关颜色 */
 /* 文字基本颜色 */
@@ -89,21 +88,18 @@
 }
 .goodsDetailContainer .header {
   background-color: #FFFFFF;
-  padding-bottom: 8rpx;
+  height: 1200rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .multicastDiagram {
-  height: 760rpx;
+  height: 600rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .multicastDiagram .item image {
   width: 100%;
   height: 100%;
 }
-.goodsDetailContainer .header .multicastDiagramContainer .titleContainer .title {
-  margin-top: 40rpx;
-  margin-left: 30rpx;
-}
-.goodsDetailContainer .header .multicastDiagramContainer .titleContainer .brief {
-  margin: 12rpx 24rpx 12rpx 32rpx;
+.goodsDetailContainer .header .multicastDiagramContainer .titleContainer {
+  padding: 30rpx;
+  height: 120rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo {
   padding: 30rpx;
@@ -117,34 +113,21 @@
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .soldOut {
   margin-left: 20rpx;
-  color: #d53249;
-  border-radius: 12rpx;
-  padding: 4rpx;
-  height: 44rpx;
-  border: 2rpx solid #dd524d;
-}
-.goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .brokerage {
-  margin-left: 20rpx;
-  color: #d53249;
-  border-radius: 12rpx;
-  padding: 4rpx;
-  height: 44rpx;
-  border: 2rpx solid #dd524d;
+  background-color: #b2b2b2;
+  color: #FFFFFF;
+  border-radius: 20rpx;
+  text-align: center;
+  width: 160rpx;
+  height: 40rpx;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .goodsInfo .getCouponWrap .greaterThan {
   margin-left: 12rpx;
-}
-.goodsDetailContainer .header .multicastDiagramContainer .popup {
-  position: relative;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .popup .receiveCoupon {
   height: 800rpx;
   background-color: #FFFFFF;
   border-top-left-radius: 40rpx;
   border-top-right-radius: 40rpx;
-  position: absolute;
-  bottom: -33px;
-  width: 100%;
 }
 .goodsDetailContainer .header .multicastDiagramContainer .popup .receiveCoupon .title {
   padding-top: 20rpx;
@@ -212,11 +195,6 @@
 .goodsDetailContainer .detailContainer .goodsDetail {
   padding: 30rpx;
 }
-.goodsDetailContainer .detailContainer .end {
-  text-align: center;
-  padding-bottom: 90px;
-  color: #C0C0C0;
-}
 .goodsNavigation {
   background-color: #FFFFFF;
   position: fixed;
@@ -235,6 +213,7 @@
   font-size: 20rpx;
 }
 .goodsNavigation .serviceWrap .shopping {
+  margin-left: 60rpx;
   text-align: center;
 }
 .goodsNavigation .serviceWrap .shopping .cartIcon {
@@ -243,31 +222,22 @@
 .goodsNavigation .serviceWrap .shopping .cartTitle {
   font-size: 20rpx;
 }
-.goodsNavigation .serviceWrap .collect {
-  margin-left: 30rpx;
-  text-align: center;
-}
-.goodsNavigation .serviceWrap .collect .collectIcon {
-  font-size: 40rpx;
-}
-.goodsNavigation .serviceWrap .collect .icon-shoucang {
-  color: #ffca3e;
-}
-.goodsNavigation .serviceWrap .collect .collectTitle {
-  font-size: 20rpx;
-}
 .goodsNavigation .buyContainer {
   margin-left: 80rpx;
 }
 .goodsNavigation .buyContainer .cart {
-  background-color: #fc7e8d;
+  border: 1rpx solid #cccccc;
+  border-radius: 6rpx;
+  background-color: #ffffff;
   font-size: 20rpx;
   height: 80rpx;
   width: 200rpx;
-  color: #f3fffa;
 }
 .goodsNavigation .buyContainer .buy {
-  background-color: #fe3a46;
+  margin-left: 30rpx;
+  border: 1rpx solid #cccccc;
+  border-radius: 6rpx;
+  background-color: #2b2e3d;
   color: #FFFFFF;
   font-size: 20rpx;
   height: 80rpx;
