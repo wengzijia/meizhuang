@@ -134,7 +134,6 @@
 			},
 			// 登录
 			async login(){
-				
 				if(this.phone != '' && this.phoneYzm != '' && this.imgYzmCatch == true){
 					let {result} = await h5login(this.phone,this.phoneYzm)
 					if(result.code == 20000){
