@@ -5,11 +5,8 @@
   },
   "setting": {
     "urlCheck": false,
-    "es6": true,
-    "enhance": true,
-    "postcss": true,
-    "preloadBackgroundData": false,
     "minified": true,
+<<<<<<< HEAD
     "newFeature": false,
     "coverView": true,
     "nodeModules": false,
@@ -40,6 +37,9 @@
     "showES6CompileOption": false,
     "useCompilerPlugins": false,
     "minifyWXML": true
+=======
+    "es6": true
+>>>>>>> weng
   },
   "compileType": "miniprogram",
   "libVersion": "",
@@ -47,15 +47,19 @@
   "projectname": "zlemei",
   "condition": {
     "search": {
+      "current": -1,
       "list": []
     },
     "conversation": {
+      "current": -1,
       "list": []
     },
     "game": {
+      "current": -1,
       "list": []
     },
     "miniprogram": {
+      "current": -1,
       "list": []
     }
   }
