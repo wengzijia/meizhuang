@@ -805,15 +805,9 @@ var customize = cached(function (str) {
 
 function initTriggerEvent(mpInstance) {
   var oldTriggerEvent = mpInstance.triggerEvent;
-  var newTriggerEvent = function newTriggerEvent(event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
+  mpInstance.triggerEvent = function (event) {for (var _len3 = arguments.length, args = new Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {args[_key3 - 1] = arguments[_key3];}
     return oldTriggerEvent.apply(mpInstance, [customize(event)].concat(args));
   };
-  try {
-    // 京东小程序 triggerEvent 为只读
-    mpInstance.triggerEvent = newTriggerEvent;
-  } catch (error) {
-    mpInstance._triggerEvent = newTriggerEvent;
-  }
 }
 
 function initHook(name, options, isComponent) {
@@ -947,11 +941,7 @@ function initData(vueOptions, context) {
     try {
       data = data.call(context); // 支持 Vue.prototype 上挂的数据
     } catch (e) {
-<<<<<<< HEAD
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
-=======
       if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
->>>>>>> master
         console.warn('根据 Vue 的 data 函数初始化小程序 data 失败，请尽量确保 data 函数中不访问 vm 对象，否则可能影响首次数据渲染速度。', data);
       }
     }
@@ -1991,17 +1981,17 @@ function createPlugin(vm) {
   var appOptions = parseApp(vm);
   if (isFn(appOptions.onShow) && wx.onAppShow) {
     wx.onAppShow(function () {for (var _len7 = arguments.length, args = new Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {args[_key7] = arguments[_key7];}
-      vm.__call_hook('onShow', args);
+      appOptions.onShow.apply(vm, args);
     });
   }
   if (isFn(appOptions.onHide) && wx.onAppHide) {
     wx.onAppHide(function () {for (var _len8 = arguments.length, args = new Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {args[_key8] = arguments[_key8];}
-      vm.__call_hook('onHide', args);
+      appOptions.onHide.apply(vm, args);
     });
   }
   if (isFn(appOptions.onLaunch)) {
     var args = wx.getLaunchOptionsSync && wx.getLaunchOptionsSync();
-    vm.__call_hook('onLaunch', args);
+    appOptions.onLaunch.call(vm, args);
   }
   return vm;
 }
@@ -7651,11 +7641,7 @@ function type(obj) {
 
 function flushCallbacks$1(vm) {
     if (vm.__next_tick_callbacks && vm.__next_tick_callbacks.length) {
-<<<<<<< HEAD
-        if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
-=======
         if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
->>>>>>> master
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:flushCallbacks[' + vm.__next_tick_callbacks.length + ']');
@@ -7676,22 +7662,14 @@ function nextTick$1(vm, cb) {
     //1.nextTick 之前 已 setData 且 setData 还未回调完成
     //2.nextTick 之前存在 render watcher
     if (!vm.__next_tick_pending && !hasRenderWatcher(vm)) {
-<<<<<<< HEAD
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
-=======
         if(Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
->>>>>>> master
             var mpInstance = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + vm._uid +
                 ']:nextVueTick');
         }
         return nextTick(cb, vm)
     }else{
-<<<<<<< HEAD
-        if(Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG){
-=======
         if(Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG){
->>>>>>> master
             var mpInstance$1 = vm.$scope;
             console.log('[' + (+new Date) + '][' + (mpInstance$1.is || mpInstance$1.route) + '][' + vm._uid +
                 ']:nextMPTick');
@@ -7777,11 +7755,7 @@ var patch = function(oldVnode, vnode) {
     });
     var diffData = this.$shouldDiffData === false ? data : diff(data, mpData);
     if (Object.keys(diffData).length) {
-<<<<<<< HEAD
-      if (Object({"NODE_ENV":"development","VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","BASE_URL":"/"}).VUE_APP_DEBUG) {
-=======
       if (Object({"VUE_APP_NAME":"zlemei","VUE_APP_PLATFORM":"mp-weixin","NODE_ENV":"development","BASE_URL":"/"}).VUE_APP_DEBUG) {
->>>>>>> master
         console.log('[' + (+new Date) + '][' + (mpInstance.is || mpInstance.route) + '][' + this._uid +
           ']差量更新',
           JSON.stringify(diffData));
@@ -7967,10 +7941,9 @@ function internalMixin(Vue) {
 
   Vue.prototype.$emit = function(event) {
     if (this.$scope && event) {
-      (this.$scope['_triggerEvent'] || this.$scope['triggerEvent'])
-        .call(this.$scope, event, {
-          __args__: toArray(arguments, 1)
-        })
+      this.$scope['triggerEvent'](event, {
+        __args__: toArray(arguments, 1)
+      });
     }
     return oldEmit.apply(this, arguments)
   };
@@ -8655,78 +8628,18 @@ function resolveLocaleChain(locale) {
 
 /***/ }),
 /* 5 */
-<<<<<<< HEAD
-/*!****************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/pages.json ***!
-  \****************************************************/
-=======
-/*!***************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/pages.json ***!
-  \***************************************************/
->>>>>>> master
+/*!***********************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/pages.json ***!
+  \***********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-
+throw new Error("Module build failed (from ./node_modules/@dcloudio/webpack-uni-pages-loader/lib/index.js):\nError: ENOENT: no such file or directory, open 'C:\\Users\\Administrator\\Desktop\\mdmeimall\\pages.json'");
 
 /***/ }),
 /* 6 */,
 /* 7 */,
 /* 8 */,
-<<<<<<< HEAD
-/* 9 */
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! regenerator-runtime */ 10);
-
-/***/ }),
-/* 10 */
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 11);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-=======
 /* 9 */,
 /* 10 */,
 /* 11 */
@@ -8852,753 +8765,15 @@ function normalizeComponent (
   return {
     exports: scriptExports,
     options: options
->>>>>>> master
   }
 }
 
 
 /***/ }),
-<<<<<<< HEAD
-/* 11 */
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
-
-/***/ }),
 /* 12 */
-/*!******************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/login.js ***!
-  \******************************************************/
-=======
-/* 12 */
-/*!**********************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
-  \**********************************************************************/
+/*!******************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/index.js ***!
+  \******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9685,9 +8860,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 13 */
-/*!*********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
-  \*********************************************************************************/
+/*!*****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9850,9 +9025,9 @@ var install = function install(Vue) {
 
 /***/ }),
 /* 14 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
-  \***********************************************************************************/
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9865,9 +9040,9 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 15 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
-  \****************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9878,9 +9053,9 @@ _Request.default;exports.default = _default;
 
 /***/ }),
 /* 16 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
-  \***********************************************************************************************/
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10086,40 +9261,22 @@ Request = /*#__PURE__*/function () {
 
 /***/ }),
 /* 17 */
-/*!*******************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
-  \*******************************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
+  \***************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-<<<<<<< HEAD
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 13);
-
-// 自动登录 (用来获取token)
-function
-autologin(_x) {return _autologin.apply(this, arguments);}
-
-
-
-
-
-
-
-
-
-
-=======
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 18));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 
 function _default(config) {return (0, _index.default)(config);};exports.default = _default;
 
 /***/ }),
 /* 18 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
-  \*************************************************************************************************/
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10175,7 +9332,6 @@ function _default(config) {return new Promise(function (resolve, reject) {
         name: config.name };
 
       var optionalKeys = [
->>>>>>> master
 
 
 
@@ -10185,24 +9341,15 @@ function _default(config) {return new Promise(function (resolve, reject) {
 
 
 
-<<<<<<< HEAD
-
-=======
       'formData'];
 
       requestTask = uni.uploadFile(_objectSpread(_objectSpread(_objectSpread({}, _config), otherConfig), mergeKeys(optionalKeys, config)));
     } else if (config.method === 'DOWNLOAD') {
->>>>>>> master
 
 
 
 
 
-<<<<<<< HEAD
-
-
-
-=======
       requestTask = uni.downloadFile(_config);
     } else {
       var _optionalKeys = [
@@ -10214,7 +9361,6 @@ function _default(config) {return new Promise(function (resolve, reject) {
       'dataType',
 
       'responseType'];
->>>>>>> master
 
 
 
@@ -10226,297 +9372,6 @@ function _default(config) {return new Promise(function (resolve, reject) {
 
 
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 第一次登录 (录入用户基本信息)
-function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;console.log(result);wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 11;break;}return _context2.abrupt("return");case 11:console.log(result.userInfo.nickname);if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
-              // success(e){
-              // console.log(e.authSetting.scope.userInfo)
-              // if(!e.authSetting.scope.userInfo){
-              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:console.log(res);_context.next = 3;return newlogin(res);case 3:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
-                              // wx.setStorageSync("userInfo",_this.userInfo)
-                            }case 6:case "end":return _context.stop();}}}, _callee);}))();} }); // }
-              // }
-              // })
-              // 		
-            }case 13:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
-}
-
-// 用户手机号
-
-function phoneNumber(code, token) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
-    method: 'POST',
-    header: {
-      Authorization: token },
-
-    data: { code: code } });
-
-
-
-}
-
-
-
-
-// h5
-
-// 获取图形验证码
-function captcha() {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
-    method: 'get' });
-
-
-}
-// 校验图形验证码
-function checkImgYzm(tell, captchaId, verifyCode) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
-    method: 'post',
-    data: {
-      tell: tell,
-      captchaId: captchaId,
-      verifyCode: verifyCode } });
-
-
-
-}
-// 登录
-function h5login(tell, code) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login",
-    method: 'post',
-    data: { tell: tell, code: code } });
-
-
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 13 */
-/*!********************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/request.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
-  return new Promise(function (reslove, reject) {
-    uni.showLoading({
-      title: 'loading...' });
-
-    var httpRequest = _objectSpread(_objectSpread({},
-    options), {}, {
-      success: function success(res) {
-        reslove(res.data);
-      },
-      fail: function fail(err) {
-        reject(err);
-      },
-      complete: function complete(res) {
-        uni.hideLoading();var _res$data =
-
-
-
-        res.data,code = _res$data.code,message = _res$data.message;
-        if (code === 10004 || code === 10005) {
-          uni.showToast({
-            title: message });
-
-          uni.redirectTo({
-
-            url: '../../pages/login/login' });
-
-
-
-
-
-        }
-      } });
-
-    var reg = /\/user\//;
-    var result = reg.test(options.url);
-    // 需要权限
-    if (result) {
-      var token = uni.getStorageSync('token');
-      if (token === '') {
-        uni.redirectTo({
-
-          url: '../../pages/login/login' });
-
-
-
-
-
-        return;
-      }
-      httpRequest.header = {
-        Authorization: token };
-
-      uni.request(httpRequest);
-    } else {
-      uni.request(httpRequest);
-    }
-
-  });
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 17 */
-/*!***********************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/index.js ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-=======
       requestTask = uni.request(_objectSpread(_objectSpread({}, _config), mergeKeys(_optionalKeys, config)));
     }
     if (config.getTask) {
@@ -10527,9 +9382,9 @@ function normalizeComponent (
 
 /***/ }),
 /* 19 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
-  \***************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10606,9 +9461,9 @@ function buildURL(url, params) {
 
 /***/ }),
 /* 20 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
-  \****************************************************************************************/
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10747,9 +9602,9 @@ function isUndefined(val) {
 
 /***/ }),
 /* 21 */
-/*!*****************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
-  \*****************************************************************************************************/
+/*!*************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
+  \*************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10777,9 +9632,9 @@ function buildFullPath(baseURL, requestedURL) {
 
 /***/ }),
 /* 22 */
-/*!********************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
-  \********************************************************************************************************/
+/*!****************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
+  \****************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10801,9 +9656,9 @@ function isAbsoluteURL(url) {
 
 /***/ }),
 /* 23 */
-/*!******************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
-  \******************************************************************************************************/
+/*!**************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
+  \**************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10825,9 +9680,9 @@ function combineURLs(baseURL, relativeURL) {
 
 /***/ }),
 /* 24 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
-  \**********************************************************************************************/
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10851,9 +9706,9 @@ function settle(resolve, reject, response) {var
 
 /***/ }),
 /* 25 */
-/*!**********************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
-  \**********************************************************************************************************/
+/*!******************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
+  \******************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10911,9 +9766,9 @@ InterceptorManager;exports.default = _default;
 
 /***/ }),
 /* 26 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
-  \***************************************************************************************************/
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10972,286 +9827,11 @@ function _default(globalsConfig) {var config2 = arguments.length > 1 && argument
     var uploadKeys = [
 
 
->>>>>>> master
 
 
 
 
 
-<<<<<<< HEAD
-var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 18));
-
-var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 19));
-
-var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 20));
-
-
-var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 38));
-
-var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 39));
-
-
-var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 40));
-
-var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 41));
-
-var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 42));
-
-var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 43));
-
-
-var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 44));
-
-var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 45));
-
-var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 135));
-
-var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 93));
-
-var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 136));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
-var pleaseSetTranspileDependencies = {},babelTest = pleaseSetTranspileDependencies === null || pleaseSetTranspileDependencies === void 0 ? void 0 : pleaseSetTranspileDependencies.test; // 引入全局mixin
-var $u = _objectSpread(_objectSpread({
-  route: _route.default,
-  date: _index.default.timeFormat, // 另名date
-  colorGradient: _colorGradient.default.colorGradient,
-  hexToRgb: _colorGradient.default.hexToRgb,
-  rgbToHex: _colorGradient.default.rgbToHex,
-  colorToRgba: _colorGradient.default.colorToRgba,
-  test: _test.default,
-  type: ['primary', 'success', 'error', 'warning', 'info'],
-  http: new _luchRequest.default(),
-  config: _config.default, // uView配置信息相关，比如版本号
-  zIndex: _zIndex.default,
-  debounce: _debounce.default,
-  throttle: _throttle.default,
-  mixin: _mixin.default,
-  mpMixin: _mpMixin.default,
-  props: _props.default },
-_index.default), {}, {
-  color: _color.default,
-  platform: _platform.default });
-
-
-// $u挂载到uni对象上
-uni.$u = $u;
-
-var install = function install(Vue) {
-  // 时间格式化，同时两个名称，date和timeFormat
-  Vue.filter('timeFormat', function (timestamp, format) {return uni.$u.timeFormat(timestamp, format);});
-  Vue.filter('date', function (timestamp, format) {return uni.$u.timeFormat(timestamp, format);});
-  // 将多久以前的方法，注入到全局过滤器
-  Vue.filter('timeFrom', function (timestamp, format) {return uni.$u.timeFrom(timestamp, format);});
-  // 同时挂载到uni和Vue.prototype中
-
-  // 只有vue，挂载到Vue.prototype才有意义，因为nvue中全局Vue.prototype和Vue.mixin是无效的
-  Vue.prototype.$u = $u;
-  Vue.mixin(_mixin.default);
-
-};var _default =
-
-{
-  install: install };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 18 */
-/*!**********************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
-  \**********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {module.exports = {
-  // 定义每个组件都可能需要用到的外部样式以及类名
-  props: {
-    // 每个组件都有的父组件传递的样式，可以为字符串或者对象形式
-    customStyle: {
-      type: [Object, String],
-      default: function _default() {return {};} },
-
-    customClass: {
-      type: String,
-      default: '' },
-
-    // 跳转的页面路径
-    url: {
-      type: String,
-      default: '' },
-
-    // 页面跳转的类型
-    linkType: {
-      type: String,
-      default: 'navigateTo' } },
-
-
-  data: function data() {
-    return {};
-  },
-  onLoad: function onLoad() {
-    // getRect挂载到$u上，因为这方法需要使用in(this)，所以无法把它独立成一个单独的文件导出
-    this.$u.getRect = this.$uGetRect;
-  },
-  created: function created() {
-    // 组件当中，只有created声明周期，为了能在组件使用，故也在created中将方法挂载到$u
-    this.$u.getRect = this.$uGetRect;
-  },
-  computed: {
-    // 在2.x版本中，将会把$u挂载到uni对象下，导致在模板中无法使用uni.$u.xxx形式
-    // 所以这里通过computed计算属性将其附加到this.$u上，就可以在模板或者js中使用uni.$u.xxx
-    // 只在nvue环境通过此方式引入完整的$u，其他平台会出现性能问题，非nvue则按需引入（主要原因是props过大）
-    $u: function $u() {
-
-      // 在非nvue端，移除props，http，mixin等对象，避免在小程序setData时数据过大影响性能
-      return uni.$u.deepMerge(uni.$u, {
-        props: undefined,
-        http: undefined,
-        mixin: undefined });
-
-
-
-
-
-    },
-    /**
-       * 生成bem规则类名
-       * 由于微信小程序，H5，nvue之间绑定class的差异，无法通过:class="[bem()]"的形式进行同用
-       * 故采用如下折中做法，最后返回的是数组，类似['a', 'b', 'c']的形式
-       * @param {String} name 组件名称
-       * @param {Array} fixed 一直会存在的类名
-       * @param {Array} change 会根据变量值为true或者false而出现或者隐藏的类名
-       * @return Array
-       */
-    bem: function bem() {
-      return function (name, fixed, change) {var _this = this;
-        // 类名前缀
-        var prefix = "u-".concat(name, "--");
-        var classes = {};
-        if (fixed) {
-          fixed.map(function (item) {
-            // 这里的类名，会一直存在
-            classes[prefix + _this[item]] = true;
-          });
-        }
-        if (change) {
-          change.map(function (item) {
-            // 这里的类名，会根据this[item]的值为true或者false，而进行添加或者移除某一个类
-            _this[item] ? classes[prefix + item] = _this[item] : delete classes[prefix + item];
-          });
-        }
-        return Object.keys(classes);
-      };
-    } },
-
-  methods: {
-    // 跳转某一个页面
-    openPage: function openPage() {var urlKey = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'url';
-      var url = this[urlKey];
-      if (url) {
-        // 执行类似uni.navigateTo的方法
-        uni[this.linkType]({
-          url: url });
-
-      }
-    },
-    // 查询节点信息
-    // 目前此方法在支付宝小程序中无法获取组件跟接点的尺寸，为支付宝的bug(2020-07-21)
-    // 解决办法为在组件根部再套一个没有任何作用的view元素
-    $uGetRect: function $uGetRect(selector, all) {var _this2 = this;
-      return new Promise(function (resolve) {
-        uni.createSelectorQuery().
-        in(_this2)[all ? 'selectAll' : 'select'](selector).
-        boundingClientRect(function (rect) {
-          if (all && Array.isArray(rect) && rect.length) {
-            resolve(rect);
-          }
-          if (!all && rect) {
-            resolve(rect);
-          }
-        }).
-        exec();
-      });
-    },
-    getParentData: function getParentData() {var _this3 = this;var parentName = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-      // 避免在created中去定义parent变量
-      if (!this.parent) this.parent = {};
-      // 这里的本质原理是，通过获取父组件实例(也即类似u-radio的父组件u-radio-group的this)
-      // 将父组件this中对应的参数，赋值给本组件(u-radio的this)的parentData对象中对应的属性
-      // 之所以需要这么做，是因为所有端中，头条小程序不支持通过this.parent.xxx去监听父组件参数的变化
-      // 此处并不会自动更新子组件的数据，而是依赖父组件u-radio-group去监听data的变化，手动调用更新子组件的方法去重新获取
-      this.parent = uni.$u.$parent.call(this, parentName);
-      if (this.parent.children) {
-        // 如果父组件的children不存在本组件的实例，才将本实例添加到父组件的children中
-        this.parent.children.indexOf(this) === -1 && this.parent.children.push(this);
-      }
-      if (this.parent && this.parentData) {
-        // 历遍parentData中的属性，将parent中的同名属性赋值给parentData
-        Object.keys(this.parentData).map(function (key) {
-          _this3.parentData[key] = _this3.parent[key];
-        });
-      }
-    },
-    // 阻止事件冒泡
-    preventEvent: function preventEvent(e) {
-      e && typeof e.stopPropagation === 'function' && e.stopPropagation();
-    },
-    // 空操作
-    noop: function noop(e) {
-      this.preventEvent(e);
-    } },
-
-  onReachBottom: function onReachBottom() {
-    uni.$emit('uOnReachBottom');
-  },
-  beforeDestroy: function beforeDestroy() {var _this4 = this;
-    // 判断当前页面是否存在parent和chldren，一般在checkbox和checkbox-group父子联动的场景会有此情况
-    // 组件销毁时，移除子组件在父组件children数组中的实例，释放资源，避免数据混乱
-    if (this.parent && uni.$u.test.array(this.parent.children)) {
-      // 组件销毁时，移除父组件中的children数组中对应的实例
-      var childrenList = this.parent.children;
-      childrenList.map(function (child, index) {
-        // 如果相等，则移除
-        if (child === _this4) {
-          childrenList.splice(index, 1);
-        }
-      });
-    }
-  } };
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 19 */
-/*!************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
-  \************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-
-  // 将自定义节点设置成虚拟的，更加接近Vue组件的表现，能更好的使用flex属性
-  options: {
-    virtualHost: true } };exports.default = _default;
-
-/***/ }),
-/* 20 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 21));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
-
-_Request.default;exports.default = _default;
-
-/***/ }),
-/* 21 */
-/*!************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
-  \************************************************************************************************/
-=======
 
 
     'filePath',
@@ -11299,9 +9879,9 @@ _Request.default;exports.default = _default;
 
 /***/ }),
 /* 27 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
-  \************************************************************************************************/
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11337,1153 +9917,13 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 /***/ }),
 /* 28 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
-  \**********************************************************************************************/
->>>>>>> master
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-<<<<<<< HEAD
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-
-
-
-
-
-
-
-
-
-
-
-
-var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 22));
-var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 30));
-var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 31));
-var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 32));
-var _utils = __webpack_require__(/*! ../utils */ 25);
-var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 33));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
-
-Request = /*#__PURE__*/function () {
-  /**
-                                    * @param {Object} arg - 全局配置
-                                    * @param {String} arg.baseURL - 全局根路径
-                                    * @param {Object} arg.header - 全局header
-                                    * @param {String} arg.method = [GET|POST|PUT|DELETE|CONNECT|HEAD|OPTIONS|TRACE] - 全局默认请求方式
-                                    * @param {String} arg.dataType = [json] - 全局默认的dataType
-                                    * @param {String} arg.responseType = [text|arraybuffer] - 全局默认的responseType。支付宝小程序不支持
-                                    * @param {Object} arg.custom - 全局默认的自定义参数
-                                    * @param {Number} arg.timeout - 全局默认的超时时间，单位 ms。默认60000。H5(HBuilderX 2.9.9+)、APP(HBuilderX 2.9.9+)、微信小程序（2.10.0）、支付宝小程序
-                                    * @param {Boolean} arg.sslVerify - 全局默认的是否验证 ssl 证书。默认true.仅App安卓端支持（HBuilderX 2.3.3+）
-                                    * @param {Boolean} arg.withCredentials - 全局默认的跨域请求时是否携带凭证（cookies）。默认false。仅H5支持（HBuilderX 2.6.15+）
-                                    * @param {Boolean} arg.firstIpv4 - 全DNS解析时优先使用ipv4。默认false。仅 App-Android 支持 (HBuilderX 2.8.0+)
-                                    * @param {Function(statusCode):Boolean} arg.validateStatus - 全局默认的自定义验证器。默认statusCode >= 200 && statusCode < 300
-                                    */
-  function Request() {var arg = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};_classCallCheck(this, Request);
-    if (!(0, _utils.isPlainObject)(arg)) {
-      arg = {};
-      console.warn('设置全局参数必须接收一个Object');
-    }
-    this.config = (0, _clone.default)(_objectSpread(_objectSpread({}, _defaults.default), arg));
-    this.interceptors = {
-      request: new _InterceptorManager.default(),
-      response: new _InterceptorManager.default() };
-
-  }
-
-  /**
-    * @Function
-    * @param {Request~setConfigCallback} f - 设置全局默认配置
-    */_createClass(Request, [{ key: "setConfig", value: function setConfig(
-    f) {
-      this.config = f(this.config);
-    } }, { key: "middleware", value: function middleware(
-
-    config) {
-      config = (0, _mergeConfig.default)(this.config, config);
-      var chain = [_dispatchRequest.default, undefined];
-      var promise = Promise.resolve(config);
-
-      this.interceptors.request.forEach(function (interceptor) {
-        chain.unshift(interceptor.fulfilled, interceptor.rejected);
-      });
-
-      this.interceptors.response.forEach(function (interceptor) {
-        chain.push(interceptor.fulfilled, interceptor.rejected);
-      });
-
-      while (chain.length) {
-        promise = promise.then(chain.shift(), chain.shift());
-      }
-
-      return promise;
-    }
-
-    /**
-      * @Function
-      * @param {Object} config - 请求配置项
-      * @prop {String} options.url - 请求路径
-      * @prop {Object} options.data - 请求参数
-      * @prop {Object} [options.responseType = config.responseType] [text|arraybuffer] - 响应的数据类型
-      * @prop {Object} [options.dataType = config.dataType] - 如果设为 json，会尝试对返回的数据做一次 JSON.parse
-      * @prop {Object} [options.header = config.header] - 请求header
-      * @prop {Object} [options.method = config.method] - 请求方法
-      * @returns {Promise<unknown>}
-      */ }, { key: "request", value: function request()
-    {var config = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      return this.middleware(config);
-    } }, { key: "get", value: function get(
-
-    url) {var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        method: 'GET' },
-      options));
-
-    } }, { key: "post", value: function post(
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'POST' },
-      options));
-
-    } }, { key: "put", value: function put(
-
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'PUT' },
-      options));
-
-    } }, { key: "delete", value: function _delete(
-
-
-
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'DELETE' },
-      options));
-
-    } }, { key: "connect", value: function connect(
-
-
-
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'CONNECT' },
-      options));
-
-    } }, { key: "head", value: function head(
-
-
-
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'HEAD' },
-      options));
-
-    } }, { key: "options", value: function options(
-
-
-
-
-    url, data) {var _options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'OPTIONS' },
-      _options));
-
-    } }, { key: "trace", value: function trace(
-
-
-
-
-    url, data) {var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-      return this.middleware(_objectSpread({
-        url: url,
-        data: data,
-        method: 'TRACE' },
-      options));
-
-    } }, { key: "upload", value: function upload(
-
-
-
-    url) {var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      config.url = url;
-      config.method = 'UPLOAD';
-      return this.middleware(config);
-    } }, { key: "download", value: function download(
-
-    url) {var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      config.url = url;
-      config.method = 'DOWNLOAD';
-      return this.middleware(config);
-    } }]);return Request;}();
-
-
-/**
-                               * setConfig回调
-                               * @return {Object} - 返回操作后的config
-                               * @callback Request~setConfigCallback
-                               * @param {Object} config - 全局默认config
-                               */exports.default = Request;
-
-/***/ }),
-/* 22 */
-/*!********************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
-  \********************************************************************************************************/
-=======
-/* WEBPACK VAR INJECTION */(function(Buffer) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /* eslint-disable */
-var clone = function () {
-  'use strict';
-
-  function _instanceof(obj, type) {
-    return type != null && obj instanceof type;
-  }
-
-  var nativeMap;
-  try {
-    nativeMap = Map;
-  } catch (_) {
-    // maybe a reference error because no `Map`. Give it a dummy value that no
-    // value will ever be an instanceof.
-    nativeMap = function nativeMap() {};
-  }
-
-  var nativeSet;
-  try {
-    nativeSet = Set;
-  } catch (_) {
-    nativeSet = function nativeSet() {};
-  }
-
-  var nativePromise;
-  try {
-    nativePromise = Promise;
-  } catch (_) {
-    nativePromise = function nativePromise() {};
-  }
-
-  /**
-     * Clones (copies) an Object using deep copying.
-     *
-     * This function supports circular references by default, but if you are certain
-     * there are no circular references in your object, you can save some CPU time
-     * by calling clone(obj, false).
-     *
-     * Caution: if `circular` is false and `parent` contains circular references,
-     * your program may enter an infinite loop and crash.
-     *
-     * @param `parent` - the object to be cloned
-     * @param `circular` - set to true if the object to be cloned may contain
-     *    circular references. (optional - true by default)
-     * @param `depth` - set to a number if the object is only to be cloned to
-     *    a particular depth. (optional - defaults to Infinity)
-     * @param `prototype` - sets the prototype to be used when cloning an object.
-     *    (optional - defaults to parent prototype).
-     * @param `includeNonEnumerable` - set to true if the non-enumerable properties
-     *    should be cloned as well. Non-enumerable properties on the prototype
-     *    chain will be ignored. (optional - false by default)
-     */
-  function clone(parent, circular, depth, prototype, includeNonEnumerable) {
-    if (typeof circular === 'object') {
-      depth = circular.depth;
-      prototype = circular.prototype;
-      includeNonEnumerable = circular.includeNonEnumerable;
-      circular = circular.circular;
-    }
-    // maintain two arrays for circular references, where corresponding parents
-    // and children have the same index
-    var allParents = [];
-    var allChildren = [];
-
-    var useBuffer = typeof Buffer != 'undefined';
-
-    if (typeof circular == 'undefined')
-    circular = true;
-
-    if (typeof depth == 'undefined')
-    depth = Infinity;
-
-    // recurse this function so we don't reset allParents and allChildren
-    function _clone(parent, depth) {
-      // cloning null always returns null
-      if (parent === null)
-      return null;
-
-      if (depth === 0)
-      return parent;
-
-      var child;
-      var proto;
-      if (typeof parent != 'object') {
-        return parent;
-      }
-
-      if (_instanceof(parent, nativeMap)) {
-        child = new nativeMap();
-      } else if (_instanceof(parent, nativeSet)) {
-        child = new nativeSet();
-      } else if (_instanceof(parent, nativePromise)) {
-        child = new nativePromise(function (resolve, reject) {
-          parent.then(function (value) {
-            resolve(_clone(value, depth - 1));
-          }, function (err) {
-            reject(_clone(err, depth - 1));
-          });
-        });
-      } else if (clone.__isArray(parent)) {
-        child = [];
-      } else if (clone.__isRegExp(parent)) {
-        child = new RegExp(parent.source, __getRegExpFlags(parent));
-        if (parent.lastIndex) child.lastIndex = parent.lastIndex;
-      } else if (clone.__isDate(parent)) {
-        child = new Date(parent.getTime());
-      } else if (useBuffer && Buffer.isBuffer(parent)) {
-        if (Buffer.from) {
-          // Node.js >= 5.10.0
-          child = Buffer.from(parent);
-        } else {
-          // Older Node.js versions
-          child = new Buffer(parent.length);
-          parent.copy(child);
-        }
-        return child;
-      } else if (_instanceof(parent, Error)) {
-        child = Object.create(parent);
-      } else {
-        if (typeof prototype == 'undefined') {
-          proto = Object.getPrototypeOf(parent);
-          child = Object.create(proto);
-        } else
-        {
-          child = Object.create(prototype);
-          proto = prototype;
-        }
-      }
-
-      if (circular) {
-        var index = allParents.indexOf(parent);
-
-        if (index != -1) {
-          return allChildren[index];
-        }
-        allParents.push(parent);
-        allChildren.push(child);
-      }
-
-      if (_instanceof(parent, nativeMap)) {
-        parent.forEach(function (value, key) {
-          var keyChild = _clone(key, depth - 1);
-          var valueChild = _clone(value, depth - 1);
-          child.set(keyChild, valueChild);
-        });
-      }
-      if (_instanceof(parent, nativeSet)) {
-        parent.forEach(function (value) {
-          var entryChild = _clone(value, depth - 1);
-          child.add(entryChild);
-        });
-      }
-
-      for (var i in parent) {
-        var attrs = Object.getOwnPropertyDescriptor(parent, i);
-        if (attrs) {
-          child[i] = _clone(parent[i], depth - 1);
-        }
-
-        try {
-          var objProperty = Object.getOwnPropertyDescriptor(parent, i);
-          if (objProperty.set === 'undefined') {
-            // no setter defined. Skip cloning this property
-            continue;
-          }
-          child[i] = _clone(parent[i], depth - 1);
-        } catch (e) {
-          if (e instanceof TypeError) {
-            // when in strict mode, TypeError will be thrown if child[i] property only has a getter
-            // we can't do anything about this, other than inform the user that this property cannot be set.
-            continue;
-          } else if (e instanceof ReferenceError) {
-            //this may happen in non strict mode
-            continue;
-          }
-        }
-
-      }
-
-      if (Object.getOwnPropertySymbols) {
-        var symbols = Object.getOwnPropertySymbols(parent);
-        for (var i = 0; i < symbols.length; i++) {
-          // Don't need to worry about cloning a symbol because it is a primitive,
-          // like a number or string.
-          var symbol = symbols[i];
-          var descriptor = Object.getOwnPropertyDescriptor(parent, symbol);
-          if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
-            continue;
-          }
-          child[symbol] = _clone(parent[symbol], depth - 1);
-          Object.defineProperty(child, symbol, descriptor);
-        }
-      }
-
-      if (includeNonEnumerable) {
-        var allPropertyNames = Object.getOwnPropertyNames(parent);
-        for (var i = 0; i < allPropertyNames.length; i++) {
-          var propertyName = allPropertyNames[i];
-          var descriptor = Object.getOwnPropertyDescriptor(parent, propertyName);
-          if (descriptor && descriptor.enumerable) {
-            continue;
-          }
-          child[propertyName] = _clone(parent[propertyName], depth - 1);
-          Object.defineProperty(child, propertyName, descriptor);
-        }
-      }
-
-      return child;
-    }
-
-    return _clone(parent, depth);
-  }
-
-  /**
-     * Simple flat clone using prototype, accepts only objects, usefull for property
-     * override on FLAT configuration object (no nested props).
-     *
-     * USE WITH CAUTION! This may not behave as you wish if you do not know how this
-     * works.
-     */
-  clone.clonePrototype = function clonePrototype(parent) {
-    if (parent === null)
-    return null;
-
-    var c = function c() {};
-    c.prototype = parent;
-    return new c();
-  };
-
-  // private utility functions
-
-  function __objToStr(o) {
-    return Object.prototype.toString.call(o);
-  }
-  clone.__objToStr = __objToStr;
-
-  function __isDate(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object Date]';
-  }
-  clone.__isDate = __isDate;
-
-  function __isArray(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object Array]';
-  }
-  clone.__isArray = __isArray;
-
-  function __isRegExp(o) {
-    return typeof o === 'object' && __objToStr(o) === '[object RegExp]';
-  }
-  clone.__isRegExp = __isRegExp;
-
-  function __getRegExpFlags(re) {
-    var flags = '';
-    if (re.global) flags += 'g';
-    if (re.ignoreCase) flags += 'i';
-    if (re.multiline) flags += 'm';
-    return flags;
-  }
-  clone.__getRegExpFlags = __getRegExpFlags;
-
-  return clone;
-}();var _default =
-
-clone;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/buffer/index.js */ 29).Buffer))
-
-/***/ }),
-/* 29 */
-/*!**************************************!*\
-  !*** ./node_modules/buffer/index.js ***!
-  \**************************************/
->>>>>>> master
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-<<<<<<< HEAD
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
-
-function _default(config) {return (0, _index.default)(config);};exports.default = _default;
-
-/***/ }),
-/* 23 */
-/*!**************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
-  \**************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 24));
-var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 26));
-var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 29));
-var _utils = __webpack_require__(/*! ../utils */ 25);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * 返回可选值存在的配置
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {Array} keys - 可选值数组
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @param {Object} config2 - 配置
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @return {{}} - 存在的配置项
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           */
-var mergeKeys = function mergeKeys(keys, config2) {
-  var config = {};
-  keys.forEach(function (prop) {
-    if (!(0, _utils.isUndefined)(config2[prop])) {
-      config[prop] = config2[prop];
-    }
-  });
-  return config;
-};var _default =
-function _default(config) {return new Promise(function (resolve, reject) {
-    var fullPath = (0, _buildURL.default)((0, _buildFullPath.default)(config.baseURL, config.url), config.params);
-    var _config = {
-      url: fullPath,
-      header: config.header,
-      complete: function complete(response) {
-        config.fullPath = fullPath;
-        response.config = config;
-        try {
-          // 对可能字符串不是json 的情况容错
-          if (typeof response.data === 'string') {
-            response.data = JSON.parse(response.data);
-          }
-          // eslint-disable-next-line no-empty
-        } catch (e) {
-        }
-        (0, _settle.default)(resolve, reject, response);
-      } };
-
-    var requestTask;
-    if (config.method === 'UPLOAD') {
-      delete _config.header['content-type'];
-      delete _config.header['Content-Type'];
-      var otherConfig = {
-
-
-
-        filePath: config.filePath,
-        name: config.name };
-
-      var optionalKeys = [
-
-
-
-
-
-
-
-
-
-      'formData'];
-
-      requestTask = uni.uploadFile(_objectSpread(_objectSpread(_objectSpread({}, _config), otherConfig), mergeKeys(optionalKeys, config)));
-    } else if (config.method === 'DOWNLOAD') {
-
-
-
-
-
-      requestTask = uni.downloadFile(_config);
-    } else {
-      var _optionalKeys = [
-      'data',
-      'method',
-
-      'timeout',
-
-      'dataType',
-
-      'responseType'];
-
-
-
-
-
-
-
-
-
-
-
-      requestTask = uni.request(_objectSpread(_objectSpread({}, _config), mergeKeys(_optionalKeys, config)));
-    }
-    if (config.getTask) {
-      config.getTask(requestTask, config);
-    }
-  });};exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 24 */
-/*!****************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
-  \****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildURL;
-
-var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 25));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
-
-function encode(val) {
-  return encodeURIComponent(val).
-  replace(/%40/gi, '@').
-  replace(/%3A/gi, ':').
-  replace(/%24/g, '$').
-  replace(/%2C/gi, ',').
-  replace(/%20/g, '+').
-  replace(/%5B/gi, '[').
-  replace(/%5D/gi, ']');
-}
-
-/**
-   * Build a URL by appending params to the end
-   *
-   * @param {string} url The base of the url (e.g., http://www.google.com)
-   * @param {object} [params] The params to be appended
-   * @returns {string} The formatted url
-   */
-function buildURL(url, params) {
-  /* eslint no-param-reassign:0 */
-  if (!params) {
-    return url;
-  }
-
-  var serializedParams;
-  if (utils.isURLSearchParams(params)) {
-    serializedParams = params.toString();
-  } else {
-    var parts = [];
-
-    utils.forEach(params, function (val, key) {
-      if (val === null || typeof val === 'undefined') {
-        return;
-      }
-
-      if (utils.isArray(val)) {
-        key = "".concat(key, "[]");
-      } else {
-        val = [val];
-      }
-
-      utils.forEach(val, function (v) {
-        if (utils.isDate(v)) {
-          v = v.toISOString();
-        } else if (utils.isObject(v)) {
-          v = JSON.stringify(v);
-        }
-        parts.push("".concat(encode(key), "=").concat(encode(v)));
-      });
-    });
-
-    serializedParams = parts.join('&');
-  }
-
-  if (serializedParams) {
-    var hashmarkIndex = url.indexOf('#');
-    if (hashmarkIndex !== -1) {
-      url = url.slice(0, hashmarkIndex);
-    }
-
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-
-  return url;
-}
-
-/***/ }),
-/* 25 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// utils is a library of generic helper functions non-specific to axios
-Object.defineProperty(exports, "__esModule", { value: true });exports.isArray = isArray;exports.isObject = isObject;exports.isDate = isDate;exports.isURLSearchParams = isURLSearchParams;exports.forEach = forEach;exports.isBoolean = isBoolean;exports.isPlainObject = isPlainObject;exports.deepMerge = deepMerge;exports.isUndefined = isUndefined;var
-toString = Object.prototype.toString;
-
-/**
-                                       * Determine if a value is an Array
-                                       *
-                                       * @param {Object} val The value to test
-                                       * @returns {boolean} True if value is an Array, otherwise false
-                                       */
-function isArray(val) {
-  return toString.call(val) === '[object Array]';
-}
-
-/**
-   * Determine if a value is an Object
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is an Object, otherwise false
-   */
-function isObject(val) {
-  return val !== null && typeof val === 'object';
-}
-
-/**
-   * Determine if a value is a Date
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a Date, otherwise false
-   */
-function isDate(val) {
-  return toString.call(val) === '[object Date]';
-}
-
-/**
-   * Determine if a value is a URLSearchParams object
-   *
-   * @param {Object} val The value to test
-   * @returns {boolean} True if value is a URLSearchParams object, otherwise false
-   */
-function isURLSearchParams(val) {
-  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
-}
-
-/**
-   * Iterate over an Array or an Object invoking a function for each item.
-   *
-   * If `obj` is an Array callback will be called passing
-   * the value, index, and complete array for each item.
-   *
-   * If 'obj' is an Object callback will be called passing
-   * the value, key, and complete object for each property.
-   *
-   * @param {Object|Array} obj The object to iterate
-   * @param {Function} fn The callback to invoke for each item
-   */
-function forEach(obj, fn) {
-  // Don't bother if no value provided
-  if (obj === null || typeof obj === 'undefined') {
-    return;
-  }
-
-  // Force an array if not already something iterable
-  if (typeof obj !== 'object') {
-    /* eslint no-param-reassign:0 */
-    obj = [obj];
-  }
-
-  if (isArray(obj)) {
-    // Iterate over array values
-    for (var i = 0, l = obj.length; i < l; i++) {
-      fn.call(null, obj[i], i, obj);
-    }
-  } else {
-    // Iterate over object keys
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        fn.call(null, obj[key], key, obj);
-      }
-    }
-  }
-}
-
-/**
-   * 是否为boolean 值
-   * @param val
-   * @returns {boolean}
-   */
-function isBoolean(val) {
-  return typeof val === 'boolean';
-}
-
-/**
-   * 是否为真正的对象{} new Object
-   * @param {any} obj - 检测的对象
-   * @returns {boolean}
-   */
-function isPlainObject(obj) {
-  return Object.prototype.toString.call(obj) === '[object Object]';
-}
-
-/**
-   * Function equal to merge with the difference being that no reference
-   * to original objects is kept.
-   *
-   * @see merge
-   * @param {Object} obj1 Object to merge
-   * @returns {Object} Result of all merge properties
-   */
-function deepMerge() /* obj1, obj2, obj3, ... */{
-  var result = {};
-  function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
-      result[key] = deepMerge(result[key], val);
-    } else if (typeof val === 'object') {
-      result[key] = deepMerge({}, val);
-    } else {
-      result[key] = val;
-    }
-  }
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-function isUndefined(val) {
-  return typeof val === 'undefined';
-}
-
-/***/ }),
-/* 26 */
 /*!******************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
   \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildFullPath;
-
-var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 27));
-var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 28));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-
-/**
-                                                                                                                                                                            * Creates a new URL by combining the baseURL with the requestedURL,
-                                                                                                                                                                            * only when the requestedURL is not already an absolute URL.
-                                                                                                                                                                            * If the requestURL is absolute, this function returns the requestedURL untouched.
-                                                                                                                                                                            *
-                                                                                                                                                                            * @param {string} baseURL The base URL
-                                                                                                                                                                            * @param {string} requestedURL Absolute or relative URL to combine
-                                                                                                                                                                            * @returns {string} The combined full path
-                                                                                                                                                                            */
-function buildFullPath(baseURL, requestedURL) {
-  if (baseURL && !(0, _isAbsoluteURL.default)(requestedURL)) {
-    return (0, _combineURLs.default)(baseURL, requestedURL);
-  }
-  return requestedURL;
-}
-
-/***/ }),
-/* 27 */
-/*!*********************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
-  \*********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
-               * Determines whether the specified URL is absolute
-               *
-               * @param {string} url The URL to test
-               * @returns {boolean} True if the specified URL is absolute, otherwise false
-               */Object.defineProperty(exports, "__esModule", { value: true });exports.default = isAbsoluteURL;
-function isAbsoluteURL(url) {
-  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  // by any combination of letters, digits, plus, period, or hyphen.
-  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-}
-
-/***/ }),
-/* 28 */
-/*!*******************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
-  \*******************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
-               * Creates a new URL by combining the specified URLs
-               *
-               * @param {string} baseURL The base URL
-               * @param {string} relativeURL The relative URL
-               * @returns {string} The combined URL
-               */Object.defineProperty(exports, "__esModule", { value: true });exports.default = combineURLs;
-function combineURLs(baseURL, relativeURL) {
-  return relativeURL ? "".concat(
-  baseURL.replace(/\/+$/, ''), "/").concat(relativeURL.replace(/^\/+/, '')) :
-  baseURL;
-}
-
-/***/ }),
-/* 29 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
-  \***********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = settle; /**
-                                                                                                      * Resolve or reject a Promise based on response status.
-                                                                                                      *
-                                                                                                      * @param {Function} resolve A function that resolves the promise.
-                                                                                                      * @param {Function} reject A function that rejects the promise.
-                                                                                                      * @param {object} response The response.
-                                                                                                      */
-function settle(resolve, reject, response) {var
-  validateStatus = response.config.validateStatus;
-  var status = response.statusCode;
-  if (status && (!validateStatus || validateStatus(status))) {
-    resolve(response);
-  } else {
-    reject(response);
-  }
-}
-
-/***/ }),
-/* 30 */
-/*!***********************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
-  \***********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
-
-function InterceptorManager() {
-  this.handlers = [];
-}
-
-/**
-   * Add a new interceptor to the stack
-   *
-   * @param {Function} fulfilled The function to handle `then` for a `Promise`
-   * @param {Function} rejected The function to handle `reject` for a `Promise`
-   *
-   * @return {Number} An ID used to remove interceptor later
-   */
-InterceptorManager.prototype.use = function use(fulfilled, rejected) {
-  this.handlers.push({
-    fulfilled: fulfilled,
-    rejected: rejected });
-
-  return this.handlers.length - 1;
-};
-
-/**
-    * Remove an interceptor from the stack
-    *
-    * @param {Number} id The ID that was returned by `use`
-    */
-InterceptorManager.prototype.eject = function eject(id) {
-  if (this.handlers[id]) {
-    this.handlers[id] = null;
-  }
-};
-
-/**
-    * Iterate over all the registered interceptors
-    *
-    * This method is particularly useful for skipping over any
-    * interceptors that may have become `null` calling `eject`.
-    *
-    * @param {Function} fn The function to call for each interceptor
-    */
-InterceptorManager.prototype.forEach = function forEach(fn) {
-  this.handlers.forEach(function (h) {
-    if (h !== null) {
-      fn(h);
-    }
-  });
-};var _default =
-
-InterceptorManager;exports.default = _default;
-
-/***/ }),
-/* 31 */
-/*!****************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
-  \****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 25);function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
-
-/**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 合并局部配置优先的配置，如果局部有该配置项则用局部，如果全局有该配置项则用全局
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * @param {Array} keys - 配置项
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * @param {Object} globalsConfig - 当前的全局配置
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * @param {Object} config2 - 局部配置
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * @return {{}}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
-var mergeKeys = function mergeKeys(keys, globalsConfig, config2) {
-  var config = {};
-  keys.forEach(function (prop) {
-    if (!(0, _utils.isUndefined)(config2[prop])) {
-      config[prop] = config2[prop];
-    } else if (!(0, _utils.isUndefined)(globalsConfig[prop])) {
-      config[prop] = globalsConfig[prop];
-    }
-  });
-  return config;
-};
-/**
-    *
-    * @param globalsConfig - 当前实例的全局配置
-    * @param config2 - 当前的局部配置
-    * @return - 合并后的配置
-    */var _default =
-function _default(globalsConfig) {var config2 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var method = config2.method || globalsConfig.method || 'GET';
-  var config = {
-    baseURL: globalsConfig.baseURL || '',
-    method: method,
-    url: config2.url || '',
-    params: config2.params || {},
-    custom: _objectSpread(_objectSpread({}, globalsConfig.custom || {}), config2.custom || {}),
-    header: (0, _utils.deepMerge)(globalsConfig.header || {}, config2.header || {}) };
-
-  var defaultToConfig2Keys = ['getTask', 'validateStatus'];
-  config = _objectSpread(_objectSpread({}, config), mergeKeys(defaultToConfig2Keys, globalsConfig, config2));
-
-  // eslint-disable-next-line no-empty
-  if (method === 'DOWNLOAD') {
-
-
-
-
-
-
-
-  } else if (method === 'UPLOAD') {
-    delete config.header['content-type'];
-    delete config.header['Content-Type'];
-    var uploadKeys = [
-
-
-
-
-
-
-
-
-
-    'filePath',
-    'name',
-
-
-
-    'formData'];
-
-    uploadKeys.forEach(function (prop) {
-      if (!(0, _utils.isUndefined)(config2[prop])) {
-        config[prop] = config2[prop];
-      }
-    });
-
-
-
-
-
-  } else {
-    var defaultsKeys = [
-    'data',
-
-    'timeout',
-
-    'dataType',
-
-    'responseType'];
-
-
-
-
-
-
-
-
-
-
-
-    config = _objectSpread(_objectSpread({}, config), mergeKeys(defaultsKeys, globalsConfig, config2));
-  }
-
-  return config;
-};exports.default = _default;
-
-/***/ }),
-/* 32 */
-/*!*************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
-  \*************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /**
-                                                                                                      * 默认的全局配置
-                                                                                                      */var _default =
-
-{
-  baseURL: '',
-  header: {},
-  method: 'GET',
-  dataType: 'json',
-
-  responseType: 'text',
-
-  custom: {},
-
-  timeout: 60000,
-
-
-
-
-
-
-
-
-
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  } };exports.default = _default;
-
-/***/ }),
-/* 33 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
-  \***********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /* eslint-disable */
 var clone = function () {
   'use strict';
@@ -12748,10 +10188,10 @@ var clone = function () {
 }();var _default =
 
 clone;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../Software/i4Tools7/HBuilderX.3.1.18.20210609.full/HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 34).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 29).Buffer))
 
 /***/ }),
-/* 34 */
+/* 29 */
 /*!**************************************!*\
   !*** ./node_modules/buffer/index.js ***!
   \**************************************/
@@ -12759,2211 +10199,6 @@ clone;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/*!
- * The buffer module from node.js, for the browser.
- *
- * @author   Feross Aboukhadijeh <http://feross.org>
- * @license  MIT
- */
-/* eslint-disable no-proto */
-
-
-
-var base64 = __webpack_require__(/*! base64-js */ 35)
-var ieee754 = __webpack_require__(/*! ieee754 */ 36)
-var isArray = __webpack_require__(/*! isarray */ 37)
-
-exports.Buffer = Buffer
-exports.SlowBuffer = SlowBuffer
-exports.INSPECT_MAX_BYTES = 50
-
-/**
- * If `Buffer.TYPED_ARRAY_SUPPORT`:
- *   === true    Use Uint8Array implementation (fastest)
- *   === false   Use Object implementation (most compatible, even IE6)
- *
- * Browsers that support typed arrays are IE 10+, Firefox 4+, Chrome 7+, Safari 5.1+,
- * Opera 11.6+, iOS 4.2+.
- *
- * Due to various browser bugs, sometimes the Object implementation will be used even
- * when the browser supports typed arrays.
- *
- * Note:
- *
- *   - Firefox 4-29 lacks support for adding new properties to `Uint8Array` instances,
- *     See: https://bugzilla.mozilla.org/show_bug.cgi?id=695438.
- *
- *   - Chrome 9-10 is missing the `TypedArray.prototype.subarray` function.
- *
- *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
- *     incorrect length in some situations.
-
- * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
- * get the Object implementation, which is slower but behaves correctly.
- */
-Buffer.TYPED_ARRAY_SUPPORT = global.TYPED_ARRAY_SUPPORT !== undefined
-  ? global.TYPED_ARRAY_SUPPORT
-  : typedArraySupport()
-
-/*
- * Export kMaxLength after typed array support is determined.
- */
-exports.kMaxLength = kMaxLength()
-
-function typedArraySupport () {
-  try {
-    var arr = new Uint8Array(1)
-    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
-    return arr.foo() === 42 && // typed array instances can be augmented
-        typeof arr.subarray === 'function' && // chrome 9-10 lack `subarray`
-        arr.subarray(1, 1).byteLength === 0 // ie10 has broken `subarray`
-  } catch (e) {
-    return false
-  }
-}
-
-function kMaxLength () {
-  return Buffer.TYPED_ARRAY_SUPPORT
-    ? 0x7fffffff
-    : 0x3fffffff
-}
-
-function createBuffer (that, length) {
-  if (kMaxLength() < length) {
-    throw new RangeError('Invalid typed array length')
-  }
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    // Return an augmented `Uint8Array` instance, for best performance
-    that = new Uint8Array(length)
-    that.__proto__ = Buffer.prototype
-  } else {
-    // Fallback: Return an object instance of the Buffer class
-    if (that === null) {
-      that = new Buffer(length)
-    }
-    that.length = length
-  }
-
-  return that
-}
-
-/**
- * The Buffer constructor returns instances of `Uint8Array` that have their
- * prototype changed to `Buffer.prototype`. Furthermore, `Buffer` is a subclass of
- * `Uint8Array`, so the returned instances will have all the node `Buffer` methods
- * and the `Uint8Array` methods. Square bracket notation works as expected -- it
- * returns a single octet.
- *
- * The `Uint8Array` prototype remains unmodified.
- */
-
-function Buffer (arg, encodingOrOffset, length) {
-  if (!Buffer.TYPED_ARRAY_SUPPORT && !(this instanceof Buffer)) {
-    return new Buffer(arg, encodingOrOffset, length)
-  }
-
-  // Common case.
-  if (typeof arg === 'number') {
-    if (typeof encodingOrOffset === 'string') {
-      throw new Error(
-        'If encoding is specified then the first argument must be a string'
-      )
-    }
-    return allocUnsafe(this, arg)
-  }
-  return from(this, arg, encodingOrOffset, length)
-}
-
-Buffer.poolSize = 8192 // not used by this implementation
-
-// TODO: Legacy, not needed anymore. Remove in next major version.
-Buffer._augment = function (arr) {
-  arr.__proto__ = Buffer.prototype
-  return arr
-}
-
-function from (that, value, encodingOrOffset, length) {
-  if (typeof value === 'number') {
-    throw new TypeError('"value" argument must not be a number')
-  }
-
-  if (typeof ArrayBuffer !== 'undefined' && value instanceof ArrayBuffer) {
-    return fromArrayBuffer(that, value, encodingOrOffset, length)
-  }
-
-  if (typeof value === 'string') {
-    return fromString(that, value, encodingOrOffset)
-  }
-
-  return fromObject(that, value)
-}
-
-/**
- * Functionally equivalent to Buffer(arg, encoding) but throws a TypeError
- * if value is a number.
- * Buffer.from(str[, encoding])
- * Buffer.from(array)
- * Buffer.from(buffer)
- * Buffer.from(arrayBuffer[, byteOffset[, length]])
- **/
-Buffer.from = function (value, encodingOrOffset, length) {
-  return from(null, value, encodingOrOffset, length)
-}
-
-if (Buffer.TYPED_ARRAY_SUPPORT) {
-  Buffer.prototype.__proto__ = Uint8Array.prototype
-  Buffer.__proto__ = Uint8Array
-  if (typeof Symbol !== 'undefined' && Symbol.species &&
-      Buffer[Symbol.species] === Buffer) {
-    // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
-    Object.defineProperty(Buffer, Symbol.species, {
-      value: null,
-      configurable: true
-    })
-  }
-}
-
-function assertSize (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('"size" argument must be a number')
-  } else if (size < 0) {
-    throw new RangeError('"size" argument must not be negative')
-  }
-}
-
-function alloc (that, size, fill, encoding) {
-  assertSize(size)
-  if (size <= 0) {
-    return createBuffer(that, size)
-  }
-  if (fill !== undefined) {
-    // Only pay attention to encoding if it's a string. This
-    // prevents accidentally sending in a number that would
-    // be interpretted as a start offset.
-    return typeof encoding === 'string'
-      ? createBuffer(that, size).fill(fill, encoding)
-      : createBuffer(that, size).fill(fill)
-  }
-  return createBuffer(that, size)
-}
-
-/**
- * Creates a new filled Buffer instance.
- * alloc(size[, fill[, encoding]])
- **/
-Buffer.alloc = function (size, fill, encoding) {
-  return alloc(null, size, fill, encoding)
-}
-
-function allocUnsafe (that, size) {
-  assertSize(size)
-  that = createBuffer(that, size < 0 ? 0 : checked(size) | 0)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) {
-    for (var i = 0; i < size; ++i) {
-      that[i] = 0
-    }
-  }
-  return that
-}
-
-/**
- * Equivalent to Buffer(num), by default creates a non-zero-filled Buffer instance.
- * */
-Buffer.allocUnsafe = function (size) {
-  return allocUnsafe(null, size)
-}
-/**
- * Equivalent to SlowBuffer(num), by default creates a non-zero-filled Buffer instance.
- */
-Buffer.allocUnsafeSlow = function (size) {
-  return allocUnsafe(null, size)
-}
-
-function fromString (that, string, encoding) {
-  if (typeof encoding !== 'string' || encoding === '') {
-    encoding = 'utf8'
-  }
-
-  if (!Buffer.isEncoding(encoding)) {
-    throw new TypeError('"encoding" must be a valid string encoding')
-  }
-
-  var length = byteLength(string, encoding) | 0
-  that = createBuffer(that, length)
-
-  var actual = that.write(string, encoding)
-
-  if (actual !== length) {
-    // Writing a hex string, for example, that contains invalid characters will
-    // cause everything after the first invalid character to be ignored. (e.g.
-    // 'abxxcd' will be treated as 'ab')
-    that = that.slice(0, actual)
-  }
-
-  return that
-}
-
-function fromArrayLike (that, array) {
-  var length = array.length < 0 ? 0 : checked(array.length) | 0
-  that = createBuffer(that, length)
-  for (var i = 0; i < length; i += 1) {
-    that[i] = array[i] & 255
-  }
-  return that
-}
-
-function fromArrayBuffer (that, array, byteOffset, length) {
-  array.byteLength // this throws if `array` is not a valid ArrayBuffer
-
-  if (byteOffset < 0 || array.byteLength < byteOffset) {
-    throw new RangeError('\'offset\' is out of bounds')
-  }
-
-  if (array.byteLength < byteOffset + (length || 0)) {
-    throw new RangeError('\'length\' is out of bounds')
-  }
-
-  if (byteOffset === undefined && length === undefined) {
-    array = new Uint8Array(array)
-  } else if (length === undefined) {
-    array = new Uint8Array(array, byteOffset)
-  } else {
-    array = new Uint8Array(array, byteOffset, length)
-  }
-
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    // Return an augmented `Uint8Array` instance, for best performance
-    that = array
-    that.__proto__ = Buffer.prototype
-  } else {
-    // Fallback: Return an object instance of the Buffer class
-    that = fromArrayLike(that, array)
-  }
-  return that
-}
-
-function fromObject (that, obj) {
-  if (Buffer.isBuffer(obj)) {
-    var len = checked(obj.length) | 0
-    that = createBuffer(that, len)
-
-    if (that.length === 0) {
-      return that
-    }
-
-    obj.copy(that, 0, 0, len)
-    return that
-  }
-
-  if (obj) {
-    if ((typeof ArrayBuffer !== 'undefined' &&
-        obj.buffer instanceof ArrayBuffer) || 'length' in obj) {
-      if (typeof obj.length !== 'number' || isnan(obj.length)) {
-        return createBuffer(that, 0)
-      }
-      return fromArrayLike(that, obj)
-    }
-
-    if (obj.type === 'Buffer' && isArray(obj.data)) {
-      return fromArrayLike(that, obj.data)
-    }
-  }
-
-  throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
-}
-
-function checked (length) {
-  // Note: cannot use `length < kMaxLength()` here because that fails when
-  // length is NaN (which is otherwise coerced to zero.)
-  if (length >= kMaxLength()) {
-    throw new RangeError('Attempt to allocate Buffer larger than maximum ' +
-                         'size: 0x' + kMaxLength().toString(16) + ' bytes')
-  }
-  return length | 0
-}
-
-function SlowBuffer (length) {
-  if (+length != length) { // eslint-disable-line eqeqeq
-    length = 0
-  }
-  return Buffer.alloc(+length)
-}
-
-Buffer.isBuffer = function isBuffer (b) {
-  return !!(b != null && b._isBuffer)
-}
-
-Buffer.compare = function compare (a, b) {
-  if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
-    throw new TypeError('Arguments must be Buffers')
-  }
-
-  if (a === b) return 0
-
-  var x = a.length
-  var y = b.length
-
-  for (var i = 0, len = Math.min(x, y); i < len; ++i) {
-    if (a[i] !== b[i]) {
-      x = a[i]
-      y = b[i]
-      break
-    }
-  }
-
-  if (x < y) return -1
-  if (y < x) return 1
-  return 0
-}
-
-Buffer.isEncoding = function isEncoding (encoding) {
-  switch (String(encoding).toLowerCase()) {
-    case 'hex':
-    case 'utf8':
-    case 'utf-8':
-    case 'ascii':
-    case 'latin1':
-    case 'binary':
-    case 'base64':
-    case 'ucs2':
-    case 'ucs-2':
-    case 'utf16le':
-    case 'utf-16le':
-      return true
-    default:
-      return false
-  }
-}
-
-Buffer.concat = function concat (list, length) {
-  if (!isArray(list)) {
-    throw new TypeError('"list" argument must be an Array of Buffers')
-  }
-
-  if (list.length === 0) {
-    return Buffer.alloc(0)
-  }
-
-  var i
-  if (length === undefined) {
-    length = 0
-    for (i = 0; i < list.length; ++i) {
-      length += list[i].length
-    }
-  }
-
-  var buffer = Buffer.allocUnsafe(length)
-  var pos = 0
-  for (i = 0; i < list.length; ++i) {
-    var buf = list[i]
-    if (!Buffer.isBuffer(buf)) {
-      throw new TypeError('"list" argument must be an Array of Buffers')
-    }
-    buf.copy(buffer, pos)
-    pos += buf.length
-  }
-  return buffer
-}
-
-function byteLength (string, encoding) {
-  if (Buffer.isBuffer(string)) {
-    return string.length
-  }
-  if (typeof ArrayBuffer !== 'undefined' && typeof ArrayBuffer.isView === 'function' &&
-      (ArrayBuffer.isView(string) || string instanceof ArrayBuffer)) {
-    return string.byteLength
-  }
-  if (typeof string !== 'string') {
-    string = '' + string
-  }
-
-  var len = string.length
-  if (len === 0) return 0
-
-  // Use a for loop to avoid recursion
-  var loweredCase = false
-  for (;;) {
-    switch (encoding) {
-      case 'ascii':
-      case 'latin1':
-      case 'binary':
-        return len
-      case 'utf8':
-      case 'utf-8':
-      case undefined:
-        return utf8ToBytes(string).length
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return len * 2
-      case 'hex':
-        return len >>> 1
-      case 'base64':
-        return base64ToBytes(string).length
-      default:
-        if (loweredCase) return utf8ToBytes(string).length // assume utf8
-        encoding = ('' + encoding).toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-Buffer.byteLength = byteLength
-
-function slowToString (encoding, start, end) {
-  var loweredCase = false
-
-  // No need to verify that "this.length <= MAX_UINT32" since it's a read-only
-  // property of a typed array.
-
-  // This behaves neither like String nor Uint8Array in that we set start/end
-  // to their upper/lower bounds if the value passed is out of range.
-  // undefined is handled specially as per ECMA-262 6th Edition,
-  // Section 13.3.3.7 Runtime Semantics: KeyedBindingInitialization.
-  if (start === undefined || start < 0) {
-    start = 0
-  }
-  // Return early if start > this.length. Done here to prevent potential uint32
-  // coercion fail below.
-  if (start > this.length) {
-    return ''
-  }
-
-  if (end === undefined || end > this.length) {
-    end = this.length
-  }
-
-  if (end <= 0) {
-    return ''
-  }
-
-  // Force coersion to uint32. This will also coerce falsey/NaN values to 0.
-  end >>>= 0
-  start >>>= 0
-
-  if (end <= start) {
-    return ''
-  }
-
-  if (!encoding) encoding = 'utf8'
-
-  while (true) {
-    switch (encoding) {
-      case 'hex':
-        return hexSlice(this, start, end)
-
-      case 'utf8':
-      case 'utf-8':
-        return utf8Slice(this, start, end)
-
-      case 'ascii':
-        return asciiSlice(this, start, end)
-
-      case 'latin1':
-      case 'binary':
-        return latin1Slice(this, start, end)
-
-      case 'base64':
-        return base64Slice(this, start, end)
-
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return utf16leSlice(this, start, end)
-
-      default:
-        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-        encoding = (encoding + '').toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-
-// The property is used by `Buffer.isBuffer` and `is-buffer` (in Safari 5-7) to detect
-// Buffer instances.
-Buffer.prototype._isBuffer = true
-
-function swap (b, n, m) {
-  var i = b[n]
-  b[n] = b[m]
-  b[m] = i
-}
-
-Buffer.prototype.swap16 = function swap16 () {
-  var len = this.length
-  if (len % 2 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 16-bits')
-  }
-  for (var i = 0; i < len; i += 2) {
-    swap(this, i, i + 1)
-  }
-  return this
-}
-
-Buffer.prototype.swap32 = function swap32 () {
-  var len = this.length
-  if (len % 4 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 32-bits')
-  }
-  for (var i = 0; i < len; i += 4) {
-    swap(this, i, i + 3)
-    swap(this, i + 1, i + 2)
-  }
-  return this
-}
-
-Buffer.prototype.swap64 = function swap64 () {
-  var len = this.length
-  if (len % 8 !== 0) {
-    throw new RangeError('Buffer size must be a multiple of 64-bits')
-  }
-  for (var i = 0; i < len; i += 8) {
-    swap(this, i, i + 7)
-    swap(this, i + 1, i + 6)
-    swap(this, i + 2, i + 5)
-    swap(this, i + 3, i + 4)
-  }
-  return this
-}
-
-Buffer.prototype.toString = function toString () {
-  var length = this.length | 0
-  if (length === 0) return ''
-  if (arguments.length === 0) return utf8Slice(this, 0, length)
-  return slowToString.apply(this, arguments)
-}
-
-Buffer.prototype.equals = function equals (b) {
-  if (!Buffer.isBuffer(b)) throw new TypeError('Argument must be a Buffer')
-  if (this === b) return true
-  return Buffer.compare(this, b) === 0
-}
-
-Buffer.prototype.inspect = function inspect () {
-  var str = ''
-  var max = exports.INSPECT_MAX_BYTES
-  if (this.length > 0) {
-    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
-    if (this.length > max) str += ' ... '
-  }
-  return '<Buffer ' + str + '>'
-}
-
-Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-  if (!Buffer.isBuffer(target)) {
-    throw new TypeError('Argument must be a Buffer')
-  }
-
-  if (start === undefined) {
-    start = 0
-  }
-  if (end === undefined) {
-    end = target ? target.length : 0
-  }
-  if (thisStart === undefined) {
-    thisStart = 0
-  }
-  if (thisEnd === undefined) {
-    thisEnd = this.length
-  }
-
-  if (start < 0 || end > target.length || thisStart < 0 || thisEnd > this.length) {
-    throw new RangeError('out of range index')
-  }
-
-  if (thisStart >= thisEnd && start >= end) {
-    return 0
-  }
-  if (thisStart >= thisEnd) {
-    return -1
-  }
-  if (start >= end) {
-    return 1
-  }
-
-  start >>>= 0
-  end >>>= 0
-  thisStart >>>= 0
-  thisEnd >>>= 0
-
-  if (this === target) return 0
-
-  var x = thisEnd - thisStart
-  var y = end - start
-  var len = Math.min(x, y)
-
-  var thisCopy = this.slice(thisStart, thisEnd)
-  var targetCopy = target.slice(start, end)
-
-  for (var i = 0; i < len; ++i) {
-    if (thisCopy[i] !== targetCopy[i]) {
-      x = thisCopy[i]
-      y = targetCopy[i]
-      break
-    }
-  }
-
-  if (x < y) return -1
-  if (y < x) return 1
-  return 0
-}
-
-// Finds either the first index of `val` in `buffer` at offset >= `byteOffset`,
-// OR the last index of `val` in `buffer` at offset <= `byteOffset`.
-//
-// Arguments:
-// - buffer - a Buffer to search
-// - val - a string, Buffer, or number
-// - byteOffset - an index into `buffer`; will be clamped to an int32
-// - encoding - an optional encoding, relevant is val is a string
-// - dir - true for indexOf, false for lastIndexOf
-function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
-  // Empty buffer means no match
-  if (buffer.length === 0) return -1
-
-  // Normalize byteOffset
-  if (typeof byteOffset === 'string') {
-    encoding = byteOffset
-    byteOffset = 0
-  } else if (byteOffset > 0x7fffffff) {
-    byteOffset = 0x7fffffff
-  } else if (byteOffset < -0x80000000) {
-    byteOffset = -0x80000000
-  }
-  byteOffset = +byteOffset  // Coerce to Number.
-  if (isNaN(byteOffset)) {
-    // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
-    byteOffset = dir ? 0 : (buffer.length - 1)
-  }
-
-  // Normalize byteOffset: negative offsets start from the end of the buffer
-  if (byteOffset < 0) byteOffset = buffer.length + byteOffset
-  if (byteOffset >= buffer.length) {
-    if (dir) return -1
-    else byteOffset = buffer.length - 1
-  } else if (byteOffset < 0) {
-    if (dir) byteOffset = 0
-    else return -1
-  }
-
-  // Normalize val
-  if (typeof val === 'string') {
-    val = Buffer.from(val, encoding)
-  }
-
-  // Finally, search either indexOf (if dir is true) or lastIndexOf
-  if (Buffer.isBuffer(val)) {
-    // Special case: looking for empty string/buffer always fails
-    if (val.length === 0) {
-      return -1
-    }
-    return arrayIndexOf(buffer, val, byteOffset, encoding, dir)
-  } else if (typeof val === 'number') {
-    val = val & 0xFF // Search for a byte value [0-255]
-    if (Buffer.TYPED_ARRAY_SUPPORT &&
-        typeof Uint8Array.prototype.indexOf === 'function') {
-      if (dir) {
-        return Uint8Array.prototype.indexOf.call(buffer, val, byteOffset)
-      } else {
-        return Uint8Array.prototype.lastIndexOf.call(buffer, val, byteOffset)
-      }
-    }
-    return arrayIndexOf(buffer, [ val ], byteOffset, encoding, dir)
-  }
-
-  throw new TypeError('val must be string, number or Buffer')
-}
-
-function arrayIndexOf (arr, val, byteOffset, encoding, dir) {
-  var indexSize = 1
-  var arrLength = arr.length
-  var valLength = val.length
-
-  if (encoding !== undefined) {
-    encoding = String(encoding).toLowerCase()
-    if (encoding === 'ucs2' || encoding === 'ucs-2' ||
-        encoding === 'utf16le' || encoding === 'utf-16le') {
-      if (arr.length < 2 || val.length < 2) {
-        return -1
-      }
-      indexSize = 2
-      arrLength /= 2
-      valLength /= 2
-      byteOffset /= 2
-    }
-  }
-
-  function read (buf, i) {
-    if (indexSize === 1) {
-      return buf[i]
-    } else {
-      return buf.readUInt16BE(i * indexSize)
-    }
-  }
-
-  var i
-  if (dir) {
-    var foundIndex = -1
-    for (i = byteOffset; i < arrLength; i++) {
-      if (read(arr, i) === read(val, foundIndex === -1 ? 0 : i - foundIndex)) {
-        if (foundIndex === -1) foundIndex = i
-        if (i - foundIndex + 1 === valLength) return foundIndex * indexSize
-      } else {
-        if (foundIndex !== -1) i -= i - foundIndex
-        foundIndex = -1
-      }
-    }
-  } else {
-    if (byteOffset + valLength > arrLength) byteOffset = arrLength - valLength
-    for (i = byteOffset; i >= 0; i--) {
-      var found = true
-      for (var j = 0; j < valLength; j++) {
-        if (read(arr, i + j) !== read(val, j)) {
-          found = false
-          break
-        }
-      }
-      if (found) return i
-    }
-  }
-
-  return -1
-}
-
-Buffer.prototype.includes = function includes (val, byteOffset, encoding) {
-  return this.indexOf(val, byteOffset, encoding) !== -1
-}
-
-Buffer.prototype.indexOf = function indexOf (val, byteOffset, encoding) {
-  return bidirectionalIndexOf(this, val, byteOffset, encoding, true)
-}
-
-Buffer.prototype.lastIndexOf = function lastIndexOf (val, byteOffset, encoding) {
-  return bidirectionalIndexOf(this, val, byteOffset, encoding, false)
-}
-
-function hexWrite (buf, string, offset, length) {
-  offset = Number(offset) || 0
-  var remaining = buf.length - offset
-  if (!length) {
-    length = remaining
-  } else {
-    length = Number(length)
-    if (length > remaining) {
-      length = remaining
-    }
-  }
-
-  // must be an even number of digits
-  var strLen = string.length
-  if (strLen % 2 !== 0) throw new TypeError('Invalid hex string')
-
-  if (length > strLen / 2) {
-    length = strLen / 2
-  }
-  for (var i = 0; i < length; ++i) {
-    var parsed = parseInt(string.substr(i * 2, 2), 16)
-    if (isNaN(parsed)) return i
-    buf[offset + i] = parsed
-  }
-  return i
-}
-
-function utf8Write (buf, string, offset, length) {
-  return blitBuffer(utf8ToBytes(string, buf.length - offset), buf, offset, length)
-}
-
-function asciiWrite (buf, string, offset, length) {
-  return blitBuffer(asciiToBytes(string), buf, offset, length)
-}
-
-function latin1Write (buf, string, offset, length) {
-  return asciiWrite(buf, string, offset, length)
-}
-
-function base64Write (buf, string, offset, length) {
-  return blitBuffer(base64ToBytes(string), buf, offset, length)
-}
-
-function ucs2Write (buf, string, offset, length) {
-  return blitBuffer(utf16leToBytes(string, buf.length - offset), buf, offset, length)
-}
-
-Buffer.prototype.write = function write (string, offset, length, encoding) {
-  // Buffer#write(string)
-  if (offset === undefined) {
-    encoding = 'utf8'
-    length = this.length
-    offset = 0
-  // Buffer#write(string, encoding)
-  } else if (length === undefined && typeof offset === 'string') {
-    encoding = offset
-    length = this.length
-    offset = 0
-  // Buffer#write(string, offset[, length][, encoding])
-  } else if (isFinite(offset)) {
-    offset = offset | 0
-    if (isFinite(length)) {
-      length = length | 0
-      if (encoding === undefined) encoding = 'utf8'
-    } else {
-      encoding = length
-      length = undefined
-    }
-  // legacy write(string, encoding, offset, length) - remove in v0.13
-  } else {
-    throw new Error(
-      'Buffer.write(string, encoding, offset[, length]) is no longer supported'
-    )
-  }
-
-  var remaining = this.length - offset
-  if (length === undefined || length > remaining) length = remaining
-
-  if ((string.length > 0 && (length < 0 || offset < 0)) || offset > this.length) {
-    throw new RangeError('Attempt to write outside buffer bounds')
-  }
-
-  if (!encoding) encoding = 'utf8'
-
-  var loweredCase = false
-  for (;;) {
-    switch (encoding) {
-      case 'hex':
-        return hexWrite(this, string, offset, length)
-
-      case 'utf8':
-      case 'utf-8':
-        return utf8Write(this, string, offset, length)
-
-      case 'ascii':
-        return asciiWrite(this, string, offset, length)
-
-      case 'latin1':
-      case 'binary':
-        return latin1Write(this, string, offset, length)
-
-      case 'base64':
-        // Warning: maxLength not taken into account in base64Write
-        return base64Write(this, string, offset, length)
-
-      case 'ucs2':
-      case 'ucs-2':
-      case 'utf16le':
-      case 'utf-16le':
-        return ucs2Write(this, string, offset, length)
-
-      default:
-        if (loweredCase) throw new TypeError('Unknown encoding: ' + encoding)
-        encoding = ('' + encoding).toLowerCase()
-        loweredCase = true
-    }
-  }
-}
-
-Buffer.prototype.toJSON = function toJSON () {
-  return {
-    type: 'Buffer',
-    data: Array.prototype.slice.call(this._arr || this, 0)
-  }
-}
-
-function base64Slice (buf, start, end) {
-  if (start === 0 && end === buf.length) {
-    return base64.fromByteArray(buf)
-  } else {
-    return base64.fromByteArray(buf.slice(start, end))
-  }
-}
-
-function utf8Slice (buf, start, end) {
-  end = Math.min(buf.length, end)
-  var res = []
-
-  var i = start
-  while (i < end) {
-    var firstByte = buf[i]
-    var codePoint = null
-    var bytesPerSequence = (firstByte > 0xEF) ? 4
-      : (firstByte > 0xDF) ? 3
-      : (firstByte > 0xBF) ? 2
-      : 1
-
-    if (i + bytesPerSequence <= end) {
-      var secondByte, thirdByte, fourthByte, tempCodePoint
-
-      switch (bytesPerSequence) {
-        case 1:
-          if (firstByte < 0x80) {
-            codePoint = firstByte
-          }
-          break
-        case 2:
-          secondByte = buf[i + 1]
-          if ((secondByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0x1F) << 0x6 | (secondByte & 0x3F)
-            if (tempCodePoint > 0x7F) {
-              codePoint = tempCodePoint
-            }
-          }
-          break
-        case 3:
-          secondByte = buf[i + 1]
-          thirdByte = buf[i + 2]
-          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0xF) << 0xC | (secondByte & 0x3F) << 0x6 | (thirdByte & 0x3F)
-            if (tempCodePoint > 0x7FF && (tempCodePoint < 0xD800 || tempCodePoint > 0xDFFF)) {
-              codePoint = tempCodePoint
-            }
-          }
-          break
-        case 4:
-          secondByte = buf[i + 1]
-          thirdByte = buf[i + 2]
-          fourthByte = buf[i + 3]
-          if ((secondByte & 0xC0) === 0x80 && (thirdByte & 0xC0) === 0x80 && (fourthByte & 0xC0) === 0x80) {
-            tempCodePoint = (firstByte & 0xF) << 0x12 | (secondByte & 0x3F) << 0xC | (thirdByte & 0x3F) << 0x6 | (fourthByte & 0x3F)
-            if (tempCodePoint > 0xFFFF && tempCodePoint < 0x110000) {
-              codePoint = tempCodePoint
-            }
-          }
-      }
-    }
-
-    if (codePoint === null) {
-      // we did not generate a valid codePoint so insert a
-      // replacement char (U+FFFD) and advance only 1 byte
-      codePoint = 0xFFFD
-      bytesPerSequence = 1
-    } else if (codePoint > 0xFFFF) {
-      // encode to utf16 (surrogate pair dance)
-      codePoint -= 0x10000
-      res.push(codePoint >>> 10 & 0x3FF | 0xD800)
-      codePoint = 0xDC00 | codePoint & 0x3FF
-    }
-
-    res.push(codePoint)
-    i += bytesPerSequence
-  }
-
-  return decodeCodePointsArray(res)
-}
-
-// Based on http://stackoverflow.com/a/22747272/680742, the browser with
-// the lowest limit is Chrome, with 0x10000 args.
-// We go 1 magnitude less, for safety
-var MAX_ARGUMENTS_LENGTH = 0x1000
-
-function decodeCodePointsArray (codePoints) {
-  var len = codePoints.length
-  if (len <= MAX_ARGUMENTS_LENGTH) {
-    return String.fromCharCode.apply(String, codePoints) // avoid extra slice()
-  }
-
-  // Decode in chunks to avoid "call stack size exceeded".
-  var res = ''
-  var i = 0
-  while (i < len) {
-    res += String.fromCharCode.apply(
-      String,
-      codePoints.slice(i, i += MAX_ARGUMENTS_LENGTH)
-    )
-  }
-  return res
-}
-
-function asciiSlice (buf, start, end) {
-  var ret = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; ++i) {
-    ret += String.fromCharCode(buf[i] & 0x7F)
-  }
-  return ret
-}
-
-function latin1Slice (buf, start, end) {
-  var ret = ''
-  end = Math.min(buf.length, end)
-
-  for (var i = start; i < end; ++i) {
-    ret += String.fromCharCode(buf[i])
-  }
-  return ret
-}
-
-function hexSlice (buf, start, end) {
-  var len = buf.length
-
-  if (!start || start < 0) start = 0
-  if (!end || end < 0 || end > len) end = len
-
-  var out = ''
-  for (var i = start; i < end; ++i) {
-    out += toHex(buf[i])
-  }
-  return out
-}
-
-function utf16leSlice (buf, start, end) {
-  var bytes = buf.slice(start, end)
-  var res = ''
-  for (var i = 0; i < bytes.length; i += 2) {
-    res += String.fromCharCode(bytes[i] + bytes[i + 1] * 256)
-  }
-  return res
-}
-
-Buffer.prototype.slice = function slice (start, end) {
-  var len = this.length
-  start = ~~start
-  end = end === undefined ? len : ~~end
-
-  if (start < 0) {
-    start += len
-    if (start < 0) start = 0
-  } else if (start > len) {
-    start = len
-  }
-
-  if (end < 0) {
-    end += len
-    if (end < 0) end = 0
-  } else if (end > len) {
-    end = len
-  }
-
-  if (end < start) end = start
-
-  var newBuf
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    newBuf = this.subarray(start, end)
-    newBuf.__proto__ = Buffer.prototype
-  } else {
-    var sliceLen = end - start
-    newBuf = new Buffer(sliceLen, undefined)
-    for (var i = 0; i < sliceLen; ++i) {
-      newBuf[i] = this[i + start]
-    }
-  }
-
-  return newBuf
-}
-
-/*
- * Need to make sure that buffer isn't trying to write out of bounds.
- */
-function checkOffset (offset, ext, length) {
-  if ((offset % 1) !== 0 || offset < 0) throw new RangeError('offset is not uint')
-  if (offset + ext > length) throw new RangeError('Trying to access beyond buffer length')
-}
-
-Buffer.prototype.readUIntLE = function readUIntLE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var val = this[offset]
-  var mul = 1
-  var i = 0
-  while (++i < byteLength && (mul *= 0x100)) {
-    val += this[offset + i] * mul
-  }
-
-  return val
-}
-
-Buffer.prototype.readUIntBE = function readUIntBE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    checkOffset(offset, byteLength, this.length)
-  }
-
-  var val = this[offset + --byteLength]
-  var mul = 1
-  while (byteLength > 0 && (mul *= 0x100)) {
-    val += this[offset + --byteLength] * mul
-  }
-
-  return val
-}
-
-Buffer.prototype.readUInt8 = function readUInt8 (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 1, this.length)
-  return this[offset]
-}
-
-Buffer.prototype.readUInt16LE = function readUInt16LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  return this[offset] | (this[offset + 1] << 8)
-}
-
-Buffer.prototype.readUInt16BE = function readUInt16BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  return (this[offset] << 8) | this[offset + 1]
-}
-
-Buffer.prototype.readUInt32LE = function readUInt32LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return ((this[offset]) |
-      (this[offset + 1] << 8) |
-      (this[offset + 2] << 16)) +
-      (this[offset + 3] * 0x1000000)
-}
-
-Buffer.prototype.readUInt32BE = function readUInt32BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset] * 0x1000000) +
-    ((this[offset + 1] << 16) |
-    (this[offset + 2] << 8) |
-    this[offset + 3])
-}
-
-Buffer.prototype.readIntLE = function readIntLE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var val = this[offset]
-  var mul = 1
-  var i = 0
-  while (++i < byteLength && (mul *= 0x100)) {
-    val += this[offset + i] * mul
-  }
-  mul *= 0x80
-
-  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
-
-  return val
-}
-
-Buffer.prototype.readIntBE = function readIntBE (offset, byteLength, noAssert) {
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) checkOffset(offset, byteLength, this.length)
-
-  var i = byteLength
-  var mul = 1
-  var val = this[offset + --i]
-  while (i > 0 && (mul *= 0x100)) {
-    val += this[offset + --i] * mul
-  }
-  mul *= 0x80
-
-  if (val >= mul) val -= Math.pow(2, 8 * byteLength)
-
-  return val
-}
-
-Buffer.prototype.readInt8 = function readInt8 (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 1, this.length)
-  if (!(this[offset] & 0x80)) return (this[offset])
-  return ((0xff - this[offset] + 1) * -1)
-}
-
-Buffer.prototype.readInt16LE = function readInt16LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  var val = this[offset] | (this[offset + 1] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt16BE = function readInt16BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 2, this.length)
-  var val = this[offset + 1] | (this[offset] << 8)
-  return (val & 0x8000) ? val | 0xFFFF0000 : val
-}
-
-Buffer.prototype.readInt32LE = function readInt32LE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset]) |
-    (this[offset + 1] << 8) |
-    (this[offset + 2] << 16) |
-    (this[offset + 3] << 24)
-}
-
-Buffer.prototype.readInt32BE = function readInt32BE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-
-  return (this[offset] << 24) |
-    (this[offset + 1] << 16) |
-    (this[offset + 2] << 8) |
-    (this[offset + 3])
-}
-
-Buffer.prototype.readFloatLE = function readFloatLE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, true, 23, 4)
-}
-
-Buffer.prototype.readFloatBE = function readFloatBE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 4, this.length)
-  return ieee754.read(this, offset, false, 23, 4)
-}
-
-Buffer.prototype.readDoubleLE = function readDoubleLE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, true, 52, 8)
-}
-
-Buffer.prototype.readDoubleBE = function readDoubleBE (offset, noAssert) {
-  if (!noAssert) checkOffset(offset, 8, this.length)
-  return ieee754.read(this, offset, false, 52, 8)
-}
-
-function checkInt (buf, value, offset, ext, max, min) {
-  if (!Buffer.isBuffer(buf)) throw new TypeError('"buffer" argument must be a Buffer instance')
-  if (value > max || value < min) throw new RangeError('"value" argument is out of bounds')
-  if (offset + ext > buf.length) throw new RangeError('Index out of range')
-}
-
-Buffer.prototype.writeUIntLE = function writeUIntLE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    var maxBytes = Math.pow(2, 8 * byteLength) - 1
-    checkInt(this, value, offset, byteLength, maxBytes, 0)
-  }
-
-  var mul = 1
-  var i = 0
-  this[offset] = value & 0xFF
-  while (++i < byteLength && (mul *= 0x100)) {
-    this[offset + i] = (value / mul) & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeUIntBE = function writeUIntBE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  byteLength = byteLength | 0
-  if (!noAssert) {
-    var maxBytes = Math.pow(2, 8 * byteLength) - 1
-    checkInt(this, value, offset, byteLength, maxBytes, 0)
-  }
-
-  var i = byteLength - 1
-  var mul = 1
-  this[offset + i] = value & 0xFF
-  while (--i >= 0 && (mul *= 0x100)) {
-    this[offset + i] = (value / mul) & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeUInt8 = function writeUInt8 (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 1, 0xff, 0)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  this[offset] = (value & 0xff)
-  return offset + 1
-}
-
-function objectWriteUInt16 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 2); i < j; ++i) {
-    buf[offset + i] = (value & (0xff << (8 * (littleEndian ? i : 1 - i)))) >>>
-      (littleEndian ? i : 1 - i) * 8
-  }
-}
-
-Buffer.prototype.writeUInt16LE = function writeUInt16LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-  } else {
-    objectWriteUInt16(this, value, offset, true)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeUInt16BE = function writeUInt16BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0xffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = (value & 0xff)
-  } else {
-    objectWriteUInt16(this, value, offset, false)
-  }
-  return offset + 2
-}
-
-function objectWriteUInt32 (buf, value, offset, littleEndian) {
-  if (value < 0) value = 0xffffffff + value + 1
-  for (var i = 0, j = Math.min(buf.length - offset, 4); i < j; ++i) {
-    buf[offset + i] = (value >>> (littleEndian ? i : 3 - i) * 8) & 0xff
-  }
-}
-
-Buffer.prototype.writeUInt32LE = function writeUInt32LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset + 3] = (value >>> 24)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 1] = (value >>> 8)
-    this[offset] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, true)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeUInt32BE = function writeUInt32BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0xffffffff, 0)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, false)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeIntLE = function writeIntLE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) {
-    var limit = Math.pow(2, 8 * byteLength - 1)
-
-    checkInt(this, value, offset, byteLength, limit - 1, -limit)
-  }
-
-  var i = 0
-  var mul = 1
-  var sub = 0
-  this[offset] = value & 0xFF
-  while (++i < byteLength && (mul *= 0x100)) {
-    if (value < 0 && sub === 0 && this[offset + i - 1] !== 0) {
-      sub = 1
-    }
-    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeIntBE = function writeIntBE (value, offset, byteLength, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) {
-    var limit = Math.pow(2, 8 * byteLength - 1)
-
-    checkInt(this, value, offset, byteLength, limit - 1, -limit)
-  }
-
-  var i = byteLength - 1
-  var mul = 1
-  var sub = 0
-  this[offset + i] = value & 0xFF
-  while (--i >= 0 && (mul *= 0x100)) {
-    if (value < 0 && sub === 0 && this[offset + i + 1] !== 0) {
-      sub = 1
-    }
-    this[offset + i] = ((value / mul) >> 0) - sub & 0xFF
-  }
-
-  return offset + byteLength
-}
-
-Buffer.prototype.writeInt8 = function writeInt8 (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 1, 0x7f, -0x80)
-  if (!Buffer.TYPED_ARRAY_SUPPORT) value = Math.floor(value)
-  if (value < 0) value = 0xff + value + 1
-  this[offset] = (value & 0xff)
-  return offset + 1
-}
-
-Buffer.prototype.writeInt16LE = function writeInt16LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-  } else {
-    objectWriteUInt16(this, value, offset, true)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeInt16BE = function writeInt16BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 2, 0x7fff, -0x8000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 8)
-    this[offset + 1] = (value & 0xff)
-  } else {
-    objectWriteUInt16(this, value, offset, false)
-  }
-  return offset + 2
-}
-
-Buffer.prototype.writeInt32LE = function writeInt32LE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value & 0xff)
-    this[offset + 1] = (value >>> 8)
-    this[offset + 2] = (value >>> 16)
-    this[offset + 3] = (value >>> 24)
-  } else {
-    objectWriteUInt32(this, value, offset, true)
-  }
-  return offset + 4
-}
-
-Buffer.prototype.writeInt32BE = function writeInt32BE (value, offset, noAssert) {
-  value = +value
-  offset = offset | 0
-  if (!noAssert) checkInt(this, value, offset, 4, 0x7fffffff, -0x80000000)
-  if (value < 0) value = 0xffffffff + value + 1
-  if (Buffer.TYPED_ARRAY_SUPPORT) {
-    this[offset] = (value >>> 24)
-    this[offset + 1] = (value >>> 16)
-    this[offset + 2] = (value >>> 8)
-    this[offset + 3] = (value & 0xff)
-  } else {
-    objectWriteUInt32(this, value, offset, false)
-  }
-  return offset + 4
-}
-
-function checkIEEE754 (buf, value, offset, ext, max, min) {
-  if (offset + ext > buf.length) throw new RangeError('Index out of range')
-  if (offset < 0) throw new RangeError('Index out of range')
-}
-
-function writeFloat (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert) {
-    checkIEEE754(buf, value, offset, 4, 3.4028234663852886e+38, -3.4028234663852886e+38)
-  }
-  ieee754.write(buf, value, offset, littleEndian, 23, 4)
-  return offset + 4
-}
-
-Buffer.prototype.writeFloatLE = function writeFloatLE (value, offset, noAssert) {
-  return writeFloat(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeFloatBE = function writeFloatBE (value, offset, noAssert) {
-  return writeFloat(this, value, offset, false, noAssert)
-}
-
-function writeDouble (buf, value, offset, littleEndian, noAssert) {
-  if (!noAssert) {
-    checkIEEE754(buf, value, offset, 8, 1.7976931348623157E+308, -1.7976931348623157E+308)
-  }
-  ieee754.write(buf, value, offset, littleEndian, 52, 8)
-  return offset + 8
-}
-
-Buffer.prototype.writeDoubleLE = function writeDoubleLE (value, offset, noAssert) {
-  return writeDouble(this, value, offset, true, noAssert)
-}
-
-Buffer.prototype.writeDoubleBE = function writeDoubleBE (value, offset, noAssert) {
-  return writeDouble(this, value, offset, false, noAssert)
-}
-
-// copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-Buffer.prototype.copy = function copy (target, targetStart, start, end) {
-  if (!start) start = 0
-  if (!end && end !== 0) end = this.length
-  if (targetStart >= target.length) targetStart = target.length
-  if (!targetStart) targetStart = 0
-  if (end > 0 && end < start) end = start
-
-  // Copy 0 bytes; we're done
-  if (end === start) return 0
-  if (target.length === 0 || this.length === 0) return 0
-
-  // Fatal error conditions
-  if (targetStart < 0) {
-    throw new RangeError('targetStart out of bounds')
-  }
-  if (start < 0 || start >= this.length) throw new RangeError('sourceStart out of bounds')
-  if (end < 0) throw new RangeError('sourceEnd out of bounds')
-
-  // Are we oob?
-  if (end > this.length) end = this.length
-  if (target.length - targetStart < end - start) {
-    end = target.length - targetStart + start
-  }
-
-  var len = end - start
-  var i
-
-  if (this === target && start < targetStart && targetStart < end) {
-    // descending copy from end
-    for (i = len - 1; i >= 0; --i) {
-      target[i + targetStart] = this[i + start]
-    }
-  } else if (len < 1000 || !Buffer.TYPED_ARRAY_SUPPORT) {
-    // ascending copy from start
-    for (i = 0; i < len; ++i) {
-      target[i + targetStart] = this[i + start]
-    }
-  } else {
-    Uint8Array.prototype.set.call(
-      target,
-      this.subarray(start, start + len),
-      targetStart
-    )
-  }
-
-  return len
-}
-
-// Usage:
-//    buffer.fill(number[, offset[, end]])
-//    buffer.fill(buffer[, offset[, end]])
-//    buffer.fill(string[, offset[, end]][, encoding])
-Buffer.prototype.fill = function fill (val, start, end, encoding) {
-  // Handle string cases:
-  if (typeof val === 'string') {
-    if (typeof start === 'string') {
-      encoding = start
-      start = 0
-      end = this.length
-    } else if (typeof end === 'string') {
-      encoding = end
-      end = this.length
-    }
-    if (val.length === 1) {
-      var code = val.charCodeAt(0)
-      if (code < 256) {
-        val = code
-      }
-    }
-    if (encoding !== undefined && typeof encoding !== 'string') {
-      throw new TypeError('encoding must be a string')
-    }
-    if (typeof encoding === 'string' && !Buffer.isEncoding(encoding)) {
-      throw new TypeError('Unknown encoding: ' + encoding)
-    }
-  } else if (typeof val === 'number') {
-    val = val & 255
-  }
-
-  // Invalid ranges are not set to a default, so can range check early.
-  if (start < 0 || this.length < start || this.length < end) {
-    throw new RangeError('Out of range index')
-  }
-
-  if (end <= start) {
-    return this
-  }
-
-  start = start >>> 0
-  end = end === undefined ? this.length : end >>> 0
-
-  if (!val) val = 0
-
-  var i
-  if (typeof val === 'number') {
-    for (i = start; i < end; ++i) {
-      this[i] = val
-    }
-  } else {
-    var bytes = Buffer.isBuffer(val)
-      ? val
-      : utf8ToBytes(new Buffer(val, encoding).toString())
-    var len = bytes.length
-    for (i = 0; i < end - start; ++i) {
-      this[i + start] = bytes[i % len]
-    }
-  }
-
-  return this
-}
-
-// HELPER FUNCTIONS
-// ================
-
-var INVALID_BASE64_RE = /[^+\/0-9A-Za-z-_]/g
-
-function base64clean (str) {
-  // Node strips out invalid characters like \n and \t from the string, base64-js does not
-  str = stringtrim(str).replace(INVALID_BASE64_RE, '')
-  // Node converts strings with length < 2 to ''
-  if (str.length < 2) return ''
-  // Node allows for non-padded base64 strings (missing trailing ===), base64-js does not
-  while (str.length % 4 !== 0) {
-    str = str + '='
-  }
-  return str
-}
-
-function stringtrim (str) {
-  if (str.trim) return str.trim()
-  return str.replace(/^\s+|\s+$/g, '')
-}
-
-function toHex (n) {
-  if (n < 16) return '0' + n.toString(16)
-  return n.toString(16)
-}
-
-function utf8ToBytes (string, units) {
-  units = units || Infinity
-  var codePoint
-  var length = string.length
-  var leadSurrogate = null
-  var bytes = []
-
-  for (var i = 0; i < length; ++i) {
-    codePoint = string.charCodeAt(i)
-
-    // is surrogate component
-    if (codePoint > 0xD7FF && codePoint < 0xE000) {
-      // last char was a lead
-      if (!leadSurrogate) {
-        // no lead yet
-        if (codePoint > 0xDBFF) {
-          // unexpected trail
-          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-          continue
-        } else if (i + 1 === length) {
-          // unpaired lead
-          if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-          continue
-        }
-
-        // valid lead
-        leadSurrogate = codePoint
-
-        continue
-      }
-
-      // 2 leads in a row
-      if (codePoint < 0xDC00) {
-        if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-        leadSurrogate = codePoint
-        continue
-      }
-
-      // valid surrogate pair
-      codePoint = (leadSurrogate - 0xD800 << 10 | codePoint - 0xDC00) + 0x10000
-    } else if (leadSurrogate) {
-      // valid bmp char, but last char was a lead
-      if ((units -= 3) > -1) bytes.push(0xEF, 0xBF, 0xBD)
-    }
-
-    leadSurrogate = null
-
-    // encode utf8
-    if (codePoint < 0x80) {
-      if ((units -= 1) < 0) break
-      bytes.push(codePoint)
-    } else if (codePoint < 0x800) {
-      if ((units -= 2) < 0) break
-      bytes.push(
-        codePoint >> 0x6 | 0xC0,
-        codePoint & 0x3F | 0x80
-      )
-    } else if (codePoint < 0x10000) {
-      if ((units -= 3) < 0) break
-      bytes.push(
-        codePoint >> 0xC | 0xE0,
-        codePoint >> 0x6 & 0x3F | 0x80,
-        codePoint & 0x3F | 0x80
-      )
-    } else if (codePoint < 0x110000) {
-      if ((units -= 4) < 0) break
-      bytes.push(
-        codePoint >> 0x12 | 0xF0,
-        codePoint >> 0xC & 0x3F | 0x80,
-        codePoint >> 0x6 & 0x3F | 0x80,
-        codePoint & 0x3F | 0x80
-      )
-    } else {
-      throw new Error('Invalid code point')
-    }
-  }
-
-  return bytes
-}
-
-function asciiToBytes (str) {
-  var byteArray = []
-  for (var i = 0; i < str.length; ++i) {
-    // Node's code seems to be doing this and not & 0x7F..
-    byteArray.push(str.charCodeAt(i) & 0xFF)
-  }
-  return byteArray
-}
-
-function utf16leToBytes (str, units) {
-  var c, hi, lo
-  var byteArray = []
-  for (var i = 0; i < str.length; ++i) {
-    if ((units -= 2) < 0) break
-
-    c = str.charCodeAt(i)
-    hi = c >> 8
-    lo = c % 256
-    byteArray.push(lo)
-    byteArray.push(hi)
-  }
-
-  return byteArray
-}
-
-function base64ToBytes (str) {
-  return base64.toByteArray(base64clean(str))
-}
-
-function blitBuffer (src, dst, offset, length) {
-  for (var i = 0; i < length; ++i) {
-    if ((i + offset >= dst.length) || (i >= src.length)) break
-    dst[i + offset] = src[i]
-  }
-  return i
-}
-
-function isnan (val) {
-  return val !== val // eslint-disable-line no-self-compare
-}
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ 2)))
-
-/***/ }),
-/* 35 */
-/*!*****************************************!*\
-  !*** ./node_modules/base64-js/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-exports.byteLength = byteLength
-exports.toByteArray = toByteArray
-exports.fromByteArray = fromByteArray
-
-var lookup = []
-var revLookup = []
-var Arr = typeof Uint8Array !== 'undefined' ? Uint8Array : Array
-
-var code = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-for (var i = 0, len = code.length; i < len; ++i) {
-  lookup[i] = code[i]
-  revLookup[code.charCodeAt(i)] = i
-}
-
-// Support decoding URL-safe base64 strings, as Node.js does.
-// See: https://en.wikipedia.org/wiki/Base64#URL_applications
-revLookup['-'.charCodeAt(0)] = 62
-revLookup['_'.charCodeAt(0)] = 63
-
-function getLens (b64) {
-  var len = b64.length
-
-  if (len % 4 > 0) {
-    throw new Error('Invalid string. Length must be a multiple of 4')
-  }
-
-  // Trim off extra bytes after placeholder bytes are found
-  // See: https://github.com/beatgammit/base64-js/issues/42
-  var validLen = b64.indexOf('=')
-  if (validLen === -1) validLen = len
-
-  var placeHoldersLen = validLen === len
-    ? 0
-    : 4 - (validLen % 4)
-
-  return [validLen, placeHoldersLen]
-}
-
-// base64 is 4/3 + up to two characters of the original data
-function byteLength (b64) {
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function _byteLength (b64, validLen, placeHoldersLen) {
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function toByteArray (b64) {
-  var tmp
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-
-  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
-
-  var curByte = 0
-
-  // if there are placeholders, only get up to the last complete 4 chars
-  var len = placeHoldersLen > 0
-    ? validLen - 4
-    : validLen
-
-  var i
-  for (i = 0; i < len; i += 4) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 18) |
-      (revLookup[b64.charCodeAt(i + 1)] << 12) |
-      (revLookup[b64.charCodeAt(i + 2)] << 6) |
-      revLookup[b64.charCodeAt(i + 3)]
-    arr[curByte++] = (tmp >> 16) & 0xFF
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 2) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 2) |
-      (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 1) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 10) |
-      (revLookup[b64.charCodeAt(i + 1)] << 4) |
-      (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  return arr
-}
-
-function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] +
-    lookup[num >> 12 & 0x3F] +
-    lookup[num >> 6 & 0x3F] +
-    lookup[num & 0x3F]
-}
-
-function encodeChunk (uint8, start, end) {
-  var tmp
-  var output = []
-  for (var i = start; i < end; i += 3) {
-    tmp =
-      ((uint8[i] << 16) & 0xFF0000) +
-      ((uint8[i + 1] << 8) & 0xFF00) +
-      (uint8[i + 2] & 0xFF)
-    output.push(tripletToBase64(tmp))
-  }
-  return output.join('')
-}
-
-function fromByteArray (uint8) {
-  var tmp
-  var len = uint8.length
-  var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var parts = []
-  var maxChunkLength = 16383 // must be multiple of 3
-
-  // go through the array every three bytes, we'll deal with trailing stuff later
-  for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
-  }
-
-  // pad the end with zeros, but make sure to not forget the extra bytes
-  if (extraBytes === 1) {
-    tmp = uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 2] +
-      lookup[(tmp << 4) & 0x3F] +
-      '=='
-    )
-  } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 10] +
-      lookup[(tmp >> 4) & 0x3F] +
-      lookup[(tmp << 2) & 0x3F] +
-      '='
-    )
-  }
-
-  return parts.join('')
-}
-
-
-/***/ }),
-/* 36 */
-/*!***************************************!*\
-  !*** ./node_modules/ieee754/index.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-
-/***/ }),
-/* 37 */
-/*!***************************************!*\
-  !*** ./node_modules/isarray/index.js ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-/* 38 */
-/*!*********************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
-  \*********************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * 并且带有路由拦截功能
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */var
-
-Router = /*#__PURE__*/function () {
-  function Router() {_classCallCheck(this, Router);
-    // 原始属性定义
-    this.config = {
-      type: 'navigateTo',
-      url: '',
-      delta: 1, // navigateBack页面后退时,回退的层数
-      params: {}, // 传递的参数
-      animationType: 'pop-in', // 窗口动画,只在APP有效
-      animationDuration: 300, // 窗口动画持续时间,单位毫秒,只在APP有效
-      intercept: false // 是否需要拦截
-    };
-    // 因为route方法是需要对外赋值给另外的对象使用，同时route内部有使用this，会导致route失去上下文
-    // 这里在构造函数中进行this绑定
-    this.route = this.route.bind(this);
-  }
-
-  // 判断url前面是否有"/"，如果没有则加上，否则无法跳转
-  _createClass(Router, [{ key: "addRootPath", value: function addRootPath(url) {
-      return url[0] === '/' ? url : "/".concat(url);
-    }
-
-    // 整合路由参数
-  }, { key: "mixinParam", value: function mixinParam(url, params) {
-      url = url && this.addRootPath(url);
-
-      // 使用正则匹配，主要依据是判断是否有"/","?","="等，如“/page/index/index?name=mary"
-      // 如果有url中有get参数，转换后无需带上"?"
-      var query = '';
-      if (/.*\/.*\?.*=.*/.test(url)) {
-        // object对象转为get类型的参数
-        query = uni.$u.queryParams(params, false);
-        // 因为已有get参数,所以后面拼接的参数需要带上"&"隔开
-        return url += "&".concat(query);
-      }
-      // 直接拼接参数，因为此处url中没有后面的query参数，也就没有"?/&"之类的符号
-      query = uni.$u.queryParams(params);
-      return url += query;
-    }
-
-    // 对外的方法名称
-  }, { key: "route", value: function () {var _route = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var options,params,mergeConfig,isNext,_args = arguments;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:options = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};params = _args.length > 1 && _args[1] !== undefined ? _args[1] : {};
-                // 合并用户的配置和内部的默认配置
-                mergeConfig = {};
-
-                if (typeof options === 'string') {
-                  // 如果options为字符串，则为route(url, params)的形式
-                  mergeConfig.url = this.mixinParam(options, params);
-                  mergeConfig.type = 'navigateTo';
-                } else {
-                  mergeConfig = uni.$u.deepClone(options, this.config);
-                  // 否则正常使用mergeConfig中的url和params进行拼接
-                  mergeConfig.url = this.mixinParam(options.url, options.params);
-                }
-
-                // 如果本次跳转的路径和本页面路径一致，不执行跳转，防止用户快速点击跳转按钮，造成多次跳转同一个页面的问题
-                if (!(mergeConfig.url === uni.$u.page())) {_context.next = 6;break;}return _context.abrupt("return");case 6:
-
-                if (params.intercept) {
-                  this.config.intercept = params.intercept;
-                }
-                // params参数也带给拦截器
-                mergeConfig.params = params;
-                // 合并内外部参数
-                mergeConfig = uni.$u.deepMerge(this.config, mergeConfig);
-                // 判断用户是否定义了拦截器
-                if (!(typeof uni.$u.routeIntercept === 'function')) {_context.next = 16;break;}_context.next = 12;return (
-
-                  new Promise(function (resolve, reject) {
-                    uni.$u.routeIntercept(mergeConfig, resolve);
-                  }));case 12:isNext = _context.sent;
-                // 如果isNext为true，则执行路由跳转
-                isNext && this.openPage(mergeConfig);_context.next = 17;break;case 16:
-
-                this.openPage(mergeConfig);case 17:case "end":return _context.stop();}}}, _callee, this);}));function route() {return _route.apply(this, arguments);}return route;}()
-
-
-
-    // 执行路由跳转
-  }, { key: "openPage", value: function openPage(config) {
-      // 解构参数
-      var
-      url =
-
-
-
-
-      config.url,type = config.type,delta = config.delta,animationType = config.animationType,animationDuration = config.animationDuration;
-      if (config.type == 'navigateTo' || config.type == 'to') {
-        uni.navigateTo({
-          url: url,
-          animationType: animationType,
-          animationDuration: animationDuration });
-
-      }
-      if (config.type == 'redirectTo' || config.type == 'redirect') {
-        uni.redirectTo({
-          url: url });
-
-      }
-      if (config.type == 'switchTab' || config.type == 'tab') {
-        uni.switchTab({
-          url: url });
-
-      }
-      if (config.type == 'reLaunch' || config.type == 'launch') {
-        uni.reLaunch({
-          url: url });
-
-      }
-      if (config.type == 'navigateBack' || config.type == 'back') {
-        uni.navigateBack({
-          delta: delta });
-
-      }
-    } }]);return Router;}();var _default =
-
-
-new Router().route;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 39 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
-  \*********************************************************************************************/
-=======
 /* WEBPACK VAR INJECTION */(function(global) {/*!
  * The buffer module from node.js, for the browser.
  *
@@ -17030,17 +12265,17 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 /* 33 */
-/*!********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
-  \********************************************************************************/
+/*!****************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * 并且带有路由拦截功能
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */var
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 并且带有路由拦截功能
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            */var
 
 Router = /*#__PURE__*/function () {
   function Router() {_classCallCheck(this, Router);
@@ -17953,10 +13188,9 @@ if (hadRuntime) {
 
 /***/ }),
 /* 37 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18096,17 +13330,10 @@ function colorToRgba(color, alpha) {
   colorToRgba: colorToRgba };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 40 */
-/*!************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
-  \************************************************************************************/
-=======
 /* 38 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
-  \***********************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18399,17 +13626,10 @@ function regExp(o) {
   string: string };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 41 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
-  \****************************************************************************************/
-=======
 /* 39 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18445,17 +13665,10 @@ function debounce(func) {var wait = arguments.length > 1 && arguments[1] !== und
 debounce;exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 42 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
-  \****************************************************************************************/
-=======
 /* 40 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -18492,26 +13705,15 @@ function throttle(func) {var wait = arguments.length > 1 && arguments[1] !== und
 throttle;exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 43 */
-/*!*************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
-  \*************************************************************************************/
-=======
 /* 41 */
-/*!************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
-  \************************************************************************************/
->>>>>>> master
+/*!********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-<<<<<<< HEAD
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 40));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
-=======
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 38));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
->>>>>>> master
 
 /**
                                                                                                                                                                                                                                                             * @description 如果value小于min，取min；如果value大于max，取max
@@ -19201,17 +14403,10 @@ function setConfig(_ref)
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-<<<<<<< HEAD
-/* 44 */
-/*!************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
-  \************************************************************************************/
-=======
 /* 42 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
-  \***********************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19251,17 +14446,10 @@ if (true) {
   unit: 'px' };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 45 */
-/*!***********************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
-  \***********************************************************************************/
-=======
 /* 43 */
-/*!**********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
-  \**********************************************************************************/
->>>>>>> master
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19271,98 +14459,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-<<<<<<< HEAD
-var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 44));
-
-var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 46));
-var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 47));
-var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 48));
-var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 49));
-var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 50));
-var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 51));
-var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 52));
-var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 53));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 54));
-var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 55));
-var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 56));
-var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 57));
-var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 58));
-var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 59));
-var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 60));
-var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 61));
-var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 62));
-var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 63));
-var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 64));
-var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 65));
-var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 66));
-var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 67));
-var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 68));
-var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 69));
-var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 70));
-var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 71));
-var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 72));
-var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 73));
-var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 74));
-var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 75));
-var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 76));
-var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 77));
-var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 78));
-var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 79));
-var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 80));
-var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 81));
-var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 82));
-var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 83));
-var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 84));
-var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 85));
-var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 86));
-var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 87));
-var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 88));
-var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 89));
-var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 90));
-var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 91));
-var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 92));
-var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 94));
-var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 95));
-var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 96));
-var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 97));
-var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 98));
-var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 99));
-var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 100));
-var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 101));
-var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 102));
-var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 103));
-var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 104));
-var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 105));
-var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 106));
-var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 107));
-var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 108));
-var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 109));
-var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 110));
-var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 111));
-var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 112));
-var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 113));
-var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 114));
-var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 115));
-var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 116));
-var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 117));
-var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 118));
-var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 119));
-var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 120));
-var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 121));
-var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 122));
-var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 123));
-var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 124));
-var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 125));
-var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 126));
-var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 127));
-var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 128));
-var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 129));
-var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 130));
-var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 131));
-var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 132));
-var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 133));
-var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 134));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
-=======
 var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 42));
 
 var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 44));
@@ -19453,7 +14549,6 @@ var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */
 var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 130));
 var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 131));
 var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 132));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
->>>>>>> master
 
 
 color =
@@ -19550,17 +14645,10 @@ _transition.default),
 _upload.default);exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 46 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
-  \***********************************************************************************************/
-=======
 /* 44 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19590,17 +14678,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     round: 0 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 47 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
-  \*****************************************************************************************/
-=======
 /* 45 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19630,17 +14711,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showMore: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 48 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
-  \*****************************************************************************************/
-=======
 /* 46 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19667,17 +14741,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     fontSize: 14 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 49 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
-  \******************************************************************************************/
-=======
 /* 47 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19710,17 +14777,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 50 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
-  \***********************************************************************************************/
-=======
 /* 48 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19748,17 +14808,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     extraValue: 0 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 51 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
-  \*******************************************************************************************/
-=======
 /* 49 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19789,17 +14842,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         fontSize: '19px' };} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 52 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
-  \*****************************************************************************************/
-=======
 /* 50 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19831,17 +14877,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     absolute: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 53 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
-  \******************************************************************************************/
-=======
 /* 51 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19888,17 +14927,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     color: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 54 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
-  \********************************************************************************************/
-=======
 /* 52 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19945,17 +14977,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     monthNum: 3 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 55 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
-  \***********************************************************************************************/
-=======
 /* 53 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -19975,17 +15000,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 56 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
-  \****************************************************************************************/
-=======
 /* 54 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20025,17 +15043,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 57 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
-  \*********************************************************************************************/
-=======
 /* 55 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20057,17 +15068,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 58 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
-  \********************************************************************************************/
-=======
 /* 56 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20099,17 +15103,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelDisabled: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 59 */
-/*!*************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
-  \*************************************************************************************************/
-=======
 /* 57 */
-/*!************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
-  \************************************************************************************************/
->>>>>>> master
+/*!********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20143,17 +15140,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     borderBottom: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 60 */
-/*!**************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
-  \**************************************************************************************************/
-=======
 /* 58 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
-  \*************************************************************************************************/
->>>>>>> master
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20173,17 +15163,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     percentage: 30 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 61 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
-  \****************************************************************************************/
-=======
 /* 59 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20209,17 +15192,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     uniqueKey: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 62 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
-  \*********************************************************************************************/
-=======
 /* 60 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20252,17 +15228,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disabledDot: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 63 */
-/*!***************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
-  \***************************************************************************************/
-=======
 /* 61 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
-  \**************************************************************************************/
->>>>>>> master
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20286,17 +15255,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     textAlign: 'left' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 64 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
-  \********************************************************************************************/
-=======
 /* 62 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20318,17 +15280,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     border: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 65 */
-/*!************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
-  \************************************************************************************************/
-=======
 /* 63 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
-  \***********************************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20358,17 +15313,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 66 */
-/*!************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
-  \************************************************************************************************/
-=======
 /* 64 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
-  \***********************************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20397,17 +15345,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disableTouch: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 67 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
-  \*********************************************************************************************/
-=======
 /* 65 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20430,17 +15371,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     millisecond: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 68 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
-  \*******************************************************************************************/
-=======
 /* 66 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20470,17 +15404,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     separator: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 69 */
-/*!**************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
-  \**************************************************************************************************/
-=======
 /* 67 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
-  \*************************************************************************************************/
->>>>>>> master
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20521,17 +15448,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     defaultIndex: function defaultIndex() {return [];} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 70 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
-  \*******************************************************************************************/
-=======
 /* 68 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20558,17 +15478,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     lineColor: '#dcdfe6' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 71 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
-  \*****************************************************************************************/
-=======
 /* 69 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20598,17 +15511,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     marginTop: 0 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 72 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
-  \****************************************************************************************/
-=======
 /* 70 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20635,17 +15541,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelStyle: function labelStyle() {return {};} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 73 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
-  \********************************************************************************************/
-=======
 /* 71 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20671,17 +15570,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     required: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 74 */
-/*!***************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
-  \***************************************************************************************/
-=======
 /* 72 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
-  \**************************************************************************************/
->>>>>>> master
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20705,17 +15597,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 75 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
-  \****************************************************************************************/
-=======
 /* 73 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20737,17 +15622,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'left' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 76 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
-  \********************************************************************************************/
-=======
 /* 74 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20768,17 +15646,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 77 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
-  \****************************************************************************************/
-=======
 /* 75 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20792,11 +15663,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-<<<<<<< HEAD
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 44));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
-=======
 var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
->>>>>>> master
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -20823,17 +15690,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
     stop: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 78 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
-  \*****************************************************************************************/
-=======
 /* 76 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20868,17 +15728,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: '#f3f4f6' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 79 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
-  \***********************************************************************************************/
-=======
 /* 77 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20902,17 +15755,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 32 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 80 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
-  \*********************************************************************************************/
-=======
 /* 78 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20936,17 +15782,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customNavHeight: 0 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 81 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
-  \*****************************************************************************************/
-=======
 /* 79 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20999,17 +15838,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 82 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
-  \********************************************************************************************/
-=======
 /* 80 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21044,17 +15876,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoChange: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 83 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
-  \****************************************************************************************/
-=======
 /* 81 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21079,17 +15904,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dashed: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 84 */
-/*!************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
-  \************************************************************************************************/
-=======
 /* 82 */
-/*!***********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
-  \***********************************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
+  \*******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21113,17 +15931,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 12 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 85 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
-  \****************************************************************************************/
-=======
 /* 83 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21137,11 +15948,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-<<<<<<< HEAD
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 44));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
-=======
 var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
->>>>>>> master
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -21158,17 +15965,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
     text: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 86 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
-  \****************************************************************************************/
-=======
 /* 84 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21201,17 +16001,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     preLoadScreen: 1 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 87 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
-  \********************************************************************************************/
-=======
 /* 85 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21231,17 +16024,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     anchor: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 88 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
-  \***********************************************************************************************/
-=======
 /* 86 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21255,11 +16041,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-<<<<<<< HEAD
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 44));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
-=======
 var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
->>>>>>> master
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -21280,17 +16062,10 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));f
     inactiveColor: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 89 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
-  \***********************************************************************************************/
-=======
 /* 87 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21315,21 +16090,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     color: '#C8C8C8',
     fontSize: 19,
     loadingColor: '#C8C8C8' } };exports.default = _default;
-<<<<<<< HEAD
-
-/***/ }),
-/* 90 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
-  \********************************************************************************************/
-=======
 
 /***/ }),
 /* 88 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21363,17 +16129,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     line: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 91 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
-  \*****************************************************************************************/
-=======
 /* 89 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21408,17 +16167,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     confirmButtonShape: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 92 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
-  \******************************************************************************************/
-=======
 /* 90 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21432,11 +16184,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-<<<<<<< HEAD
-var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 93));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
-=======
 var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 91));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
->>>>>>> master
                                                                                                                                                         * @Author       : LQ
                                                                                                                                                         * @Description  :
                                                                                                                                                         * @version      : 1.0
@@ -21458,17 +16206,10 @@ var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 91));fun
     titleStyle: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 93 */
-/*!***********************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
-  \***********************************************************************************/
-=======
 /* 91 */
-/*!**********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
-  \**********************************************************************************/
->>>>>>> master
+/*!******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21492,17 +16233,10 @@ var color = {
 color;exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 94 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
-  \*********************************************************************************************/
-=======
 /* 92 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21524,17 +16258,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     image: 'data:image/png;base64,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' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 95 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
-  \*********************************************************************************************/
-=======
 /* 93 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21566,17 +16293,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     linkType: 'navigateTo' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 96 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
-  \******************************************************************************************/
-=======
 /* 94 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21603,17 +16323,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     safeAreaInsetTop: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 97 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
-  \*********************************************************************************************/
-=======
 /* 95 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21653,17 +16366,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconStyle: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 98 */
-/*!**************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
-  \**************************************************************************************************/
-=======
 /* 96 */
-/*!*************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
-  \*************************************************************************************************/
->>>>>>> master
+/*!*********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
+  \*********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21685,17 +16391,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 99 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
-  \*******************************************************************************************/
-=======
 /* 97 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21718,17 +16417,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     opacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 100 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
-  \*****************************************************************************************/
-=======
 /* 98 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21755,17 +16447,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showImgMenu: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 101 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
-  \******************************************************************************************/
-=======
 /* 99 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21800,17 +16485,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     immediateChange: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 102 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
-  \*****************************************************************************************/
-=======
 /* 100 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21844,17 +16522,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     overlayOpacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 103 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
-  \*****************************************************************************************/
-=======
 /* 101 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21886,17 +16557,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placement: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 104 */
-/*!**********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
-  \**********************************************************************************************/
-=======
 /* 102 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
-  \*********************************************************************************************/
->>>>>>> master
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21931,17 +16595,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconPlacement: 'left' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 105 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
-  \****************************************************************************************/
-=======
 /* 103 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21972,17 +16629,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     touchable: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 106 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
-  \********************************************************************************************/
-=======
 /* 104 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22009,17 +16659,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 107 */
-/*!***************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
-  \***************************************************************************************/
-=======
 /* 105 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
-  \**************************************************************************************/
->>>>>>> master
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22041,17 +16684,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'center' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 108 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
-  \*********************************************************************************************/
-=======
 /* 106 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22077,17 +16713,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     speed: 80 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 109 */
-/*!**********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
-  \**********************************************************************************************/
-=======
 /* 107 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
-  \*********************************************************************************************/
->>>>>>> master
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22112,17 +16741,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorStyle: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 110 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
-  \******************************************************************************************/
-=======
 /* 108 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22163,17 +16785,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     label: null } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 111 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
-  \*******************************************************************************************/
-=======
 /* 109 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22202,17 +16817,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     arrow: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 112 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
-  \********************************************************************************************/
-=======
 /* 110 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22242,17 +16850,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     avatarShape: 'circle' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 113 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
-  \******************************************************************************************/
-=======
 /* 111 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22282,17 +16883,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     blockStyle: function blockStyle() {} } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 114 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
-  \*********************************************************************************************/
-=======
 /* 112 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22312,17 +16906,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 115 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
-  \*****************************************************************************************/
-=======
 /* 113 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22348,17 +16935,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dot: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 116 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
-  \*********************************************************************************************/
-=======
 /* 114 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22381,17 +16961,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     error: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 117 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
-  \******************************************************************************************/
-=======
 /* 115 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22416,17 +16989,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     index: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 118 */
-/*!**********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
-  \**********************************************************************************************/
-=======
 /* 116 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
-  \*********************************************************************************************/
->>>>>>> master
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22454,17 +17020,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 119 */
-/*!***********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
-  \***********************************************************************************************/
-=======
 /* 117 */
-/*!**********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
-  \**********************************************************************************************/
->>>>>>> master
+/*!******************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
+  \******************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22484,17 +17043,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoClose: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 120 */
-/*!***************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
-  \***************************************************************************************************/
-=======
 /* 118 */
-/*!**************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
-  \**************************************************************************************************/
->>>>>>> master
+/*!**********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
+  \**********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22520,17 +17072,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 121 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
-  \******************************************************************************************/
-=======
 /* 119 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22573,17 +17118,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showTitle: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 122 */
-/*!****************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
-  \****************************************************************************************************/
-=======
 /* 120 */
-/*!***************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
-  \***************************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
+  \***********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22607,17 +17145,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorMode: 'line' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 123 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
-  \******************************************************************************************/
-=======
 /* 121 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22646,17 +17177,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     space: 0 } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 124 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
-  \******************************************************************************************/
-=======
 /* 122 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22683,17 +17207,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placeholder: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 125 */
-/*!**********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
-  \**********************************************************************************************/
-=======
 /* 123 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
-  \*********************************************************************************************/
->>>>>>> master
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22718,17 +17235,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     badgeStyle: 'top: 6px;right:2px;' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 126 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
-  \****************************************************************************************/
-=======
 /* 124 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22764,17 +17274,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 127 */
-/*!***************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
-  \***************************************************************************************/
-=======
 /* 125 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
-  \**************************************************************************************/
->>>>>>> master
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22808,17 +17311,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     icon: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 128 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
-  \****************************************************************************************/
-=======
 /* 126 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22860,17 +17356,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     wordWrap: 'normal' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 129 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
-  \********************************************************************************************/
-=======
 /* 127 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
-  \*******************************************************************************************/
->>>>>>> master
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
+  \***************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22911,17 +17400,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 130 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
-  \*****************************************************************************************/
-=======
 /* 128 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22955,17 +17437,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     back: false } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 131 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
-  \*******************************************************************************************/
-=======
 /* 129 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22990,17 +17465,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     title: '' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 132 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
-  \*******************************************************************************************/
-=======
 /* 130 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23030,17 +17498,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showToast: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 133 */
-/*!**********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
-  \**********************************************************************************************/
-=======
 /* 131 */
-/*!*********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
-  \*********************************************************************************************/
->>>>>>> master
+/*!*****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
+  \*****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23063,17 +17524,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     timingFunction: 'ease-out' } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 134 */
-/*!******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
-  \******************************************************************************************/
-=======
 /* 132 */
-/*!*****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
-  \*****************************************************************************************/
->>>>>>> master
+/*!*************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23114,17 +17568,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     previewImage: true } };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 135 */
-/*!************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
-  \************************************************************************************/
-=======
 /* 133 */
-/*!***********************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
-  \***********************************************************************************/
->>>>>>> master
+/*!*******************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23150,17 +17597,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   indexListSticky: 965 };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 136 */
-/*!****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
-  \****************************************************************************************/
-=======
 /* 134 */
-/*!***************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
-  \***************************************************************************************/
->>>>>>> master
+/*!***********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
+  \***********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23242,36 +17682,20 @@ platform = 'mp';var _default =
 platform;exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-=======
 /* 135 */,
 /* 136 */,
->>>>>>> master
 /* 137 */,
 /* 138 */,
 /* 139 */,
 /* 140 */,
-<<<<<<< HEAD
-/* 141 */,
-/* 142 */,
-/* 143 */
-/*!*****************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/home.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 13);
-=======
 /* 141 */
-/*!****************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/home.js ***!
-  \****************************************************/
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/home.js ***!
+  \************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var request = __webpack_require__(/*! ./request.js */ 142);
->>>>>>> master
 
 exports.fetchindexData = function () {
   return request({
@@ -23280,12 +17704,10 @@ exports.fetchindexData = function () {
 };
 
 /***/ }),
-<<<<<<< HEAD
-=======
 /* 142 */
-/*!*******************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/request.js ***!
-  \*******************************************************/
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/request.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -23353,7 +17775,6 @@ exports.fetchindexData = function () {
 
 /***/ }),
 /* 143 */,
->>>>>>> master
 /* 144 */,
 /* 145 */,
 /* 146 */,
@@ -23361,73 +17782,48 @@ exports.fetchindexData = function () {
 /* 148 */,
 /* 149 */,
 /* 150 */,
-<<<<<<< HEAD
-/* 151 */,
-/* 152 */
-/*!*****************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/sort.js ***!
-  \*****************************************************/
-=======
 /* 151 */
-/*!****************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/sort.js ***!
-  \****************************************************/
->>>>>>> master
+/*!******************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/viewCoupon.js ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-<<<<<<< HEAD
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 13);
-=======
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
->>>>>>> master
+Object.defineProperty(exports, "__esModule", { value: true });exports.viewCoupon = viewCoupon;var request = __webpack_require__(/*! ./request.js */ 142);
 
-function fetch_sortData() {
+function viewCoupon() {
   return request({
-    url: 'https://zlwh.jinghuanqiu.com/category' });
+    url: 'https://zlwh.jinghuanqiu.com/user/userCoupon',
+    method: "get" });
 
 }
 
 /***/ }),
-<<<<<<< HEAD
-/* 153 */
-/*!********************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/util/window.js ***!
-  \********************************************************/
-=======
-/* 152 */
-/*!*******************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/util/window.js ***!
-  \*******************************************************/
->>>>>>> master
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.getWindowHeight = getWindowHeight;function getWindowHeight() {
-  var height = 0;
-  uni.getSystemInfo({
-    success: function success(res) {
-      height = res.windowHeight;
-    } });
-
-  return height;
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-<<<<<<< HEAD
-=======
+/* 152 */,
 /* 153 */,
->>>>>>> master
 /* 154 */,
 /* 155 */,
 /* 156 */,
 /* 157 */,
 /* 158 */,
 /* 159 */,
-/* 160 */,
+/* 160 */
+/*!*************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/couponsAvailableForCollection.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.couponsAvailableForCollection = couponsAvailableForCollection;var request = __webpack_require__(/*! ./request.js */ 142);
+function couponsAvailableForCollection() {
+  return request({
+    url: 'https://zlwh.jinghuanqiu.com/getcoupon' });
+
+}
+
+/***/ }),
 /* 161 */,
 /* 162 */,
 /* 163 */,
@@ -23436,51 +17832,41 @@ function fetch_sortData() {
 /* 166 */,
 /* 167 */,
 /* 168 */,
-/* 169 */,
-/* 170 */,
+/* 169 */
+/*!************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/sort.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
+
+function fetch_sortData() {
+  return request({
+    url: 'https://zlwh.jinghuanqiu.com/category' });
+
+}
+
+/***/ }),
+/* 170 */
+/*!***************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/util/window.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js):\nError: ENOENT: no such file or directory, open 'C:\\Users\\Administrator\\Desktop\\mdmeimall\\util\\window.js'");
+
+/***/ }),
 /* 171 */,
 /* 172 */,
 /* 173 */,
 /* 174 */,
 /* 175 */,
-<<<<<<< HEAD
-/* 176 */
-/*!*******************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/search.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 13);
-=======
 /* 176 */,
 /* 177 */,
-/* 178 */
-/*!******************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/search.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 142);
->>>>>>> master
-
-exports.fetchSearch = function (page, size, keyWord) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/goodslist/page",
-    method: 'POST',
-    data: {
-      page: page, size: size, keyWord: keyWord } });
-
-
-};
-
-/***/ }),
-<<<<<<< HEAD
-/* 177 */,
 /* 178 */,
-=======
->>>>>>> master
 /* 179 */,
 /* 180 */,
 /* 181 */,
@@ -23495,15 +17881,46 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 190 */,
 /* 191 */,
 /* 192 */,
-/* 193 */,
+/* 193 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/search.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var request = __webpack_require__(/*! ./request.js */ 142);
+
+exports.fetchSearch = function (page, size, keyWord) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/goodslist/page",
+    method: 'POST',
+    data: {
+      page: page, size: size, keyWord: keyWord } });
+
+
+};
+
+/***/ }),
 /* 194 */,
-<<<<<<< HEAD
 /* 195 */,
-=======
-/* 195 */
-/*!**************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
-  \**************************************************************************************/
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */,
+/* 202 */,
+/* 203 */,
+/* 204 */,
+/* 205 */,
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */
+/*!**********************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/area-data/dist/index.esm.js ***!
+  \**********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27397,35 +21814,15 @@ var areaList = {
     820204: "圣方济各堂区" } };exports.areaList = areaList;
 
 /***/ }),
->>>>>>> master
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-<<<<<<< HEAD
-/* 201 */
-/*!**************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/wxcomponents/vant/toast/toast.js ***!
-  \**************************************************************************/
-=======
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */
-/*!*************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
-  \*************************************************************************/
->>>>>>> master
+/* 211 */
+/*!*********************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/toast/toast.js ***!
+  \*********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-<<<<<<< HEAD
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 202);
-=======
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 205);
->>>>>>> master
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _validator = __webpack_require__(/*! ../common/validator */ 212);
 var defaultOptions = {
   type: 'text',
   mask: false,
@@ -27493,17 +21890,10 @@ Toast.resetDefaultOptions = function () {
 Toast;exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 202 */
-/*!*******************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/wxcomponents/vant/common/validator.js ***!
-  \*******************************************************************************/
-=======
-/* 205 */
-/*!******************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
-  \******************************************************************************/
->>>>>>> master
+/* 212 */
+/*!**************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/wxcomponents/vant/common/validator.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27541,27 +21931,26 @@ function isVideoUrl(url) {
 }
 
 /***/ }),
-<<<<<<< HEAD
-/* 203 */,
-/* 204 */,
-/* 205 */,
-=======
->>>>>>> master
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */,
-/* 211 */,
-/* 212 */,
 /* 213 */,
-<<<<<<< HEAD
 /* 214 */,
-=======
-/* 214 */
-/*!*****************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/login.js ***!
-  \*****************************************************/
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */
+/*!*************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/login.js ***!
+  \*************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27645,53 +22034,38 @@ function h5login(tell, code) {
 }
 
 /***/ }),
->>>>>>> master
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-<<<<<<< HEAD
-/* 227 */
-/*!*******************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/detail.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 13);
-=======
-/* 227 */,
-/* 228 */,
-/* 229 */,
 /* 230 */,
 /* 231 */,
-/* 232 */
-/*!******************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/api/detail.js ***!
-  \******************************************************/
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */
+/*!**************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/api/detail.js ***!
+  \**************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 var request = __webpack_require__(/*! ./request.js */ 142);
->>>>>>> master
 
-// 获取详情数据
-exports.fetchDetailData = function (id) {
-  console.log('id', id);
-  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=".concat(id);
+exports.fetchDetailData = function () {
+  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=115";
   return request({
     url: url });
 
 };
-// 加入购物车
+
 exports.fetchAddCart = function (token, _id, number) {
   return request({
     method: "POST",
@@ -27704,63 +22078,19 @@ exports.fetchAddCart = function (token, _id, number) {
 
 
 };
-// 获取购物车
-exports.fetchGetCart = function (token) {
-  return request({
-    method: "POST",
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
-
-};
-
-// 收藏
-exports.fetchJionCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/add/collection?goods_id=".concat(id) });
-
-};
-
-// 取消收藏
-exports.fetchCancelCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/delete/collection?goods_id=".concat(id) });
-
-};
 
 /***/ }),
-<<<<<<< HEAD
-/* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
-  \*******************************************************************************************/
-=======
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27805,31 +22135,17 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-<<<<<<< HEAD
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */
-/*!*******************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
-  \*******************************************************************************************/
-=======
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */
-/*!******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
-  \******************************************************************************************/
->>>>>>> master
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */
+/*!**************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
+  \**************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -27948,28 +22264,6 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-<<<<<<< HEAD
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-=======
->>>>>>> master
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
 /* 263 */,
 /* 264 */,
 /* 265 */,
@@ -27979,78 +22273,12 @@ exports.fetchCancelCollect = function (token, id) {
 /* 269 */,
 /* 270 */,
 /* 271 */,
-<<<<<<< HEAD
-/* 272 */
-/*!********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
-  \********************************************************************************************/
-=======
 /* 272 */,
 /* 273 */,
 /* 274 */,
 /* 275 */,
 /* 276 */,
-/* 277 */
-/*!*******************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
-  \*******************************************************************************************/
->>>>>>> master
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 是否虚线
-    dashed: {
-      type: Boolean,
-      default: uni.$u.props.divider.dashed },
-
-    // 是否细线
-    hairline: {
-      type: Boolean,
-      default: uni.$u.props.divider.hairline },
-
-    // 是否以点替代文字，优先于text字段起作用
-    dot: {
-      type: Boolean,
-      default: uni.$u.props.divider.dot },
-
-    // 内容文本的位置，left-左边，center-中间，right-右边
-    textPosition: {
-      type: String,
-      default: uni.$u.props.divider.textPosition },
-
-    // 文本内容
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.divider.text },
-
-    // 文本大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.divider.textSize },
-
-    // 文本颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.divider.textColor },
-
-    // 线条颜色
-    lineColor: {
-      type: String,
-      default: uni.$u.props.divider.lineColor } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-<<<<<<< HEAD
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
 /* 277 */,
-=======
->>>>>>> master
 /* 278 */,
 /* 279 */,
 /* 280 */,
@@ -28069,79 +22297,12 @@ exports.fetchCancelCollect = function (token, id) {
 /* 293 */,
 /* 294 */,
 /* 295 */,
-<<<<<<< HEAD
 /* 296 */,
-=======
-/* 296 */
-/*!*******************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/store/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-throw new Error("Module build failed (from ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/index.js):\nError: ENOENT: no such file or directory, open 'C:\\Users\\11097\\Desktop\\mdmeimall\\store\\index.js'");
-
-/***/ }),
->>>>>>> master
 /* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
-/* 307 */,
-<<<<<<< HEAD
-/* 308 */
-/*!*********************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \*********************************************************************************************/
-=======
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */,
-/* 328 */,
-/* 329 */,
-/* 330 */,
-/* 331 */,
-/* 332 */,
-/* 333 */,
-/* 334 */,
-/* 335 */,
-/* 336 */,
-/* 337 */,
-/* 338 */,
-/* 339 */,
-/* 340 */,
-/* 341 */,
-/* 342 */,
-/* 343 */,
-/* 344 */,
-/* 345 */
-/*!********************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \********************************************************************************************/
->>>>>>> master
+/* 298 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \****************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -29314,7 +23475,67 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */
+/*!***************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否虚线
+    dashed: {
+      type: Boolean,
+      default: uni.$u.props.divider.dashed },
+
+    // 是否细线
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.divider.hairline },
+
+    // 是否以点替代文字，优先于text字段起作用
+    dot: {
+      type: Boolean,
+      default: uni.$u.props.divider.dot },
+
+    // 内容文本的位置，left-左边，center-中间，right-右边
+    textPosition: {
+      type: String,
+      default: uni.$u.props.divider.textPosition },
+
+    // 文本内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.divider.text },
+
+    // 文本大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.divider.textSize },
+
+    // 文本颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.divider.textColor },
+
+    // 线条颜色
+    lineColor: {
+      type: String,
+      default: uni.$u.props.divider.lineColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 307 */,
+/* 308 */,
 /* 309 */,
 /* 310 */,
 /* 311 */,
@@ -29341,245 +23562,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 332 */,
 /* 333 */,
 /* 334 */,
-/* 335 */
-/*!****************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/node_modules/cl-uni/utils/index.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.isArray = isArray;exports.isObject = isObject;exports.isFunction = isFunction;exports.isString = isString;exports.isNull = isNull;exports.isBoolean = isBoolean;exports.isNumber = isNumber;exports.isDecimal = isDecimal;exports.isPromise = isPromise;exports.isEmpty = isEmpty;exports.last = last;exports.firstUpperCase = firstUpperCase;exports.debounce = debounce;exports.compareValue = compareValue;exports.cloneDeep = cloneDeep;exports.deepMerge = deepMerge;exports.getCurrentPage = getCurrentPage;exports.parseRpx = parseRpx;exports.getParent = getParent;exports.getCurrentColor = getCurrentColor;exports.getUrlParam = getUrlParam;exports.orderBy = orderBy;exports.isDev = void 0; // 是否开发模式
-var isDev = "development" == "development";
-
-// 是否Array类型
-exports.isDev = isDev;function isArray(value) {
-  if (typeof Array.isArray === "function") {
-    return Array.isArray(value);
-  } else {
-    return Object.prototype.toString.call(value) === "[object Array]";
-  }
-}
-
-// 是否Object类型
-function isObject(value) {
-  return Object.prototype.toString.call(value) === "[object Object]";
-}
-
-// 是否Function类型
-function isFunction(value) {
-  return typeof value === "function";
-}
-
-// 是否String类型
-function isString(value) {
-  return typeof value === "string";
-}
-
-// 是否null类型
-function isNull(value) {
-  return !value && value !== 0;
-}
-
-// 是否Boolean类型
-function isBoolean(value) {
-  return typeof value === "boolean";
-}
-
-// 是否数字类型
-function isNumber(value) {
-  return typeof value === "number" && !isNaN(value);
-}
-
-// 是否小数
-function isDecimal(value) {
-  return String(value).length - String(value).indexOf(".") + 1;
-}
-
-// 是否Promise类型
-function isPromise(obj) {
-  obj !== null && (
-  typeof obj === "object" || typeof obj === "function") &&
-  typeof obj.then === "function";
-}
-
-// 是否为空
-function isEmpty(value) {
-  if (isArray(value)) {
-    return value.length === 0;
-  }
-
-  if (isObject(value)) {
-    return Object.keys(value).length === 0;
-  }
-
-  return value === "" || value === undefined || value === null;
-}
-
-// 取最后一个值
-function last(data) {
-  if (isArray(data) || isString(data)) {
-    return data[data.length - 1];
-  }
-}
-
-// 首字母大写
-function firstUpperCase(value) {
-  return value.replace(/\b(\w)(\w*)/g, function ($0, $1, $2) {
-    return $1.toUpperCase() + $2.toLowerCase();
-  });
-}
-
-// 防抖
-function debounce(fn, wait, immediate) {
-  var timer;
-  return function () {var _arguments = arguments,_this = this;
-    if (timer) clearTimeout(timer);
-    if (immediate) {
-      var callNow = !timer;
-      timer = setTimeout(function () {
-        timer = null;
-      }, wait);
-      if (callNow) {
-        fn.apply(this, arguments);
-      }
-    } else {
-      timer = setTimeout(function () {
-        fn.apply(_this, _arguments);
-      }, wait);
-    }
-  };
-}
-
-// 比较值
-function compareValue(a, b) {
-  return String(a) === String(b);
-}
-
-// 深拷贝
-function cloneDeep(v) {
-  if (isObject(v)) {
-    var d = {};
-
-    for (var k in v) {
-      if (v.hasOwnProperty && v.hasOwnProperty(k)) {
-        if (v[k] && typeof v[k] === "object") {
-          d[k] = cloneDeep(v[k]);
-        } else {
-          d[k] = v[k];
-        }
-      }
-    }
-
-    return d;
-  } else if (isArray(v)) {
-    return v.map(cloneDeep);
-  } else {
-    return v;
-  }
-}
-
-// 深度合并
-function deepMerge(a, b) {
-  var k;
-  for (k in b) {
-    a[k] =
-    a[k] && a[k].toString() === "[object Object]" ? deepMerge(a[k], b[k]) : a[k] = b[k];
-  }
-  return a;
-}
-
-// 获取当前页面信息
-function getCurrentPage() {var _last =
-  last(getCurrentPages()),route = _last.route,$page = _last.$page,options = _last.options,$route = _last.$route;
-
-  return {
-    path: "/".concat(route),
-    fullPath: $page.fullPath,
-
-    query: options };
-
-
-
-
-
-}
-
-/**
-   * 解析rpx
-   * @param {*} val
-   */
-function parseRpx(val) {
-  return isArray(val) ? val.map(parseRpx).join(" ") : isNumber(val) ? val + "rpx" : val;
-}
-
-/**
-   * 获取父级节点
-   * @param {*} name componentName
-   * @param {*} keys 保留的参数，避免 computed 非 H5 解析失败
-   */
-function getParent(name, keys) {
-  var parent = this.$parent;
-
-  while (parent) {
-    if (parent.$options.componentName !== name) {
-      parent = parent.$parent;
-    } else {
-      return keys.reduce(function (result, key) {
-        result[key] = parent[key];
-        return result;
-      }, {});
-    }
-  }
-
-  return null;
-}
-
-/**
-   * 获取当前颜色
-   *
-   * @param {*} { color, max, value }
-   */
-function getCurrentColor(_ref) {var color = _ref.color,max = _ref.max,value = _ref.value;
-  if (isString(color)) {
-    return color;
-  } else {
-    var colorArray = color.
-    map(function (item, index) {
-      if (isString(item)) {
-        return {
-          color: item,
-          value: (index + 1) * (max / color.length) };
-
-      }
-      return item;
-    }).
-    sort(function (a, b) {return a.value - b.value;});
-
-    for (var i = 0; i < colorArray.length; i++) {
-      if (colorArray[i].value >= value) {
-        return colorArray[i].color;
-      }
-    }
-
-    return colorArray[colorArray.length - 1].color;
-  }
-}
-
-// 获取地址栏参数
-function getUrlParam(name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-  var r = window.location.search.substr(1).match(reg);
-  if (r != null) return decodeURIComponent(r[2]);
-  return null;
-}
-
-// 根据某个字段排序
-function orderBy(list, key) {
-  return list.sort(function (a, b) {return a[key] - b[key];});
-}
-
-/***/ }),
+/* 335 */,
 /* 336 */,
 /* 337 */,
 /* 338 */,
@@ -29590,8 +23573,6 @@ function orderBy(list, key) {
 /* 343 */,
 /* 344 */,
 /* 345 */,
-=======
->>>>>>> master
 /* 346 */,
 /* 347 */,
 /* 348 */,
@@ -29608,12 +23589,6 @@ function orderBy(list, key) {
 /* 359 */,
 /* 360 */,
 /* 361 */,
-<<<<<<< HEAD
-/* 362 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
-  \*****************************************************************************************/
-=======
 /* 362 */,
 /* 363 */,
 /* 364 */,
@@ -29629,27 +23604,10 @@ function orderBy(list, key) {
 /* 374 */,
 /* 375 */,
 /* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */,
-/* 380 */,
-/* 381 */,
-/* 382 */,
-/* 383 */,
-/* 384 */,
-/* 385 */,
-/* 386 */,
-/* 387 */,
-/* 388 */,
-/* 389 */,
-/* 390 */,
-/* 391 */,
-/* 392 */,
-/* 393 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/* 377 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -29869,17 +23827,10 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-<<<<<<< HEAD
-/* 363 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
-  \*****************************************************************************************/
-=======
-/* 394 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/* 378 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -29973,31 +23924,17 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-<<<<<<< HEAD
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */,
-/* 371 */
-/*!*****************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
-  \*****************************************************************************************/
-=======
-/* 395 */,
-/* 396 */,
-/* 397 */,
-/* 398 */,
-/* 399 */,
-/* 400 */,
-/* 401 */,
-/* 402 */
-/*!****************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
-  \****************************************************************************************/
->>>>>>> master
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */
+/*!************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
+  \************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -30035,49 +23972,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-<<<<<<< HEAD
-/* 372 */,
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */,
-/* 380 */,
-/* 381 */,
-/* 382 */,
-/* 383 */,
-/* 384 */,
-/* 385 */,
-/* 386 */
-/*!****************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/node_modules/cl-uni/mixins/form.js ***!
-  \****************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 335);var _default =
-
-{
-  computed: {
-    $form: function $form() {
-      return _utils.getParent.call(this, "ClForm", [
-      "labelWidth",
-      "labelPosition",
-      "showMessage",
-      "model",
-      "validateOnValueChange",
-      "disabled"]);
-
-    },
-
-    isDisabled: function isDisabled() {
-      return this.$form ? this.$form.disabled || this.disabled : this.disabled;
-    } } };exports.default = _default;
-
-/***/ }),
 /* 387 */,
 /* 388 */,
 /* 389 */,
@@ -30088,43 +23982,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 394 */,
 /* 395 */,
 /* 396 */,
-/* 397 */
-/*!*****************************************************************************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \*****************************************************************************************************************/
-=======
-/* 403 */,
-/* 404 */,
-/* 405 */,
-/* 406 */,
-/* 407 */,
-/* 408 */,
-/* 409 */,
-/* 410 */,
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */,
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */,
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */
-/*!****************************************************************************************************************!*\
-  !*** C:/Users/11097/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
-  \****************************************************************************************************************/
->>>>>>> master
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */
+/*!************************************************************************************************************************!*\
+  !*** C:/Users/Administrator/Desktop/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
+  \************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

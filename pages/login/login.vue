@@ -1,27 +1,14 @@
 <template>
 	<view>
-		
-		<image src="../../static/logo.png" mode="" class="logo"></image>
-		
-		<view class="jianjie">
-			
-			<view>登录后将获得以下权限</view>
-			
-			<text> • 获得你的公开信息(昵称,头像等)</text>
-			
-		</view>
-		
 		<button class="loginBtn" @click="newloginBtn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">微信登录</button>
-
-
-		<cl-toast ref="toast"></cl-toast>
-
+		<!-- 开启提示框 -->
+		<van-toast id="van-toast" />
 	</view>
 </template>
 
 <script>
 	import {autologin,newlogin,phoneNumber} from "api/login.js"
-
+	import Toast from 'wxcomponents/vant/toast/toast.js';
 	export default {
 		data() {
 			return {
@@ -30,52 +17,24 @@
 			};
 		},
 		methods:{
-		
 			// 第一次登录点击的按钮(为了录入用户的基本信息)
 			newloginBtn(){
+				let _this = this;
+				
+				// 获取用户基本信息
 				wx.getUserProfile({
-					desc:"获取昵称等基本信息",
+					desc:"有用的",
 					async success(res){
-						console.log(res)
-						let {code} = await newlogin(res)
-						if(code == 20000){
-
-							
-						wx.login({
-							async success(res){
-								// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-								delete res.clientInfo	
-								if(res.code){
-									// 登录获取token
-									autologin(res,true)
 						
-								}
-								
-								
-							}
-						})
-
+						let {code} = await newlogin(res,_this.token)
+						if(code == 20000){
+							wx.setStorageSync("token",_this.token)
+							wx.setStorageSync("userInfo",_this.userInfo)
+							Toast("登录成功")
 						}
 						
 					}
 				})
-				wx.login({
-				async success(res){
-					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-					delete res.clientInfo	
-					if(res.code){
-						// 登录获取token
-						autologin(res,true)
-
-						
-					}
-		
-					
-				}
-			})
-		
-			
-		
 				 
 				
 			},
@@ -83,58 +42,49 @@
 			async getPhoneNumber(e){
 				if(e.detail.code){
 					let a = await phoneNumber(e.detail.code,this.token)
-					this.$refs["toast"].open({
-					          message: "绑定手机号成功",
-							  position: "middle",
-							  icon: "success",
-					        });
+					Toast("绑定手机号成功")
 				}
 			}
 		},
-		
-
-
+		mounted(){
+			let _this = this;
+			wx.login({
+				async success(res){
+					// 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
+					delete res.clientInfo	
+					if(res.code){
+						// 登录获取token
+						let {result} = await autologin(res)
+						
+						// 证明是第一次登录			
+						if(result.userInfo.nickname == null){
+							Toast("第一次登录")
+							_this.token = result.token
+							_this.userInfo = result.userInfo					
+						}else{
+							Toast("不是第一次登录")
+							wx.setStorageSync("token",result.token)
+							wx.setStorageSync("userInfo",result.userInfo)
+						}
+						
+						
+					}
+					
 				}
-			
+			})
+		}
 		
-
-		
-	
+	}
 </script>
 
 <style lang="scss">
-	.logo{
-		display: block;
-		width: 100px;
-		height: 100px;
-		position: relative;
-		top: 50px;
-		margin: auto;
-	}
-	
-	.jianjie{
-		width: 80%;
-		border-top: 2px solid #eeeeee;
-		margin: auto;
-		margin-top: 100px;
-		view{
-			margin-top: 15px;
-		}
-		text{
-			display: inline-block;
-			margin-top: 15px;
-			color: #999999;
-			font-size: 14px;
-		}
-	}
 	
 	.loginBtn{
 		width: 80%;
 		color: white;
-		font-size: 15px;
-		background-color: #2b2e3d;
+		background-color: red;
 		border-radius: 20px;
-		margin-top: 35px;
+		margin-top: 200px;
 	}
 
 </style>
