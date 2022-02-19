@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "cl-toast": "/node-modules/cl-uni/components/cl-toast/cl-toast"
+  }
+}
