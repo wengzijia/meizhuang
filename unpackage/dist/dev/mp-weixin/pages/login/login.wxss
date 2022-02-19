@@ -24,11 +24,35 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.logo {
+  display: block;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: 50px;
+  margin: auto;
+}
+.jianjie {
+  width: 80%;
+  border-top: 2px solid #eeeeee;
+  margin: auto;
+  margin-top: 100px;
+}
+.jianjie view {
+  margin-top: 15px;
+}
+.jianjie text {
+  display: inline-block;
+  margin-top: 15px;
+  color: #999999;
+  font-size: 14px;
+}
 .loginBtn {
   width: 80%;
   color: white;
-  background-color: red;
+  font-size: 15px;
+  background-color: #2b2e3d;
   border-radius: 20px;
-  margin-top: 200px;
+  margin-top: 35px;
 }
 

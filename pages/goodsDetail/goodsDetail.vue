@@ -723,7 +723,7 @@
 			}
 			.end{
 					text-align: center; 
-				    padding-bottom: 90px;
+				    padding-bottom: 140rpx;
 					color: #C0C0C0;
 			}
 		}
