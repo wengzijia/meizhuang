@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 <view class="tab data-v-ea334bf8"><block wx:for="{{searchData}}" wx:for-item="item" wx:for-index="index" wx:key="index"><block class="data-v-ea334bf8"><navigator open-type="navigate" url="{{'/pages/goodsDetail/goodsDetail?id='+item.id}}" class="data-v-ea334bf8"><goods vue-id="{{'5c3530fc-1-'+index}}" goodsList="{{item}}" class="data-v-ea334bf8" bind:__l="__l"></goods></navigator></block></block></view>
+=======
+<view class="tab data-v-ea334bf8"><block wx:for="{{searchData}}" wx:for-item="item" wx:for-index="index"><block class="data-v-ea334bf8"><navigator open-type="navigate" url="{{'/pages/goodsDetail/goodsDetail?id='+item.id}}" class="data-v-ea334bf8"><goods vue-id="{{'5c3530fc-1-'+index}}" goodsList="{{item}}" class="data-v-ea334bf8" bind:__l="__l"></goods></navigator></block></block></view>
+>>>>>>> master
