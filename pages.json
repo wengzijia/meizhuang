@@ -165,11 +165,6 @@
 
 		"backgroundColor": "#F8F8F8",
 		"usingComponents": {
-			// #ifdef MP-WEIXIN
-			"van-area": "wxcomponents/vant/area/index",
-			"van-toast": "wxcomponents/vant/toast/index",
-			"van-field": "wxcomponents/vant/field/index"
-			// #endif
 		}
 
 	}

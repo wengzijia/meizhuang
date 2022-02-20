@@ -1,87 +1,33 @@
 {
   "description": "项目配置文件。",
   "packOptions": {
-<<<<<<< HEAD
-    "ignore": [],
-    "include": []
-=======
     "ignore": []
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
   },
   "setting": {
     "urlCheck": false,
-    "es6": true,
-    "enhance": false,
-    "postcss": true,
-    "preloadBackgroundData": false,
     "minified": true,
-    "newFeature": false,
-    "coverView": true,
-    "nodeModules": false,
-    "autoAudits": false,
-    "showShadowRootInWxmlPanel": true,
-    "scopeDataCheck": false,
-    "uglifyFileName": false,
-    "checkInvalidKey": true,
-    "checkSiteMap": true,
-    "uploadWithSourceMap": true,
-    "compileHotReLoad": false,
-    "lazyloadPlaceholderEnable": false,
-    "useMultiFrameRuntime": true,
-    "babelSetting": {
-      "ignore": [],
-      "disablePlugins": [],
-      "outputPath": ""
-    },
-<<<<<<< HEAD
-=======
-    "useIsolateContext": true,
-    "userConfirmedBundleSwitch": false,
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
-    "packNpmManually": false,
-    "packNpmRelationList": [],
-    "minifyWXSS": true,
-    "disableUseStrict": false,
-    "showES6CompileOption": false,
-    "useCompilerPlugins": false,
-<<<<<<< HEAD
-    "minifyWXML": true
-  },
-  "compileType": "miniprogram",
-  "libVersion": "2.22.0",
-=======
-    "ignoreUploadUnusedFiles": true
+    "es6": false
   },
   "compileType": "miniprogram",
   "libVersion": "",
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
   "appid": "wx462bc4b528a13c96",
   "projectname": "zlemei",
   "condition": {
     "search": {
+      "current": -1,
       "list": []
     },
     "conversation": {
+      "current": -1,
       "list": []
     },
     "game": {
+      "current": -1,
       "list": []
     },
     "miniprogram": {
+      "current": -1,
       "list": []
     }
-<<<<<<< HEAD
-  },
-  "scripts": {},
-  "watchOptions": {
-    "ignore": []
-  },
-  "debugOptions": {
-    "hidedInDevtools": []
-  },
-  "staticServerOptions": {
-    "servePath": ""
-=======
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
   }
 }

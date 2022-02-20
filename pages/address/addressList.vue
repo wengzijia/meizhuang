@@ -33,13 +33,8 @@
 </template>
 
 <script>
-<<<<<<< HEAD
 import {getAddress} from "api/address.js"
 
-
-=======
-	import Toast from 'wxcomponents/vant/toast/toast.js';
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
 	export default {
 		data() {
 			return {

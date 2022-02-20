@@ -8647,997 +8647,9 @@ function resolveLocaleChain(locale) {
 /* 6 */,
 /* 7 */,
 /* 8 */,
-/* 9 */
-/*!**********************************************************!*\
-  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(/*! regenerator-runtime */ 10);
-
-/***/ }),
-/* 10 */
-/*!************************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-// This method of obtaining a reference to the global object needs to be
-// kept identical to the way it is obtained in runtime.js
-var g = (function() {
-  return this || (typeof self === "object" && self);
-})() || Function("return this")();
-
-// Use `getOwnPropertyNames` because not all browsers support calling
-// `hasOwnProperty` on the global `self` object in a worker. See #183.
-var hadRuntime = g.regeneratorRuntime &&
-  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
-
-// Save the old regeneratorRuntime in case it needs to be restored later.
-var oldRuntime = hadRuntime && g.regeneratorRuntime;
-
-// Force reevalutation of runtime.js.
-g.regeneratorRuntime = undefined;
-
-module.exports = __webpack_require__(/*! ./runtime */ 11);
-
-if (hadRuntime) {
-  // Restore the original runtime.
-  g.regeneratorRuntime = oldRuntime;
-} else {
-  // Remove the global property added by runtime.js.
-  try {
-    delete g.regeneratorRuntime;
-  } catch(e) {
-    g.regeneratorRuntime = undefined;
-  }
-}
-
-
-/***/ }),
+/* 9 */,
+/* 10 */,
 /* 11 */
-/*!*****************************************************!*\
-  !*** ./node_modules/regenerator-runtime/runtime.js ***!
-  \*****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/**
- * Copyright (c) 2014-present, Facebook, Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-!(function(global) {
-  "use strict";
-
-  var Op = Object.prototype;
-  var hasOwn = Op.hasOwnProperty;
-  var undefined; // More compressible than void 0.
-  var $Symbol = typeof Symbol === "function" ? Symbol : {};
-  var iteratorSymbol = $Symbol.iterator || "@@iterator";
-  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
-  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
-
-  var inModule = typeof module === "object";
-  var runtime = global.regeneratorRuntime;
-  if (runtime) {
-    if (inModule) {
-      // If regeneratorRuntime is defined globally and we're in a module,
-      // make the exports object identical to regeneratorRuntime.
-      module.exports = runtime;
-    }
-    // Don't bother evaluating the rest of this file if the runtime was
-    // already defined globally.
-    return;
-  }
-
-  // Define the runtime globally (as expected by generated code) as either
-  // module.exports (if we're in a module) or a new, empty object.
-  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
-
-  function wrap(innerFn, outerFn, self, tryLocsList) {
-    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
-    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
-    var generator = Object.create(protoGenerator.prototype);
-    var context = new Context(tryLocsList || []);
-
-    // The ._invoke method unifies the implementations of the .next,
-    // .throw, and .return methods.
-    generator._invoke = makeInvokeMethod(innerFn, self, context);
-
-    return generator;
-  }
-  runtime.wrap = wrap;
-
-  // Try/catch helper to minimize deoptimizations. Returns a completion
-  // record like context.tryEntries[i].completion. This interface could
-  // have been (and was previously) designed to take a closure to be
-  // invoked without arguments, but in all the cases we care about we
-  // already have an existing method we want to call, so there's no need
-  // to create a new function object. We can even get away with assuming
-  // the method takes exactly one argument, since that happens to be true
-  // in every case, so we don't have to touch the arguments object. The
-  // only additional allocation required is the completion record, which
-  // has a stable shape and so hopefully should be cheap to allocate.
-  function tryCatch(fn, obj, arg) {
-    try {
-      return { type: "normal", arg: fn.call(obj, arg) };
-    } catch (err) {
-      return { type: "throw", arg: err };
-    }
-  }
-
-  var GenStateSuspendedStart = "suspendedStart";
-  var GenStateSuspendedYield = "suspendedYield";
-  var GenStateExecuting = "executing";
-  var GenStateCompleted = "completed";
-
-  // Returning this object from the innerFn has the same effect as
-  // breaking out of the dispatch switch statement.
-  var ContinueSentinel = {};
-
-  // Dummy constructor functions that we use as the .constructor and
-  // .constructor.prototype properties for functions that return Generator
-  // objects. For full spec compliance, you may wish to configure your
-  // minifier not to mangle the names of these two functions.
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-
-  // This is a polyfill for %IteratorPrototype% for environments that
-  // don't natively support it.
-  var IteratorPrototype = {};
-  IteratorPrototype[iteratorSymbol] = function () {
-    return this;
-  };
-
-  var getProto = Object.getPrototypeOf;
-  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
-  if (NativeIteratorPrototype &&
-      NativeIteratorPrototype !== Op &&
-      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
-    // This environment has a native %IteratorPrototype%; use it instead
-    // of the polyfill.
-    IteratorPrototype = NativeIteratorPrototype;
-  }
-
-  var Gp = GeneratorFunctionPrototype.prototype =
-    Generator.prototype = Object.create(IteratorPrototype);
-  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
-  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
-
-  // Helper for defining the .next, .throw, and .return methods of the
-  // Iterator interface in terms of a single ._invoke method.
-  function defineIteratorMethods(prototype) {
-    ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
-        return this._invoke(method, arg);
-      };
-    });
-  }
-
-  runtime.isGeneratorFunction = function(genFun) {
-    var ctor = typeof genFun === "function" && genFun.constructor;
-    return ctor
-      ? ctor === GeneratorFunction ||
-        // For the native GeneratorFunction constructor, the best we can
-        // do is to check its .name property.
-        (ctor.displayName || ctor.name) === "GeneratorFunction"
-      : false;
-  };
-
-  runtime.mark = function(genFun) {
-    if (Object.setPrototypeOf) {
-      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
-    } else {
-      genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
-    }
-    genFun.prototype = Object.create(Gp);
-    return genFun;
-  };
-
-  // Within the body of any async function, `await x` is transformed to
-  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-  // `hasOwn.call(value, "__await")` to determine if the yielded value is
-  // meant to be awaited.
-  runtime.awrap = function(arg) {
-    return { __await: arg };
-  };
-
-  function AsyncIterator(generator) {
-    function invoke(method, arg, resolve, reject) {
-      var record = tryCatch(generator[method], generator, arg);
-      if (record.type === "throw") {
-        reject(record.arg);
-      } else {
-        var result = record.arg;
-        var value = result.value;
-        if (value &&
-            typeof value === "object" &&
-            hasOwn.call(value, "__await")) {
-          return Promise.resolve(value.__await).then(function(value) {
-            invoke("next", value, resolve, reject);
-          }, function(err) {
-            invoke("throw", err, resolve, reject);
-          });
-        }
-
-        return Promise.resolve(value).then(function(unwrapped) {
-          // When a yielded Promise is resolved, its final value becomes
-          // the .value of the Promise<{value,done}> result for the
-          // current iteration.
-          result.value = unwrapped;
-          resolve(result);
-        }, function(error) {
-          // If a rejected Promise was yielded, throw the rejection back
-          // into the async generator function so it can be handled there.
-          return invoke("throw", error, resolve, reject);
-        });
-      }
-    }
-
-    var previousPromise;
-
-    function enqueue(method, arg) {
-      function callInvokeWithMethodAndArg() {
-        return new Promise(function(resolve, reject) {
-          invoke(method, arg, resolve, reject);
-        });
-      }
-
-      return previousPromise =
-        // If enqueue has been called before, then we want to wait until
-        // all previous Promises have been resolved before calling invoke,
-        // so that results are always delivered in the correct order. If
-        // enqueue has not been called before, then it is important to
-        // call invoke immediately, without waiting on a callback to fire,
-        // so that the async generator function has the opportunity to do
-        // any necessary setup in a predictable way. This predictability
-        // is why the Promise constructor synchronously invokes its
-        // executor callback, and why async functions synchronously
-        // execute code before the first await. Since we implement simple
-        // async functions in terms of async generators, it is especially
-        // important to get this right, even though it requires care.
-        previousPromise ? previousPromise.then(
-          callInvokeWithMethodAndArg,
-          // Avoid propagating failures to Promises returned by later
-          // invocations of the iterator.
-          callInvokeWithMethodAndArg
-        ) : callInvokeWithMethodAndArg();
-    }
-
-    // Define the unified helper method that is used to implement .next,
-    // .throw, and .return (see defineIteratorMethods).
-    this._invoke = enqueue;
-  }
-
-  defineIteratorMethods(AsyncIterator.prototype);
-  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
-    return this;
-  };
-  runtime.AsyncIterator = AsyncIterator;
-
-  // Note that simple async functions are implemented on top of
-  // AsyncIterator objects; they just return a Promise for the value of
-  // the final result produced by the iterator.
-  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
-    var iter = new AsyncIterator(
-      wrap(innerFn, outerFn, self, tryLocsList)
-    );
-
-    return runtime.isGeneratorFunction(outerFn)
-      ? iter // If outerFn is a generator, return the full iterator.
-      : iter.next().then(function(result) {
-          return result.done ? result.value : iter.next();
-        });
-  };
-
-  function makeInvokeMethod(innerFn, self, context) {
-    var state = GenStateSuspendedStart;
-
-    return function invoke(method, arg) {
-      if (state === GenStateExecuting) {
-        throw new Error("Generator is already running");
-      }
-
-      if (state === GenStateCompleted) {
-        if (method === "throw") {
-          throw arg;
-        }
-
-        // Be forgiving, per 25.3.3.3.3 of the spec:
-        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
-        return doneResult();
-      }
-
-      context.method = method;
-      context.arg = arg;
-
-      while (true) {
-        var delegate = context.delegate;
-        if (delegate) {
-          var delegateResult = maybeInvokeDelegate(delegate, context);
-          if (delegateResult) {
-            if (delegateResult === ContinueSentinel) continue;
-            return delegateResult;
-          }
-        }
-
-        if (context.method === "next") {
-          // Setting context._sent for legacy support of Babel's
-          // function.sent implementation.
-          context.sent = context._sent = context.arg;
-
-        } else if (context.method === "throw") {
-          if (state === GenStateSuspendedStart) {
-            state = GenStateCompleted;
-            throw context.arg;
-          }
-
-          context.dispatchException(context.arg);
-
-        } else if (context.method === "return") {
-          context.abrupt("return", context.arg);
-        }
-
-        state = GenStateExecuting;
-
-        var record = tryCatch(innerFn, self, context);
-        if (record.type === "normal") {
-          // If an exception is thrown from innerFn, we leave state ===
-          // GenStateExecuting and loop back for another invocation.
-          state = context.done
-            ? GenStateCompleted
-            : GenStateSuspendedYield;
-
-          if (record.arg === ContinueSentinel) {
-            continue;
-          }
-
-          return {
-            value: record.arg,
-            done: context.done
-          };
-
-        } else if (record.type === "throw") {
-          state = GenStateCompleted;
-          // Dispatch the exception by looping back around to the
-          // context.dispatchException(context.arg) call above.
-          context.method = "throw";
-          context.arg = record.arg;
-        }
-      }
-    };
-  }
-
-  // Call delegate.iterator[context.method](context.arg) and handle the
-  // result, either by returning a { value, done } result from the
-  // delegate iterator, or by modifying context.method and context.arg,
-  // setting context.delegate to null, and returning the ContinueSentinel.
-  function maybeInvokeDelegate(delegate, context) {
-    var method = delegate.iterator[context.method];
-    if (method === undefined) {
-      // A .throw or .return when the delegate iterator has no .throw
-      // method always terminates the yield* loop.
-      context.delegate = null;
-
-      if (context.method === "throw") {
-        if (delegate.iterator.return) {
-          // If the delegate iterator has a return method, give it a
-          // chance to clean up.
-          context.method = "return";
-          context.arg = undefined;
-          maybeInvokeDelegate(delegate, context);
-
-          if (context.method === "throw") {
-            // If maybeInvokeDelegate(context) changed context.method from
-            // "return" to "throw", let that override the TypeError below.
-            return ContinueSentinel;
-          }
-        }
-
-        context.method = "throw";
-        context.arg = new TypeError(
-          "The iterator does not provide a 'throw' method");
-      }
-
-      return ContinueSentinel;
-    }
-
-    var record = tryCatch(method, delegate.iterator, context.arg);
-
-    if (record.type === "throw") {
-      context.method = "throw";
-      context.arg = record.arg;
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    var info = record.arg;
-
-    if (! info) {
-      context.method = "throw";
-      context.arg = new TypeError("iterator result is not an object");
-      context.delegate = null;
-      return ContinueSentinel;
-    }
-
-    if (info.done) {
-      // Assign the result of the finished delegate to the temporary
-      // variable specified by delegate.resultName (see delegateYield).
-      context[delegate.resultName] = info.value;
-
-      // Resume execution at the desired location (see delegateYield).
-      context.next = delegate.nextLoc;
-
-      // If context.method was "throw" but the delegate handled the
-      // exception, let the outer generator proceed normally. If
-      // context.method was "next", forget context.arg since it has been
-      // "consumed" by the delegate iterator. If context.method was
-      // "return", allow the original .return call to continue in the
-      // outer generator.
-      if (context.method !== "return") {
-        context.method = "next";
-        context.arg = undefined;
-      }
-
-    } else {
-      // Re-yield the result returned by the delegate method.
-      return info;
-    }
-
-    // The delegate iterator is finished, so forget it and continue with
-    // the outer generator.
-    context.delegate = null;
-    return ContinueSentinel;
-  }
-
-  // Define Generator.prototype.{next,throw,return} in terms of the
-  // unified ._invoke helper method.
-  defineIteratorMethods(Gp);
-
-  Gp[toStringTagSymbol] = "Generator";
-
-  // A Generator should always return itself as the iterator object when the
-  // @@iterator function is called on it. Some browsers' implementations of the
-  // iterator prototype chain incorrectly implement this, causing the Generator
-  // object to not be returned from this call. This ensures that doesn't happen.
-  // See https://github.com/facebook/regenerator/issues/274 for more details.
-  Gp[iteratorSymbol] = function() {
-    return this;
-  };
-
-  Gp.toString = function() {
-    return "[object Generator]";
-  };
-
-  function pushTryEntry(locs) {
-    var entry = { tryLoc: locs[0] };
-
-    if (1 in locs) {
-      entry.catchLoc = locs[1];
-    }
-
-    if (2 in locs) {
-      entry.finallyLoc = locs[2];
-      entry.afterLoc = locs[3];
-    }
-
-    this.tryEntries.push(entry);
-  }
-
-  function resetTryEntry(entry) {
-    var record = entry.completion || {};
-    record.type = "normal";
-    delete record.arg;
-    entry.completion = record;
-  }
-
-  function Context(tryLocsList) {
-    // The root entry object (effectively a try statement without a catch
-    // or a finally block) gives us a place to store values thrown from
-    // locations where there is no enclosing try statement.
-    this.tryEntries = [{ tryLoc: "root" }];
-    tryLocsList.forEach(pushTryEntry, this);
-    this.reset(true);
-  }
-
-  runtime.keys = function(object) {
-    var keys = [];
-    for (var key in object) {
-      keys.push(key);
-    }
-    keys.reverse();
-
-    // Rather than returning an object with a next method, we keep
-    // things simple and return the next function itself.
-    return function next() {
-      while (keys.length) {
-        var key = keys.pop();
-        if (key in object) {
-          next.value = key;
-          next.done = false;
-          return next;
-        }
-      }
-
-      // To avoid creating an additional object, we just hang the .value
-      // and .done properties off the next function object itself. This
-      // also ensures that the minifier will not anonymize the function.
-      next.done = true;
-      return next;
-    };
-  };
-
-  function values(iterable) {
-    if (iterable) {
-      var iteratorMethod = iterable[iteratorSymbol];
-      if (iteratorMethod) {
-        return iteratorMethod.call(iterable);
-      }
-
-      if (typeof iterable.next === "function") {
-        return iterable;
-      }
-
-      if (!isNaN(iterable.length)) {
-        var i = -1, next = function next() {
-          while (++i < iterable.length) {
-            if (hasOwn.call(iterable, i)) {
-              next.value = iterable[i];
-              next.done = false;
-              return next;
-            }
-          }
-
-          next.value = undefined;
-          next.done = true;
-
-          return next;
-        };
-
-        return next.next = next;
-      }
-    }
-
-    // Return an iterator with no values.
-    return { next: doneResult };
-  }
-  runtime.values = values;
-
-  function doneResult() {
-    return { value: undefined, done: true };
-  }
-
-  Context.prototype = {
-    constructor: Context,
-
-    reset: function(skipTempReset) {
-      this.prev = 0;
-      this.next = 0;
-      // Resetting context._sent for legacy support of Babel's
-      // function.sent implementation.
-      this.sent = this._sent = undefined;
-      this.done = false;
-      this.delegate = null;
-
-      this.method = "next";
-      this.arg = undefined;
-
-      this.tryEntries.forEach(resetTryEntry);
-
-      if (!skipTempReset) {
-        for (var name in this) {
-          // Not sure about the optimal order of these conditions:
-          if (name.charAt(0) === "t" &&
-              hasOwn.call(this, name) &&
-              !isNaN(+name.slice(1))) {
-            this[name] = undefined;
-          }
-        }
-      }
-    },
-
-    stop: function() {
-      this.done = true;
-
-      var rootEntry = this.tryEntries[0];
-      var rootRecord = rootEntry.completion;
-      if (rootRecord.type === "throw") {
-        throw rootRecord.arg;
-      }
-
-      return this.rval;
-    },
-
-    dispatchException: function(exception) {
-      if (this.done) {
-        throw exception;
-      }
-
-      var context = this;
-      function handle(loc, caught) {
-        record.type = "throw";
-        record.arg = exception;
-        context.next = loc;
-
-        if (caught) {
-          // If the dispatched exception was caught by a catch block,
-          // then let that catch block handle the exception normally.
-          context.method = "next";
-          context.arg = undefined;
-        }
-
-        return !! caught;
-      }
-
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        var record = entry.completion;
-
-        if (entry.tryLoc === "root") {
-          // Exception thrown outside of any try block that could handle
-          // it, so set the completion value of the entire function to
-          // throw the exception.
-          return handle("end");
-        }
-
-        if (entry.tryLoc <= this.prev) {
-          var hasCatch = hasOwn.call(entry, "catchLoc");
-          var hasFinally = hasOwn.call(entry, "finallyLoc");
-
-          if (hasCatch && hasFinally) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            } else if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else if (hasCatch) {
-            if (this.prev < entry.catchLoc) {
-              return handle(entry.catchLoc, true);
-            }
-
-          } else if (hasFinally) {
-            if (this.prev < entry.finallyLoc) {
-              return handle(entry.finallyLoc);
-            }
-
-          } else {
-            throw new Error("try statement without catch or finally");
-          }
-        }
-      }
-    },
-
-    abrupt: function(type, arg) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc <= this.prev &&
-            hasOwn.call(entry, "finallyLoc") &&
-            this.prev < entry.finallyLoc) {
-          var finallyEntry = entry;
-          break;
-        }
-      }
-
-      if (finallyEntry &&
-          (type === "break" ||
-           type === "continue") &&
-          finallyEntry.tryLoc <= arg &&
-          arg <= finallyEntry.finallyLoc) {
-        // Ignore the finally entry if control is not jumping to a
-        // location outside the try/catch block.
-        finallyEntry = null;
-      }
-
-      var record = finallyEntry ? finallyEntry.completion : {};
-      record.type = type;
-      record.arg = arg;
-
-      if (finallyEntry) {
-        this.method = "next";
-        this.next = finallyEntry.finallyLoc;
-        return ContinueSentinel;
-      }
-
-      return this.complete(record);
-    },
-
-    complete: function(record, afterLoc) {
-      if (record.type === "throw") {
-        throw record.arg;
-      }
-
-      if (record.type === "break" ||
-          record.type === "continue") {
-        this.next = record.arg;
-      } else if (record.type === "return") {
-        this.rval = this.arg = record.arg;
-        this.method = "return";
-        this.next = "end";
-      } else if (record.type === "normal" && afterLoc) {
-        this.next = afterLoc;
-      }
-
-      return ContinueSentinel;
-    },
-
-    finish: function(finallyLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.finallyLoc === finallyLoc) {
-          this.complete(entry.completion, entry.afterLoc);
-          resetTryEntry(entry);
-          return ContinueSentinel;
-        }
-      }
-    },
-
-    "catch": function(tryLoc) {
-      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
-        var entry = this.tryEntries[i];
-        if (entry.tryLoc === tryLoc) {
-          var record = entry.completion;
-          if (record.type === "throw") {
-            var thrown = record.arg;
-            resetTryEntry(entry);
-          }
-          return thrown;
-        }
-      }
-
-      // The context.catch method must only be called with a location
-      // argument that corresponds to a known catch block.
-      throw new Error("illegal catch attempt");
-    },
-
-    delegateYield: function(iterable, resultName, nextLoc) {
-      this.delegate = {
-        iterator: values(iterable),
-        resultName: resultName,
-        nextLoc: nextLoc
-      };
-
-      if (this.method === "next") {
-        // Deliberately forget the last sent value so that we don't
-        // accidentally pass it on to the delegate.
-        this.arg = undefined;
-      }
-
-      return ContinueSentinel;
-    }
-  };
-})(
-  // In sloppy mode, unbound `this` refers to the global object, fallback to
-  // Function constructor if we're in global strict mode. That is sadly a form
-  // of indirect eval which violates Content Security Policy.
-  (function() {
-    return this || (typeof self === "object" && self);
-  })() || Function("return this")()
-);
-
-
-/***/ }),
-/* 12 */
-/*!******************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/login.js ***!
-  \******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 13);
-
-// 自动登录 (用来获取token)
-function
-autologin(_x) {return _autologin.apply(this, arguments);}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 第一次登录 (录入用户基本信息)
-function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 10;break;}return _context2.abrupt("return");case 10:if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
-              // success(e){
-              // console.log(e.authSetting.scope.userInfo)
-              // if(!e.authSetting.scope.userInfo){
-              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return newlogin(res);case 2:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
-                              // wx.setStorageSync("userInfo",_this.userInfo)
-                            }case 5:case "end":return _context.stop();}}}, _callee);}))();} }); // }
-              // }
-              // })
-              // 		
-            }case 11:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
-}
-
-// 用户手机号
-
-function phoneNumber(code, token) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
-    method: 'POST',
-    header: {
-      Authorization: token },
-
-    data: { code: code } });
-
-
-
-}
-
-
-
-
-// h5
-
-// 获取图形验证码
-function captcha() {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
-    method: 'get' });
-
-
-}
-// 校验图形验证码
-function checkImgYzm(tell, captchaId, verifyCode) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
-    method: 'post',
-    data: {
-      tell: tell,
-      captchaId: captchaId,
-      verifyCode: verifyCode } });
-
-
-
-}
-// 登录
-function h5login(tell, code) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login",
-    method: 'post',
-    data: { tell: tell, code: code } });
-
-
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 13 */
-/*!********************************************************!*\
-  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/request.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
-  return new Promise(function (reslove, reject) {
-    uni.showLoading({
-      title: 'loading...' });
-
-    var httpRequest = _objectSpread(_objectSpread({},
-    options), {}, {
-      success: function success(res) {
-        reslove(res.data);
-      },
-      fail: function fail(err) {
-        reject(err);
-      },
-      complete: function complete(res) {
-        uni.hideLoading();var _res$data =
-
-
-
-        res.data,code = _res$data.code,message = _res$data.message;
-        if (code === 10004 || code === 10005) {
-          uni.showToast({
-            title: message });
-
-          uni.redirectTo({
-
-            url: '../../pages/login/login' });
-
-
-
-
-
-        }
-      } });
-
-    var reg = /\/user\//;
-    var result = reg.test(options.url);
-    // 需要权限
-    if (result) {
-      var token = uni.getStorageSync('token');
-      if (token === '') {
-        uni.redirectTo({
-
-          url: '../../pages/login/login' });
-
-
-
-
-
-        return;
-      }
-      httpRequest.header = {
-        Authorization: token };
-
-      uni.request(httpRequest);
-    } else {
-      uni.request(httpRequest);
-    }
-
-  });
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 14 */,
-/* 15 */,
-/* 16 */
 /*!**********************************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
   \**********************************************************************************************************/
@@ -9765,9 +8777,7 @@ function normalizeComponent (
 
 
 /***/ }),
-/* 17 */,
-/* 18 */,
-/* 19 */
+/* 12 */
 /*!***********************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/index.js ***!
   \***********************************************************************/
@@ -9781,36 +8791,36 @@ function normalizeComponent (
 
 
 
-var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 20));
+var _mixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mixin.js */ 13));
 
-var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 21));
+var _mpMixin = _interopRequireDefault(__webpack_require__(/*! ./libs/mixin/mpMixin.js */ 14));
 
-var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 22));
-
-
-var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 40));
-
-var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 41));
+var _luchRequest = _interopRequireDefault(__webpack_require__(/*! ./libs/luch-request */ 15));
 
 
-var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 42));
+var _route = _interopRequireDefault(__webpack_require__(/*! ./libs/util/route.js */ 33));
 
-var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 43));
-
-var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 44));
-
-var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 45));
+var _colorGradient = _interopRequireDefault(__webpack_require__(/*! ./libs/function/colorGradient.js */ 37));
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 46));
+var _test = _interopRequireDefault(__webpack_require__(/*! ./libs/function/test.js */ 38));
 
-var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 47));
+var _debounce = _interopRequireDefault(__webpack_require__(/*! ./libs/function/debounce.js */ 39));
 
-var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 137));
+var _throttle = _interopRequireDefault(__webpack_require__(/*! ./libs/function/throttle.js */ 40));
 
-var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 95));
+var _index = _interopRequireDefault(__webpack_require__(/*! ./libs/function/index.js */ 41));
 
-var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 138));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
+
+var _config = _interopRequireDefault(__webpack_require__(/*! ./libs/config/config.js */ 42));
+
+var _props = _interopRequireDefault(__webpack_require__(/*! ./libs/config/props.js */ 43));
+
+var _zIndex = _interopRequireDefault(__webpack_require__(/*! ./libs/config/zIndex.js */ 133));
+
+var _color = _interopRequireDefault(__webpack_require__(/*! ./libs/config/color.js */ 91));
+
+var _platform = _interopRequireDefault(__webpack_require__(/*! ./libs/function/platform */ 134));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;} // 看到此报错，是因为没有配置vue.config.js的【transpileDependencies】，详见：https://www.uviewui.com/components/npmSetting.html#_5-cli模式额外配置
 var pleaseSetTranspileDependencies = {},babelTest = pleaseSetTranspileDependencies === null || pleaseSetTranspileDependencies === void 0 ? void 0 : pleaseSetTranspileDependencies.test; // 引入全局mixin
 var $u = _objectSpread(_objectSpread({
   route: _route.default,
@@ -9856,7 +8866,7 @@ var install = function install(Vue) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 20 */
+/* 13 */
 /*!**********************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/mixin.js ***!
   \**********************************************************************************/
@@ -10021,7 +9031,7 @@ var install = function install(Vue) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 21 */
+/* 14 */
 /*!************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/mpMixin.js ***!
   \************************************************************************************/
@@ -10036,7 +9046,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     virtualHost: true } };exports.default = _default;
 
 /***/ }),
-/* 22 */
+/* 15 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/index.js ***!
   \*****************************************************************************************/
@@ -10044,12 +9054,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _Request = _interopRequireDefault(__webpack_require__(/*! ./core/Request */ 16));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 
 _Request.default;exports.default = _default;
 
 /***/ }),
-/* 23 */
+/* 16 */
 /*!************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/Request.js ***!
   \************************************************************************************************/
@@ -10070,12 +9080,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 24));
-var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 32));
-var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 33));
-var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 34));
-var _utils = __webpack_require__(/*! ../utils */ 27);
-var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 35));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
+var _dispatchRequest = _interopRequireDefault(__webpack_require__(/*! ./dispatchRequest */ 17));
+var _InterceptorManager = _interopRequireDefault(__webpack_require__(/*! ./InterceptorManager */ 25));
+var _mergeConfig = _interopRequireDefault(__webpack_require__(/*! ./mergeConfig */ 26));
+var _defaults = _interopRequireDefault(__webpack_require__(/*! ./defaults */ 27));
+var _utils = __webpack_require__(/*! ../utils */ 20);
+var _clone = _interopRequireDefault(__webpack_require__(/*! ../utils/clone */ 28));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}var
 
 Request = /*#__PURE__*/function () {
   /**
@@ -10257,7 +9267,7 @@ Request = /*#__PURE__*/function () {
                                */exports.default = Request;
 
 /***/ }),
-/* 24 */
+/* 17 */
 /*!********************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/dispatchRequest.js ***!
   \********************************************************************************************************/
@@ -10265,12 +9275,12 @@ Request = /*#__PURE__*/function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 25));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _index = _interopRequireDefault(__webpack_require__(/*! ../adapters/index */ 18));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}var _default =
 
 function _default(config) {return (0, _index.default)(config);};exports.default = _default;
 
 /***/ }),
-/* 25 */
+/* 18 */
 /*!**************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/adapters/index.js ***!
   \**************************************************************************************************/
@@ -10278,10 +9288,10 @@ function _default(config) {return (0, _index.default)(config);};exports.default 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 26));
-var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 28));
-var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 31));
-var _utils = __webpack_require__(/*! ../utils */ 27);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _buildURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/buildURL */ 19));
+var _buildFullPath = _interopRequireDefault(__webpack_require__(/*! ../core/buildFullPath */ 21));
+var _settle = _interopRequireDefault(__webpack_require__(/*! ../core/settle */ 24));
+var _utils = __webpack_require__(/*! ../utils */ 20);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            * 返回可选值存在的配置
@@ -10378,7 +9388,7 @@ function _default(config) {return new Promise(function (resolve, reject) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 26 */
+/* 19 */
 /*!****************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/buildURL.js ***!
   \****************************************************************************************************/
@@ -10388,7 +9398,7 @@ function _default(config) {return new Promise(function (resolve, reject) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildURL;
 
-var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 27));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
+var utils = _interopRequireWildcard(__webpack_require__(/*! ../utils */ 20));function _getRequireWildcardCache() {if (typeof WeakMap !== "function") return null;var cache = new WeakMap();_getRequireWildcardCache = function _getRequireWildcardCache() {return cache;};return cache;}function _interopRequireWildcard(obj) {if (obj && obj.__esModule) {return obj;}if (obj === null || typeof obj !== "object" && typeof obj !== "function") {return { default: obj };}var cache = _getRequireWildcardCache();if (cache && cache.has(obj)) {return cache.get(obj);}var newObj = {};var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;for (var key in obj) {if (Object.prototype.hasOwnProperty.call(obj, key)) {var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;if (desc && (desc.get || desc.set)) {Object.defineProperty(newObj, key, desc);} else {newObj[key] = obj[key];}}}newObj.default = obj;if (cache) {cache.set(obj, newObj);}return newObj;}
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -10457,7 +9467,7 @@ function buildURL(url, params) {
 }
 
 /***/ }),
-/* 27 */
+/* 20 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils.js ***!
   \*****************************************************************************************/
@@ -10598,7 +9608,7 @@ function isUndefined(val) {
 }
 
 /***/ }),
-/* 28 */
+/* 21 */
 /*!******************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/buildFullPath.js ***!
   \******************************************************************************************************/
@@ -10608,8 +9618,8 @@ function isUndefined(val) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = buildFullPath;
 
-var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 29));
-var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 30));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+var _isAbsoluteURL = _interopRequireDefault(__webpack_require__(/*! ../helpers/isAbsoluteURL */ 22));
+var _combineURLs = _interopRequireDefault(__webpack_require__(/*! ../helpers/combineURLs */ 23));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
                                                                                                                                                                             * Creates a new URL by combining the baseURL with the requestedURL,
@@ -10628,7 +9638,7 @@ function buildFullPath(baseURL, requestedURL) {
 }
 
 /***/ }),
-/* 29 */
+/* 22 */
 /*!*********************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/isAbsoluteURL.js ***!
   \*********************************************************************************************************/
@@ -10652,7 +9662,7 @@ function isAbsoluteURL(url) {
 }
 
 /***/ }),
-/* 30 */
+/* 23 */
 /*!*******************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/helpers/combineURLs.js ***!
   \*******************************************************************************************************/
@@ -10676,7 +9686,7 @@ function combineURLs(baseURL, relativeURL) {
 }
 
 /***/ }),
-/* 31 */
+/* 24 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/settle.js ***!
   \***********************************************************************************************/
@@ -10702,7 +9712,7 @@ function settle(resolve, reject, response) {var
 }
 
 /***/ }),
-/* 32 */
+/* 25 */
 /*!***********************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/InterceptorManager.js ***!
   \***********************************************************************************************************/
@@ -10762,7 +9772,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 InterceptorManager;exports.default = _default;
 
 /***/ }),
-/* 33 */
+/* 26 */
 /*!****************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/mergeConfig.js ***!
   \****************************************************************************************************/
@@ -10770,7 +9780,7 @@ InterceptorManager;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 27);function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 20);function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   * 合并局部配置优先的配置，如果局部有该配置项则用局部，如果全局有该配置项则用全局
@@ -10875,7 +9885,7 @@ function _default(globalsConfig) {var config2 = arguments.length > 1 && argument
 };exports.default = _default;
 
 /***/ }),
-/* 34 */
+/* 27 */
 /*!*************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/core/defaults.js ***!
   \*************************************************************************************************/
@@ -10913,7 +9923,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   } };exports.default = _default;
 
 /***/ }),
-/* 35 */
+/* 28 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/luch-request/utils/clone.js ***!
   \***********************************************************************************************/
@@ -11185,10 +10195,10 @@ var clone = function () {
 }();var _default =
 
 clone;exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../Software/i4Tools7/HBuilderX.3.1.18.20210609.full/HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 36).Buffer))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../../../../../Software/i4Tools7/HBuilderX.3.1.18.20210609.full/HBuilderX/plugins/uniapp-cli/node_modules/buffer/index.js */ 29).Buffer))
 
 /***/ }),
-/* 36 */
+/* 29 */
 /*!**************************************!*\
   !*** ./node_modules/buffer/index.js ***!
   \**************************************/
@@ -11206,9 +10216,9 @@ clone;exports.default = _default;
 
 
 
-var base64 = __webpack_require__(/*! base64-js */ 37)
-var ieee754 = __webpack_require__(/*! ieee754 */ 38)
-var isArray = __webpack_require__(/*! isarray */ 39)
+var base64 = __webpack_require__(/*! base64-js */ 30)
+var ieee754 = __webpack_require__(/*! ieee754 */ 31)
+var isArray = __webpack_require__(/*! isarray */ 32)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -12989,7 +11999,7 @@ function isnan (val) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ 2)))
 
 /***/ }),
-/* 37 */
+/* 30 */
 /*!*****************************************!*\
   !*** ./node_modules/base64-js/index.js ***!
   \*****************************************/
@@ -13152,7 +12162,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 38 */
+/* 31 */
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
   \***************************************/
@@ -13246,7 +12256,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 39 */
+/* 32 */
 /*!***************************************!*\
   !*** ./node_modules/isarray/index.js ***!
   \***************************************/
@@ -13261,7 +12271,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 40 */
+/* 33 */
 /*!*********************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/util/route.js ***!
   \*********************************************************************************/
@@ -13269,7 +12279,7 @@ module.exports = Array.isArray || function (arr) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;} /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 路由跳转方法，该方法相对于直接使用uni.xxx的好处是使用更加简单快捷
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  * 并且带有路由拦截功能
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */var
@@ -13396,7 +12406,795 @@ new Router().route;exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 41 */
+/* 34 */
+/*!**********************************************************!*\
+  !*** ./node_modules/@babel/runtime/regenerator/index.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(/*! regenerator-runtime */ 35);
+
+/***/ }),
+/* 35 */
+/*!************************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime-module.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// This method of obtaining a reference to the global object needs to be
+// kept identical to the way it is obtained in runtime.js
+var g = (function() {
+  return this || (typeof self === "object" && self);
+})() || Function("return this")();
+
+// Use `getOwnPropertyNames` because not all browsers support calling
+// `hasOwnProperty` on the global `self` object in a worker. See #183.
+var hadRuntime = g.regeneratorRuntime &&
+  Object.getOwnPropertyNames(g).indexOf("regeneratorRuntime") >= 0;
+
+// Save the old regeneratorRuntime in case it needs to be restored later.
+var oldRuntime = hadRuntime && g.regeneratorRuntime;
+
+// Force reevalutation of runtime.js.
+g.regeneratorRuntime = undefined;
+
+module.exports = __webpack_require__(/*! ./runtime */ 36);
+
+if (hadRuntime) {
+  // Restore the original runtime.
+  g.regeneratorRuntime = oldRuntime;
+} else {
+  // Remove the global property added by runtime.js.
+  try {
+    delete g.regeneratorRuntime;
+  } catch(e) {
+    g.regeneratorRuntime = undefined;
+  }
+}
+
+
+/***/ }),
+/* 36 */
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // In sloppy mode, unbound `this` refers to the global object, fallback to
+  // Function constructor if we're in global strict mode. That is sadly a form
+  // of indirect eval which violates Content Security Policy.
+  (function() {
+    return this || (typeof self === "object" && self);
+  })() || Function("return this")()
+);
+
+
+/***/ }),
+/* 37 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/colorGradient.js ***!
   \*********************************************************************************************/
@@ -13539,7 +13337,7 @@ function colorToRgba(color, alpha) {
   colorToRgba: colorToRgba };exports.default = _default;
 
 /***/ }),
-/* 42 */
+/* 38 */
 /*!************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/test.js ***!
   \************************************************************************************/
@@ -13835,7 +13633,7 @@ function regExp(o) {
   string: string };exports.default = _default;
 
 /***/ }),
-/* 43 */
+/* 39 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/debounce.js ***!
   \****************************************************************************************/
@@ -13874,7 +13672,7 @@ function debounce(func) {var wait = arguments.length > 1 && arguments[1] !== und
 debounce;exports.default = _default;
 
 /***/ }),
-/* 44 */
+/* 40 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/throttle.js ***!
   \****************************************************************************************/
@@ -13914,7 +13712,7 @@ function throttle(func) {var wait = arguments.length > 1 && arguments[1] !== und
 throttle;exports.default = _default;
 
 /***/ }),
-/* 45 */
+/* 41 */
 /*!*************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/index.js ***!
   \*************************************************************************************/
@@ -13922,7 +13720,7 @@ throttle;exports.default = _default;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _test = _interopRequireDefault(__webpack_require__(/*! ./test.js */ 38));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}
 
 /**
                                                                                                                                                                                                                                                             * @description 如果value小于min，取min；如果value大于max，取max
@@ -14612,7 +14410,7 @@ function setConfig(_ref)
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 46 */
+/* 42 */
 /*!************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/config.js ***!
   \************************************************************************************/
@@ -14655,7 +14453,7 @@ if (true) {
   unit: 'px' };exports.default = _default;
 
 /***/ }),
-/* 47 */
+/* 43 */
 /*!***********************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props.js ***!
   \***********************************************************************************/
@@ -14668,96 +14466,96 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 46));
+var _config = _interopRequireDefault(__webpack_require__(/*! ./config */ 42));
 
-var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 48));
-var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 49));
-var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 50));
-var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 51));
-var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 52));
-var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 53));
-var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 54));
-var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 55));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 56));
-var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 57));
-var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 58));
-var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 59));
-var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 60));
-var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 61));
-var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 62));
-var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 63));
-var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 64));
-var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 65));
-var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 66));
-var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 67));
-var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 68));
-var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 69));
-var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 70));
-var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 71));
-var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 72));
-var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 73));
-var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 74));
-var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 75));
-var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 76));
-var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 77));
-var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 78));
-var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 79));
-var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 80));
-var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 81));
-var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 82));
-var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 83));
-var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 84));
-var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 85));
-var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 86));
-var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 87));
-var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 88));
-var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 89));
-var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 90));
-var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 91));
-var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 92));
-var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 93));
-var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 94));
-var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 96));
-var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 97));
-var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 98));
-var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 99));
-var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 100));
-var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 101));
-var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 102));
-var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 103));
-var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 104));
-var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 105));
-var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 106));
-var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 107));
-var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 108));
-var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 109));
-var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 110));
-var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 111));
-var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 112));
-var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 113));
-var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 114));
-var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 115));
-var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 116));
-var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 117));
-var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 118));
-var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 119));
-var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 120));
-var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 121));
-var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 122));
-var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 123));
-var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 124));
-var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 125));
-var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 126));
-var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 127));
-var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 128));
-var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 129));
-var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 130));
-var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 131));
-var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 132));
-var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 133));
-var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 134));
-var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 135));
-var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 136));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
+var _actionSheet = _interopRequireDefault(__webpack_require__(/*! ./props/actionSheet.js */ 44));
+var _album = _interopRequireDefault(__webpack_require__(/*! ./props/album.js */ 45));
+var _alert = _interopRequireDefault(__webpack_require__(/*! ./props/alert.js */ 46));
+var _avatar = _interopRequireDefault(__webpack_require__(/*! ./props/avatar */ 47));
+var _avatarGroup = _interopRequireDefault(__webpack_require__(/*! ./props/avatarGroup */ 48));
+var _backtop = _interopRequireDefault(__webpack_require__(/*! ./props/backtop */ 49));
+var _badge = _interopRequireDefault(__webpack_require__(/*! ./props/badge */ 50));
+var _button = _interopRequireDefault(__webpack_require__(/*! ./props/button */ 51));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./props/calendar */ 52));
+var _carKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/carKeyboard */ 53));
+var _cell = _interopRequireDefault(__webpack_require__(/*! ./props/cell */ 54));
+var _cellGroup = _interopRequireDefault(__webpack_require__(/*! ./props/cellGroup */ 55));
+var _checkbox = _interopRequireDefault(__webpack_require__(/*! ./props/checkbox */ 56));
+var _checkboxGroup = _interopRequireDefault(__webpack_require__(/*! ./props/checkboxGroup */ 57));
+var _circleProgress = _interopRequireDefault(__webpack_require__(/*! ./props/circleProgress */ 58));
+var _code = _interopRequireDefault(__webpack_require__(/*! ./props/code */ 59));
+var _codeInput = _interopRequireDefault(__webpack_require__(/*! ./props/codeInput */ 60));
+var _col = _interopRequireDefault(__webpack_require__(/*! ./props/col */ 61));
+var _collapse = _interopRequireDefault(__webpack_require__(/*! ./props/collapse */ 62));
+var _collapseItem = _interopRequireDefault(__webpack_require__(/*! ./props/collapseItem */ 63));
+var _columnNotice = _interopRequireDefault(__webpack_require__(/*! ./props/columnNotice */ 64));
+var _countDown = _interopRequireDefault(__webpack_require__(/*! ./props/countDown */ 65));
+var _countTo = _interopRequireDefault(__webpack_require__(/*! ./props/countTo */ 66));
+var _datetimePicker = _interopRequireDefault(__webpack_require__(/*! ./props/datetimePicker */ 67));
+var _divider = _interopRequireDefault(__webpack_require__(/*! ./props/divider */ 68));
+var _empty = _interopRequireDefault(__webpack_require__(/*! ./props/empty */ 69));
+var _form = _interopRequireDefault(__webpack_require__(/*! ./props/form */ 70));
+var _formItem = _interopRequireDefault(__webpack_require__(/*! ./props/formItem */ 71));
+var _gap = _interopRequireDefault(__webpack_require__(/*! ./props/gap */ 72));
+var _grid = _interopRequireDefault(__webpack_require__(/*! ./props/grid */ 73));
+var _gridItem = _interopRequireDefault(__webpack_require__(/*! ./props/gridItem */ 74));
+var _icon = _interopRequireDefault(__webpack_require__(/*! ./props/icon */ 75));
+var _image = _interopRequireDefault(__webpack_require__(/*! ./props/image */ 76));
+var _indexAnchor = _interopRequireDefault(__webpack_require__(/*! ./props/indexAnchor */ 77));
+var _indexList = _interopRequireDefault(__webpack_require__(/*! ./props/indexList */ 78));
+var _input = _interopRequireDefault(__webpack_require__(/*! ./props/input */ 79));
+var _keyboard = _interopRequireDefault(__webpack_require__(/*! ./props/keyboard */ 80));
+var _line = _interopRequireDefault(__webpack_require__(/*! ./props/line */ 81));
+var _lineProgress = _interopRequireDefault(__webpack_require__(/*! ./props/lineProgress */ 82));
+var _link = _interopRequireDefault(__webpack_require__(/*! ./props/link */ 83));
+var _list = _interopRequireDefault(__webpack_require__(/*! ./props/list */ 84));
+var _listItem = _interopRequireDefault(__webpack_require__(/*! ./props/listItem */ 85));
+var _loadingIcon = _interopRequireDefault(__webpack_require__(/*! ./props/loadingIcon */ 86));
+var _loadingPage = _interopRequireDefault(__webpack_require__(/*! ./props/loadingPage */ 87));
+var _loadmore = _interopRequireDefault(__webpack_require__(/*! ./props/loadmore */ 88));
+var _modal = _interopRequireDefault(__webpack_require__(/*! ./props/modal */ 89));
+var _navbar = _interopRequireDefault(__webpack_require__(/*! ./props/navbar */ 90));
+var _noNetwork = _interopRequireDefault(__webpack_require__(/*! ./props/noNetwork */ 92));
+var _noticeBar = _interopRequireDefault(__webpack_require__(/*! ./props/noticeBar */ 93));
+var _notify = _interopRequireDefault(__webpack_require__(/*! ./props/notify */ 94));
+var _numberBox = _interopRequireDefault(__webpack_require__(/*! ./props/numberBox */ 95));
+var _numberKeyboard = _interopRequireDefault(__webpack_require__(/*! ./props/numberKeyboard */ 96));
+var _overlay = _interopRequireDefault(__webpack_require__(/*! ./props/overlay */ 97));
+var _parse = _interopRequireDefault(__webpack_require__(/*! ./props/parse */ 98));
+var _picker = _interopRequireDefault(__webpack_require__(/*! ./props/picker */ 99));
+var _popup = _interopRequireDefault(__webpack_require__(/*! ./props/popup */ 100));
+var _radio = _interopRequireDefault(__webpack_require__(/*! ./props/radio */ 101));
+var _radioGroup = _interopRequireDefault(__webpack_require__(/*! ./props/radioGroup */ 102));
+var _rate = _interopRequireDefault(__webpack_require__(/*! ./props/rate */ 103));
+var _readMore = _interopRequireDefault(__webpack_require__(/*! ./props/readMore */ 104));
+var _row = _interopRequireDefault(__webpack_require__(/*! ./props/row */ 105));
+var _rowNotice = _interopRequireDefault(__webpack_require__(/*! ./props/rowNotice */ 106));
+var _scrollList = _interopRequireDefault(__webpack_require__(/*! ./props/scrollList */ 107));
+var _search = _interopRequireDefault(__webpack_require__(/*! ./props/search */ 108));
+var _section = _interopRequireDefault(__webpack_require__(/*! ./props/section */ 109));
+var _skeleton = _interopRequireDefault(__webpack_require__(/*! ./props/skeleton */ 110));
+var _slider = _interopRequireDefault(__webpack_require__(/*! ./props/slider */ 111));
+var _statusBar = _interopRequireDefault(__webpack_require__(/*! ./props/statusBar */ 112));
+var _steps = _interopRequireDefault(__webpack_require__(/*! ./props/steps */ 113));
+var _stepsItem = _interopRequireDefault(__webpack_require__(/*! ./props/stepsItem */ 114));
+var _sticky = _interopRequireDefault(__webpack_require__(/*! ./props/sticky */ 115));
+var _subsection = _interopRequireDefault(__webpack_require__(/*! ./props/subsection */ 116));
+var _swipeAction = _interopRequireDefault(__webpack_require__(/*! ./props/swipeAction */ 117));
+var _swipeActionItem = _interopRequireDefault(__webpack_require__(/*! ./props/swipeActionItem */ 118));
+var _swiper = _interopRequireDefault(__webpack_require__(/*! ./props/swiper */ 119));
+var _swipterIndicator = _interopRequireDefault(__webpack_require__(/*! ./props/swipterIndicator */ 120));
+var _switch2 = _interopRequireDefault(__webpack_require__(/*! ./props/switch */ 121));
+var _tabbar = _interopRequireDefault(__webpack_require__(/*! ./props/tabbar */ 122));
+var _tabbarItem = _interopRequireDefault(__webpack_require__(/*! ./props/tabbarItem */ 123));
+var _tabs = _interopRequireDefault(__webpack_require__(/*! ./props/tabs */ 124));
+var _tag = _interopRequireDefault(__webpack_require__(/*! ./props/tag */ 125));
+var _text = _interopRequireDefault(__webpack_require__(/*! ./props/text */ 126));
+var _textarea = _interopRequireDefault(__webpack_require__(/*! ./props/textarea */ 127));
+var _toast = _interopRequireDefault(__webpack_require__(/*! ./props/toast */ 128));
+var _toolbar = _interopRequireDefault(__webpack_require__(/*! ./props/toolbar */ 129));
+var _tooltip = _interopRequireDefault(__webpack_require__(/*! ./props/tooltip */ 130));
+var _transition = _interopRequireDefault(__webpack_require__(/*! ./props/transition */ 131));
+var _upload = _interopRequireDefault(__webpack_require__(/*! ./props/upload */ 132));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var
 
 
 color =
@@ -14854,7 +14652,7 @@ _transition.default),
 _upload.default);exports.default = _default;
 
 /***/ }),
-/* 48 */
+/* 44 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/actionSheet.js ***!
   \***********************************************************************************************/
@@ -14887,7 +14685,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     round: 0 } };exports.default = _default;
 
 /***/ }),
-/* 49 */
+/* 45 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/album.js ***!
   \*****************************************************************************************/
@@ -14920,7 +14718,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showMore: true } };exports.default = _default;
 
 /***/ }),
-/* 50 */
+/* 46 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/alert.js ***!
   \*****************************************************************************************/
@@ -14950,7 +14748,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     fontSize: 14 } };exports.default = _default;
 
 /***/ }),
-/* 51 */
+/* 47 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/avatar.js ***!
   \******************************************************************************************/
@@ -14986,7 +14784,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 52 */
+/* 48 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/avatarGroup.js ***!
   \***********************************************************************************************/
@@ -15017,7 +14815,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     extraValue: 0 } };exports.default = _default;
 
 /***/ }),
-/* 53 */
+/* 49 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/backtop.js ***!
   \*******************************************************************************************/
@@ -15051,7 +14849,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
         fontSize: '19px' };} } };exports.default = _default;
 
 /***/ }),
-/* 54 */
+/* 50 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/badge.js ***!
   \*****************************************************************************************/
@@ -15086,7 +14884,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     absolute: false } };exports.default = _default;
 
 /***/ }),
-/* 55 */
+/* 51 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/button.js ***!
   \******************************************************************************************/
@@ -15136,7 +14934,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     color: '' } };exports.default = _default;
 
 /***/ }),
-/* 56 */
+/* 52 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/calendar.js ***!
   \********************************************************************************************/
@@ -15186,7 +14984,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     monthNum: 3 } };exports.default = _default;
 
 /***/ }),
-/* 57 */
+/* 53 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/carKeyboard.js ***!
   \***********************************************************************************************/
@@ -15209,7 +15007,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-/* 58 */
+/* 54 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/cell.js ***!
   \****************************************************************************************/
@@ -15252,7 +15050,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 59 */
+/* 55 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/cellGroup.js ***!
   \*********************************************************************************************/
@@ -15277,7 +15075,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-/* 60 */
+/* 56 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/checkbox.js ***!
   \********************************************************************************************/
@@ -15312,7 +15110,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelDisabled: '' } };exports.default = _default;
 
 /***/ }),
-/* 61 */
+/* 57 */
 /*!*************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/checkboxGroup.js ***!
   \*************************************************************************************************/
@@ -15349,7 +15147,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     borderBottom: false } };exports.default = _default;
 
 /***/ }),
-/* 62 */
+/* 58 */
 /*!**************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/circleProgress.js ***!
   \**************************************************************************************************/
@@ -15372,7 +15170,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     percentage: 30 } };exports.default = _default;
 
 /***/ }),
-/* 63 */
+/* 59 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/code.js ***!
   \****************************************************************************************/
@@ -15401,7 +15199,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     uniqueKey: '' } };exports.default = _default;
 
 /***/ }),
-/* 64 */
+/* 60 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/codeInput.js ***!
   \*********************************************************************************************/
@@ -15437,7 +15235,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disabledDot: true } };exports.default = _default;
 
 /***/ }),
-/* 65 */
+/* 61 */
 /*!***************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/col.js ***!
   \***************************************************************************************/
@@ -15464,7 +15262,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     textAlign: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 66 */
+/* 62 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/collapse.js ***!
   \********************************************************************************************/
@@ -15489,7 +15287,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     border: true } };exports.default = _default;
 
 /***/ }),
-/* 67 */
+/* 63 */
 /*!************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/collapseItem.js ***!
   \************************************************************************************************/
@@ -15522,7 +15320,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-/* 68 */
+/* 64 */
 /*!************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/columnNotice.js ***!
   \************************************************************************************************/
@@ -15554,7 +15352,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     disableTouch: true } };exports.default = _default;
 
 /***/ }),
-/* 69 */
+/* 65 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/countDown.js ***!
   \*********************************************************************************************/
@@ -15580,7 +15378,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     millisecond: false } };exports.default = _default;
 
 /***/ }),
-/* 70 */
+/* 66 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/countTo.js ***!
   \*******************************************************************************************/
@@ -15613,7 +15411,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     separator: '' } };exports.default = _default;
 
 /***/ }),
-/* 71 */
+/* 67 */
 /*!**************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/datetimePicker.js ***!
   \**************************************************************************************************/
@@ -15657,7 +15455,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     defaultIndex: function defaultIndex() {return [];} } };exports.default = _default;
 
 /***/ }),
-/* 72 */
+/* 68 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/divider.js ***!
   \*******************************************************************************************/
@@ -15687,7 +15485,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     lineColor: '#dcdfe6' } };exports.default = _default;
 
 /***/ }),
-/* 73 */
+/* 69 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/empty.js ***!
   \*****************************************************************************************/
@@ -15720,7 +15518,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     marginTop: 0 } };exports.default = _default;
 
 /***/ }),
-/* 74 */
+/* 70 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/form.js ***!
   \****************************************************************************************/
@@ -15750,7 +15548,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     labelStyle: function labelStyle() {return {};} } };exports.default = _default;
 
 /***/ }),
-/* 75 */
+/* 71 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/formItem.js ***!
   \********************************************************************************************/
@@ -15779,7 +15577,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     required: false } };exports.default = _default;
 
 /***/ }),
-/* 76 */
+/* 72 */
 /*!***************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/gap.js ***!
   \***************************************************************************************/
@@ -15806,7 +15604,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customStyle: {} } };exports.default = _default;
 
 /***/ }),
-/* 77 */
+/* 73 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/grid.js ***!
   \****************************************************************************************/
@@ -15831,7 +15629,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 78 */
+/* 74 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/gridItem.js ***!
   \********************************************************************************************/
@@ -15855,7 +15653,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-/* 79 */
+/* 75 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/icon.js ***!
   \****************************************************************************************/
@@ -15872,7 +15670,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -15899,7 +15697,7 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     stop: false } };exports.default = _default;
 
 /***/ }),
-/* 80 */
+/* 76 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/image.js ***!
   \*****************************************************************************************/
@@ -15937,7 +15735,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: '#f3f4f6' } };exports.default = _default;
 
 /***/ }),
-/* 81 */
+/* 77 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/indexAnchor.js ***!
   \***********************************************************************************************/
@@ -15964,7 +15762,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 32 } };exports.default = _default;
 
 /***/ }),
-/* 82 */
+/* 78 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/indexList.js ***!
   \*********************************************************************************************/
@@ -15991,7 +15789,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     customNavHeight: 0 } };exports.default = _default;
 
 /***/ }),
-/* 83 */
+/* 79 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/input.js ***!
   \*****************************************************************************************/
@@ -16047,7 +15845,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-/* 84 */
+/* 80 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/keyboard.js ***!
   \********************************************************************************************/
@@ -16085,7 +15883,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoChange: false } };exports.default = _default;
 
 /***/ }),
-/* 85 */
+/* 81 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/line.js ***!
   \****************************************************************************************/
@@ -16113,7 +15911,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dashed: false } };exports.default = _default;
 
 /***/ }),
-/* 86 */
+/* 82 */
 /*!************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/lineProgress.js ***!
   \************************************************************************************************/
@@ -16140,7 +15938,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     height: 12 } };exports.default = _default;
 
 /***/ }),
-/* 87 */
+/* 83 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/link.js ***!
   \****************************************************************************************/
@@ -16157,7 +15955,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -16174,7 +15972,7 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     text: '' } };exports.default = _default;
 
 /***/ }),
-/* 88 */
+/* 84 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/list.js ***!
   \****************************************************************************************/
@@ -16210,7 +16008,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     preLoadScreen: 1 } };exports.default = _default;
 
 /***/ }),
-/* 89 */
+/* 85 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/listItem.js ***!
   \********************************************************************************************/
@@ -16233,7 +16031,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     anchor: '' } };exports.default = _default;
 
 /***/ }),
-/* 90 */
+/* 86 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingIcon.js ***!
   \***********************************************************************************************/
@@ -16250,7 +16048,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 42));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                           * @Author       : LQ
                                                                                                                                                           * @Description  :
                                                                                                                                                           * @version      : 1.0
@@ -16271,7 +16069,7 @@ var _config = _interopRequireDefault(__webpack_require__(/*! ../config */ 46));f
     inactiveColor: '' } };exports.default = _default;
 
 /***/ }),
-/* 91 */
+/* 87 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadingPage.js ***!
   \***********************************************************************************************/
@@ -16301,7 +16099,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     loadingColor: '#C8C8C8' } };exports.default = _default;
 
 /***/ }),
-/* 92 */
+/* 88 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/loadmore.js ***!
   \********************************************************************************************/
@@ -16338,7 +16136,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     line: false } };exports.default = _default;
 
 /***/ }),
-/* 93 */
+/* 89 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/modal.js ***!
   \*****************************************************************************************/
@@ -16376,7 +16174,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     confirmButtonShape: '' } };exports.default = _default;
 
 /***/ }),
-/* 94 */
+/* 90 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/navbar.js ***!
   \******************************************************************************************/
@@ -16393,7 +16191,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 95));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
+var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 91));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} /*
                                                                                                                                                         * @Author       : LQ
                                                                                                                                                         * @Description  :
                                                                                                                                                         * @version      : 1.0
@@ -16415,7 +16213,7 @@ var _color = _interopRequireDefault(__webpack_require__(/*! ../color */ 95));fun
     titleStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 95 */
+/* 91 */
 /*!***********************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/color.js ***!
   \***********************************************************************************/
@@ -16442,7 +16240,7 @@ var color = {
 color;exports.default = _default;
 
 /***/ }),
-/* 96 */
+/* 92 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/noNetwork.js ***!
   \*********************************************************************************************/
@@ -16467,7 +16265,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     image: 'data:image/png;base64,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' } };exports.default = _default;
 
 /***/ }),
-/* 97 */
+/* 93 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/noticeBar.js ***!
   \*********************************************************************************************/
@@ -16502,7 +16300,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     linkType: 'navigateTo' } };exports.default = _default;
 
 /***/ }),
-/* 98 */
+/* 94 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/notify.js ***!
   \******************************************************************************************/
@@ -16532,7 +16330,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     safeAreaInsetTop: false } };exports.default = _default;
 
 /***/ }),
-/* 99 */
+/* 95 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/numberBox.js ***!
   \*********************************************************************************************/
@@ -16575,7 +16373,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 100 */
+/* 96 */
 /*!**************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/numberKeyboard.js ***!
   \**************************************************************************************************/
@@ -16600,7 +16398,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     random: false } };exports.default = _default;
 
 /***/ }),
-/* 101 */
+/* 97 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/overlay.js ***!
   \*******************************************************************************************/
@@ -16626,7 +16424,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     opacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-/* 102 */
+/* 98 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/parse.js ***!
   \*****************************************************************************************/
@@ -16656,7 +16454,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showImgMenu: true } };exports.default = _default;
 
 /***/ }),
-/* 103 */
+/* 99 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/picker.js ***!
   \******************************************************************************************/
@@ -16694,7 +16492,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     immediateChange: false } };exports.default = _default;
 
 /***/ }),
-/* 104 */
+/* 100 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/popup.js ***!
   \*****************************************************************************************/
@@ -16731,7 +16529,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     overlayOpacity: 0.5 } };exports.default = _default;
 
 /***/ }),
-/* 105 */
+/* 101 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/radio.js ***!
   \*****************************************************************************************/
@@ -16766,7 +16564,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placement: '' } };exports.default = _default;
 
 /***/ }),
-/* 106 */
+/* 102 */
 /*!**********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/radioGroup.js ***!
   \**********************************************************************************************/
@@ -16804,7 +16602,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     iconPlacement: 'left' } };exports.default = _default;
 
 /***/ }),
-/* 107 */
+/* 103 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/rate.js ***!
   \****************************************************************************************/
@@ -16838,7 +16636,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     touchable: true } };exports.default = _default;
 
 /***/ }),
-/* 108 */
+/* 104 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/readMore.js ***!
   \********************************************************************************************/
@@ -16868,7 +16666,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     name: '' } };exports.default = _default;
 
 /***/ }),
-/* 109 */
+/* 105 */
 /*!***************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/row.js ***!
   \***************************************************************************************/
@@ -16893,7 +16691,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     align: 'center' } };exports.default = _default;
 
 /***/ }),
-/* 110 */
+/* 106 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/rowNotice.js ***!
   \*********************************************************************************************/
@@ -16922,7 +16720,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     speed: 80 } };exports.default = _default;
 
 /***/ }),
-/* 111 */
+/* 107 */
 /*!**********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/scrollList.js ***!
   \**********************************************************************************************/
@@ -16950,7 +16748,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorStyle: '' } };exports.default = _default;
 
 /***/ }),
-/* 112 */
+/* 108 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/search.js ***!
   \******************************************************************************************/
@@ -16994,7 +16792,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     label: null } };exports.default = _default;
 
 /***/ }),
-/* 113 */
+/* 109 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/section.js ***!
   \*******************************************************************************************/
@@ -17026,7 +16824,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     arrow: true } };exports.default = _default;
 
 /***/ }),
-/* 114 */
+/* 110 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/skeleton.js ***!
   \********************************************************************************************/
@@ -17059,7 +16857,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     avatarShape: 'circle' } };exports.default = _default;
 
 /***/ }),
-/* 115 */
+/* 111 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/slider.js ***!
   \******************************************************************************************/
@@ -17092,7 +16890,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     blockStyle: function blockStyle() {} } };exports.default = _default;
 
 /***/ }),
-/* 116 */
+/* 112 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/statusBar.js ***!
   \*********************************************************************************************/
@@ -17115,7 +16913,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     bgColor: 'transparent' } };exports.default = _default;
 
 /***/ }),
-/* 117 */
+/* 113 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/steps.js ***!
   \*****************************************************************************************/
@@ -17144,7 +16942,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     dot: false } };exports.default = _default;
 
 /***/ }),
-/* 118 */
+/* 114 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/stepsItem.js ***!
   \*********************************************************************************************/
@@ -17170,7 +16968,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     error: false } };exports.default = _default;
 
 /***/ }),
-/* 119 */
+/* 115 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/sticky.js ***!
   \******************************************************************************************/
@@ -17198,7 +16996,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     index: '' } };exports.default = _default;
 
 /***/ }),
-/* 120 */
+/* 116 */
 /*!**********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/subsection.js ***!
   \**********************************************************************************************/
@@ -17229,7 +17027,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-/* 121 */
+/* 117 */
 /*!***********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeAction.js ***!
   \***********************************************************************************************/
@@ -17252,7 +17050,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     autoClose: true } };exports.default = _default;
 
 /***/ }),
-/* 122 */
+/* 118 */
 /*!***************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipeActionItem.js ***!
   \***************************************************************************************************/
@@ -17281,7 +17079,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     duration: 300 } };exports.default = _default;
 
 /***/ }),
-/* 123 */
+/* 119 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swiper.js ***!
   \******************************************************************************************/
@@ -17327,7 +17125,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showTitle: false } };exports.default = _default;
 
 /***/ }),
-/* 124 */
+/* 120 */
 /*!****************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/swipterIndicator.js ***!
   \****************************************************************************************************/
@@ -17354,7 +17152,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     indicatorMode: 'line' } };exports.default = _default;
 
 /***/ }),
-/* 125 */
+/* 121 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/switch.js ***!
   \******************************************************************************************/
@@ -17386,7 +17184,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     space: 0 } };exports.default = _default;
 
 /***/ }),
-/* 126 */
+/* 122 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbar.js ***!
   \******************************************************************************************/
@@ -17416,7 +17214,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     placeholder: true } };exports.default = _default;
 
 /***/ }),
-/* 127 */
+/* 123 */
 /*!**********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabbarItem.js ***!
   \**********************************************************************************************/
@@ -17444,7 +17242,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     badgeStyle: 'top: 6px;right:2px;' } };exports.default = _default;
 
 /***/ }),
-/* 128 */
+/* 124 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tabs.js ***!
   \****************************************************************************************/
@@ -17483,7 +17281,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     keyName: 'name' } };exports.default = _default;
 
 /***/ }),
-/* 129 */
+/* 125 */
 /*!***************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tag.js ***!
   \***************************************************************************************/
@@ -17520,7 +17318,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     icon: '' } };exports.default = _default;
 
 /***/ }),
-/* 130 */
+/* 126 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/text.js ***!
   \****************************************************************************************/
@@ -17565,7 +17363,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     wordWrap: 'normal' } };exports.default = _default;
 
 /***/ }),
-/* 131 */
+/* 127 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/textarea.js ***!
   \********************************************************************************************/
@@ -17609,7 +17407,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     formatter: null } };exports.default = _default;
 
 /***/ }),
-/* 132 */
+/* 128 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/toast.js ***!
   \*****************************************************************************************/
@@ -17646,7 +17444,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     back: false } };exports.default = _default;
 
 /***/ }),
-/* 133 */
+/* 129 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/toolbar.js ***!
   \*******************************************************************************************/
@@ -17674,7 +17472,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     title: '' } };exports.default = _default;
 
 /***/ }),
-/* 134 */
+/* 130 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/tooltip.js ***!
   \*******************************************************************************************/
@@ -17707,7 +17505,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     showToast: true } };exports.default = _default;
 
 /***/ }),
-/* 135 */
+/* 131 */
 /*!**********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/transition.js ***!
   \**********************************************************************************************/
@@ -17733,7 +17531,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     timingFunction: 'ease-out' } };exports.default = _default;
 
 /***/ }),
-/* 136 */
+/* 132 */
 /*!******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/props/upload.js ***!
   \******************************************************************************************/
@@ -17777,7 +17575,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     previewImage: true } };exports.default = _default;
 
 /***/ }),
-/* 137 */
+/* 133 */
 /*!************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/config/zIndex.js ***!
   \************************************************************************************/
@@ -17806,7 +17604,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   indexListSticky: 965 };exports.default = _default;
 
 /***/ }),
-/* 138 */
+/* 134 */
 /*!****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/function/platform.js ***!
   \****************************************************************************************/
@@ -17891,20 +17689,20 @@ platform = 'mp';var _default =
 platform;exports.default = _default;
 
 /***/ }),
+/* 135 */,
+/* 136 */,
+/* 137 */,
+/* 138 */,
 /* 139 */,
 /* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
-/* 145 */
+/* 141 */
 /*!*****************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/home.js ***!
   \*****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
 exports.fetchindexData = function () {
   return request({
@@ -17913,15 +17711,85 @@ exports.fetchindexData = function () {
 };
 
 /***/ }),
+/* 142 */
+/*!********************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/request.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
+  return new Promise(function (reslove, reject) {
+    uni.showLoading({
+      title: 'loading...' });
+
+    var httpRequest = _objectSpread(_objectSpread({},
+    options), {}, {
+      success: function success(res) {
+        reslove(res.data);
+      },
+      fail: function fail(err) {
+        reject(err);
+      },
+      complete: function complete(res) {
+        uni.hideLoading();var _res$data =
+
+
+
+        res.data,code = _res$data.code,message = _res$data.message;
+        if (code === 10004 || code === 10005) {
+          uni.showToast({
+            title: message });
+
+          uni.redirectTo({
+
+            url: '../../pages/login/login' });
+
+
+
+
+
+        }
+      } });
+
+    var reg = /\/user\//;
+    var result = reg.test(options.url);
+    // 需要权限
+    if (result) {
+      var token = uni.getStorageSync('token');
+      if (token === '') {
+        uni.redirectTo({
+
+          url: '../../pages/login/login' });
+
+
+
+
+
+        return;
+      }
+      httpRequest.header = {
+        Authorization: token };
+
+      uni.request(httpRequest);
+    } else {
+      uni.request(httpRequest);
+    }
+
+  });
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 143 */,
+/* 144 */,
+/* 145 */,
 /* 146 */,
 /* 147 */,
 /* 148 */,
 /* 149 */,
 /* 150 */,
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */
+/* 151 */
 /*!*****************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/sort.js ***!
   \*****************************************************/
@@ -17929,7 +17797,7 @@ exports.fetchindexData = function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 13);
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
 
 function fetch_sortData() {
   return request({
@@ -17938,7 +17806,7 @@ function fetch_sortData() {
 }
 
 /***/ }),
-/* 155 */
+/* 152 */
 /*!********************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/util/window.js ***!
   \********************************************************/
@@ -17958,6 +17826,9 @@ function fetch_sortData() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
+/* 153 */,
+/* 154 */,
+/* 155 */,
 /* 156 */,
 /* 157 */,
 /* 158 */,
@@ -17979,18 +17850,14 @@ function fetch_sortData() {
 /* 174 */,
 /* 175 */,
 /* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */
+/* 177 */
 /*!*******************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/search.js ***!
   \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
 exports.fetchSearch = function (page, size, keyWord) {
   return request({
@@ -18003,6 +17870,10 @@ exports.fetchSearch = function (page, size, keyWord) {
 };
 
 /***/ }),
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
 /* 182 */,
 /* 183 */,
 /* 184 */,
@@ -18015,7 +17886,15728 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 191 */,
 /* 192 */,
 /* 193 */,
-/* 194 */,
+/* 194 */
+/*!***********************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/static/address.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.address = void 0;var address = [
+{
+  "value": "110000",
+  "label": "北京市",
+  "children": [
+  {
+    "value": "110100",
+    "label": "北京市",
+    "children": [
+    {
+      "value": "110101",
+      "label": "东城区" },
+
+    {
+      "value": "110102",
+      "label": "西城区" },
+
+    {
+      "value": "110105",
+      "label": "朝阳区" },
+
+    {
+      "value": "110106",
+      "label": "丰台区" },
+
+    {
+      "value": "110107",
+      "label": "石景山区" },
+
+    {
+      "value": "110108",
+      "label": "海淀区" },
+
+    {
+      "value": "110109",
+      "label": "门头沟区" },
+
+    {
+      "value": "110111",
+      "label": "房山区" },
+
+    {
+      "value": "110112",
+      "label": "通州区" },
+
+    {
+      "value": "110113",
+      "label": "顺义区" },
+
+    {
+      "value": "110114",
+      "label": "昌平区" },
+
+    {
+      "value": "110115",
+      "label": "大兴区" },
+
+    {
+      "value": "110116",
+      "label": "怀柔区" },
+
+    {
+      "value": "110117",
+      "label": "平谷区" },
+
+    {
+      "value": "110228",
+      "label": "密云区" },
+
+    {
+      "value": "110229",
+      "label": "延庆区" }] }] },
+
+
+
+
+
+{
+  "value": "120000",
+  "label": "天津市",
+  "children": [
+  {
+    "value": "120100",
+    "label": "天津市",
+    "children": [
+    {
+      "value": "120101",
+      "label": "和平区" },
+
+    {
+      "value": "120102",
+      "label": "河东区" },
+
+    {
+      "value": "120103",
+      "label": "河西区" },
+
+    {
+      "value": "120104",
+      "label": "南开区" },
+
+    {
+      "value": "120105",
+      "label": "河北区" },
+
+    {
+      "value": "120106",
+      "label": "红桥区" },
+
+    {
+      "value": "120110",
+      "label": "东丽区" },
+
+    {
+      "value": "120111",
+      "label": "西青区" },
+
+    {
+      "value": "120112",
+      "label": "津南区" },
+
+    {
+      "value": "120113",
+      "label": "北辰区" },
+
+    {
+      "value": "120114",
+      "label": "武清区" },
+
+    {
+      "value": "120115",
+      "label": "宝坻区" },
+
+    {
+      "value": "120116",
+      "label": "滨海新区" },
+
+    {
+      "value": "120221",
+      "label": "宁河区" },
+
+    {
+      "value": "120223",
+      "label": "静海区" },
+
+    {
+      "value": "120225",
+      "label": "蓟州区" }] }] },
+
+
+
+
+
+{
+  "value": "130000",
+  "label": "河北省",
+  "children": [
+  {
+    "value": "130100",
+    "label": "石家庄市",
+    "children": [
+    {
+      "value": "130102",
+      "label": "长安区" },
+
+    {
+      "value": "130104",
+      "label": "桥西区" },
+
+    {
+      "value": "130105",
+      "label": "新华区" },
+
+    {
+      "value": "130107",
+      "label": "井陉矿区" },
+
+    {
+      "value": "130108",
+      "label": "裕华区" },
+
+    {
+      "value": "130109",
+      "label": "藁城区" },
+
+    {
+      "value": "130110",
+      "label": "鹿泉区" },
+
+    {
+      "value": "130111",
+      "label": "栾城区" },
+
+    {
+      "value": "130121",
+      "label": "井陉县" },
+
+    {
+      "value": "130123",
+      "label": "正定县" },
+
+    {
+      "value": "130125",
+      "label": "行唐县" },
+
+    {
+      "value": "130126",
+      "label": "灵寿县" },
+
+    {
+      "value": "130127",
+      "label": "高邑县" },
+
+    {
+      "value": "130128",
+      "label": "深泽县" },
+
+    {
+      "value": "130129",
+      "label": "赞皇县" },
+
+    {
+      "value": "130130",
+      "label": "无极县" },
+
+    {
+      "value": "130131",
+      "label": "平山县" },
+
+    {
+      "value": "130132",
+      "label": "元氏县" },
+
+    {
+      "value": "130133",
+      "label": "赵　县" },
+
+    {
+      "value": "130181",
+      "label": "辛集市" },
+
+    {
+      "value": "130182",
+      "label": "藁城市" },
+
+    {
+      "value": "130183",
+      "label": "晋州市" },
+
+    {
+      "value": "130184",
+      "label": "新乐市" }] },
+
+
+
+  {
+    "value": "130200",
+    "label": "唐山市",
+    "children": [
+    {
+      "value": "130202",
+      "label": "路南区" },
+
+    {
+      "value": "130203",
+      "label": "路北区" },
+
+    {
+      "value": "130204",
+      "label": "古冶区" },
+
+    {
+      "value": "130205",
+      "label": "开平区" },
+
+    {
+      "value": "130207",
+      "label": "丰南区" },
+
+    {
+      "value": "130208",
+      "label": "丰润区" },
+
+    {
+      "value": "130209",
+      "label": "曹妃甸区" },
+
+    {
+      "value": "130223",
+      "label": "滦　县" },
+
+    {
+      "value": "130224",
+      "label": "滦南县" },
+
+    {
+      "value": "130225",
+      "label": "乐亭县" },
+
+    {
+      "value": "130227",
+      "label": "迁西县" },
+
+    {
+      "value": "130229",
+      "label": "玉田县" },
+
+    {
+      "value": "130281",
+      "label": "遵化市" },
+
+    {
+      "value": "130283",
+      "label": "迁安市" }] },
+
+
+
+  {
+    "value": "130300",
+    "label": "秦皇岛市",
+    "children": [
+    {
+      "value": "130302",
+      "label": "海港区" },
+
+    {
+      "value": "130303",
+      "label": "山海关区" },
+
+    {
+      "value": "130304",
+      "label": "北戴河区" },
+
+    {
+      "value": "130306",
+      "label": "抚宁区" },
+
+    {
+      "value": "130321",
+      "label": "青龙满族自治县" },
+
+    {
+      "value": "130322",
+      "label": "昌黎县" },
+
+    {
+      "value": "130324",
+      "label": "卢龙县" }] },
+
+
+
+  {
+    "value": "130400",
+    "label": "邯郸市",
+    "children": [
+    {
+      "value": "130402",
+      "label": "邯山区" },
+
+    {
+      "value": "130403",
+      "label": "丛台区" },
+
+    {
+      "value": "130404",
+      "label": "复兴区" },
+
+    {
+      "value": "130406",
+      "label": "峰峰矿区" },
+
+    {
+      "value": "130421",
+      "label": "邯郸县" },
+
+    {
+      "value": "130423",
+      "label": "临漳县" },
+
+    {
+      "value": "130424",
+      "label": "成安县" },
+
+    {
+      "value": "130425",
+      "label": "大名县" },
+
+    {
+      "value": "130426",
+      "label": "涉　县" },
+
+    {
+      "value": "130427",
+      "label": "磁　县" },
+
+    {
+      "value": "130428",
+      "label": "肥乡县" },
+
+    {
+      "value": "130429",
+      "label": "永年县" },
+
+    {
+      "value": "130430",
+      "label": "邱　县" },
+
+    {
+      "value": "130431",
+      "label": "鸡泽县" },
+
+    {
+      "value": "130432",
+      "label": "广平县" },
+
+    {
+      "value": "130433",
+      "label": "馆陶县" },
+
+    {
+      "value": "130434",
+      "label": "魏　县" },
+
+    {
+      "value": "130435",
+      "label": "曲周县" },
+
+    {
+      "value": "130481",
+      "label": "武安市" }] },
+
+
+
+  {
+    "value": "130500",
+    "label": "邢台市",
+    "children": [
+    {
+      "value": "130502",
+      "label": "桥东区" },
+
+    {
+      "value": "130503",
+      "label": "桥西区" },
+
+    {
+      "value": "130521",
+      "label": "邢台县" },
+
+    {
+      "value": "130522",
+      "label": "临城县" },
+
+    {
+      "value": "130523",
+      "label": "内丘县" },
+
+    {
+      "value": "130524",
+      "label": "柏乡县" },
+
+    {
+      "value": "130525",
+      "label": "隆尧县" },
+
+    {
+      "value": "130526",
+      "label": "任　县" },
+
+    {
+      "value": "130527",
+      "label": "南和县" },
+
+    {
+      "value": "130528",
+      "label": "宁晋县" },
+
+    {
+      "value": "130529",
+      "label": "巨鹿县" },
+
+    {
+      "value": "130530",
+      "label": "新河县" },
+
+    {
+      "value": "130531",
+      "label": "广宗县" },
+
+    {
+      "value": "130532",
+      "label": "平乡县" },
+
+    {
+      "value": "130533",
+      "label": "威　县" },
+
+    {
+      "value": "130534",
+      "label": "清河县" },
+
+    {
+      "value": "130535",
+      "label": "临西县" },
+
+    {
+      "value": "130581",
+      "label": "南宫市" },
+
+    {
+      "value": "130582",
+      "label": "沙河市" }] },
+
+
+
+  {
+    "value": "130600",
+    "label": "保定市",
+    "children": [
+    {
+      "value": "130602",
+      "label": "竞秀区" },
+
+    {
+      "value": "130606",
+      "label": "莲池区" },
+
+    {
+      "value": "130607",
+      "label": "满城区" },
+
+    {
+      "value": "130608",
+      "label": "清苑区" },
+
+    {
+      "value": "130609",
+      "label": "徐水区" },
+
+    {
+      "value": "130623",
+      "label": "涞水县" },
+
+    {
+      "value": "130624",
+      "label": "阜平县" },
+
+    {
+      "value": "130626",
+      "label": "定兴县" },
+
+    {
+      "value": "130627",
+      "label": "唐　县" },
+
+    {
+      "value": "130628",
+      "label": "高阳县" },
+
+    {
+      "value": "130629",
+      "label": "容城县" },
+
+    {
+      "value": "130630",
+      "label": "涞源县" },
+
+    {
+      "value": "130631",
+      "label": "望都县" },
+
+    {
+      "value": "130632",
+      "label": "安新县" },
+
+    {
+      "value": "130633",
+      "label": "易　县" },
+
+    {
+      "value": "130634",
+      "label": "曲阳县" },
+
+    {
+      "value": "130635",
+      "label": "蠡　县" },
+
+    {
+      "value": "130636",
+      "label": "顺平县" },
+
+    {
+      "value": "130637",
+      "label": "博野县" },
+
+    {
+      "value": "130638",
+      "label": "雄　县" },
+
+    {
+      "value": "130681",
+      "label": "涿州市" },
+
+    {
+      "value": "130683",
+      "label": "安国市" },
+
+    {
+      "value": "130684",
+      "label": "高碑店市" }] },
+
+
+
+  {
+    "value": "130700",
+    "label": "张家口市",
+    "children": [
+    {
+      "value": "130702",
+      "label": "桥东区" },
+
+    {
+      "value": "130703",
+      "label": "桥西区" },
+
+    {
+      "value": "130705",
+      "label": "宣化区" },
+
+    {
+      "value": "130706",
+      "label": "下花园区" },
+
+    {
+      "value": "130721",
+      "label": "宣化县" },
+
+    {
+      "value": "130722",
+      "label": "张北县" },
+
+    {
+      "value": "130723",
+      "label": "康保县" },
+
+    {
+      "value": "130724",
+      "label": "沽源县" },
+
+    {
+      "value": "130725",
+      "label": "尚义县" },
+
+    {
+      "value": "130726",
+      "label": "蔚　县" },
+
+    {
+      "value": "130727",
+      "label": "阳原县" },
+
+    {
+      "value": "130728",
+      "label": "怀安县" },
+
+    {
+      "value": "130729",
+      "label": "万全县" },
+
+    {
+      "value": "130730",
+      "label": "怀来县" },
+
+    {
+      "value": "130731",
+      "label": "涿鹿县" },
+
+    {
+      "value": "130732",
+      "label": "赤城县" },
+
+    {
+      "value": "130733",
+      "label": "崇礼县" }] },
+
+
+
+  {
+    "value": "130800",
+    "label": "承德市",
+    "children": [
+    {
+      "value": "130802",
+      "label": "双桥区" },
+
+    {
+      "value": "130803",
+      "label": "双滦区" },
+
+    {
+      "value": "130804",
+      "label": "鹰手营子矿区" },
+
+    {
+      "value": "130821",
+      "label": "承德县" },
+
+    {
+      "value": "130822",
+      "label": "兴隆县" },
+
+    {
+      "value": "130823",
+      "label": "平泉县" },
+
+    {
+      "value": "130824",
+      "label": "滦平县" },
+
+    {
+      "value": "130825",
+      "label": "隆化县" },
+
+    {
+      "value": "130826",
+      "label": "丰宁满族自治县" },
+
+    {
+      "value": "130827",
+      "label": "宽城满族自治县" },
+
+    {
+      "value": "130828",
+      "label": "围场满族蒙古族自治县" }] },
+
+
+
+  {
+    "value": "130900",
+    "label": "沧州市",
+    "children": [
+    {
+      "value": "130902",
+      "label": "新华区" },
+
+    {
+      "value": "130903",
+      "label": "运河区" },
+
+    {
+      "value": "130921",
+      "label": "沧　县" },
+
+    {
+      "value": "130922",
+      "label": "青　县" },
+
+    {
+      "value": "130923",
+      "label": "东光县" },
+
+    {
+      "value": "130924",
+      "label": "海兴县" },
+
+    {
+      "value": "130925",
+      "label": "盐山县" },
+
+    {
+      "value": "130926",
+      "label": "肃宁县" },
+
+    {
+      "value": "130927",
+      "label": "南皮县" },
+
+    {
+      "value": "130928",
+      "label": "吴桥县" },
+
+    {
+      "value": "130929",
+      "label": "献　县" },
+
+    {
+      "value": "130930",
+      "label": "孟村回族自治县" },
+
+    {
+      "value": "130981",
+      "label": "泊头市" },
+
+    {
+      "value": "130982",
+      "label": "任丘市" },
+
+    {
+      "value": "130983",
+      "label": "黄骅市" },
+
+    {
+      "value": "130984",
+      "label": "河间市" }] },
+
+
+
+  {
+    "value": "131000",
+    "label": "廊坊市",
+    "children": [
+    {
+      "value": "131002",
+      "label": "安次区" },
+
+    {
+      "value": "131003",
+      "label": "广阳区" },
+
+    {
+      "value": "131022",
+      "label": "固安县" },
+
+    {
+      "value": "131023",
+      "label": "永清县" },
+
+    {
+      "value": "131024",
+      "label": "香河县" },
+
+    {
+      "value": "131025",
+      "label": "大城县" },
+
+    {
+      "value": "131026",
+      "label": "文安县" },
+
+    {
+      "value": "131028",
+      "label": "大厂回族自治县" },
+
+    {
+      "value": "131081",
+      "label": "霸州市" },
+
+    {
+      "value": "131082",
+      "label": "三河市" }] },
+
+
+
+  {
+    "value": "131100",
+    "label": "衡水市",
+    "children": [
+    {
+      "value": "131102",
+      "label": "桃城区" },
+
+    {
+      "value": "131121",
+      "label": "枣强县" },
+
+    {
+      "value": "131122",
+      "label": "武邑县" },
+
+    {
+      "value": "131123",
+      "label": "武强县" },
+
+    {
+      "value": "131124",
+      "label": "饶阳县" },
+
+    {
+      "value": "131125",
+      "label": "安平县" },
+
+    {
+      "value": "131126",
+      "label": "故城县" },
+
+    {
+      "value": "131127",
+      "label": "景　县" },
+
+    {
+      "value": "131128",
+      "label": "阜城县" },
+
+    {
+      "value": "131181",
+      "label": "冀州市" },
+
+    {
+      "value": "131182",
+      "label": "深州市" }] },
+
+
+
+  {
+    "value": "139000",
+    "label": "省直辖县级行政区划",
+    "children": [
+    {
+      "value": "139001",
+      "label": "定州市" },
+
+    {
+      "value": "139002",
+      "label": "辛集市" }] }] },
+
+
+
+
+
+{
+  "value": "140000",
+  "label": "山西省",
+  "children": [
+  {
+    "value": "140100",
+    "label": "太原市",
+    "children": [
+    {
+      "value": "140105",
+      "label": "小店区" },
+
+    {
+      "value": "140106",
+      "label": "迎泽区" },
+
+    {
+      "value": "140107",
+      "label": "杏花岭区" },
+
+    {
+      "value": "140108",
+      "label": "尖草坪区" },
+
+    {
+      "value": "140109",
+      "label": "万柏林区" },
+
+    {
+      "value": "140110",
+      "label": "晋源区" },
+
+    {
+      "value": "140121",
+      "label": "清徐县" },
+
+    {
+      "value": "140122",
+      "label": "阳曲县" },
+
+    {
+      "value": "140123",
+      "label": "娄烦县" },
+
+    {
+      "value": "140181",
+      "label": "古交市" }] },
+
+
+
+  {
+    "value": "140200",
+    "label": "大同市",
+    "children": [
+    {
+      "value": "140202",
+      "label": "城　区" },
+
+    {
+      "value": "140203",
+      "label": "矿　区" },
+
+    {
+      "value": "140211",
+      "label": "南郊区" },
+
+    {
+      "value": "140212",
+      "label": "新荣区" },
+
+    {
+      "value": "140221",
+      "label": "阳高县" },
+
+    {
+      "value": "140222",
+      "label": "天镇县" },
+
+    {
+      "value": "140223",
+      "label": "广灵县" },
+
+    {
+      "value": "140224",
+      "label": "灵丘县" },
+
+    {
+      "value": "140225",
+      "label": "浑源县" },
+
+    {
+      "value": "140226",
+      "label": "左云县" },
+
+    {
+      "value": "140227",
+      "label": "大同县" }] },
+
+
+
+  {
+    "value": "140300",
+    "label": "阳泉市",
+    "children": [
+    {
+      "value": "140302",
+      "label": "城　区" },
+
+    {
+      "value": "140303",
+      "label": "矿　区" },
+
+    {
+      "value": "140311",
+      "label": "郊　区" },
+
+    {
+      "value": "140321",
+      "label": "平定县" },
+
+    {
+      "value": "140322",
+      "label": "盂　县" }] },
+
+
+
+  {
+    "value": "140400",
+    "label": "长治市",
+    "children": [
+    {
+      "value": "140402",
+      "label": "城　区" },
+
+    {
+      "value": "140411",
+      "label": "郊　区" },
+
+    {
+      "value": "140421",
+      "label": "长治县" },
+
+    {
+      "value": "140423",
+      "label": "襄垣县" },
+
+    {
+      "value": "140424",
+      "label": "屯留县" },
+
+    {
+      "value": "140425",
+      "label": "平顺县" },
+
+    {
+      "value": "140426",
+      "label": "黎城县" },
+
+    {
+      "value": "140427",
+      "label": "壶关县" },
+
+    {
+      "value": "140428",
+      "label": "长子县" },
+
+    {
+      "value": "140429",
+      "label": "武乡县" },
+
+    {
+      "value": "140430",
+      "label": "沁　县" },
+
+    {
+      "value": "140431",
+      "label": "沁源县" },
+
+    {
+      "value": "140481",
+      "label": "潞城市" }] },
+
+
+
+  {
+    "value": "140500",
+    "label": "晋城市",
+    "children": [
+    {
+      "value": "140502",
+      "label": "城　区" },
+
+    {
+      "value": "140521",
+      "label": "沁水县" },
+
+    {
+      "value": "140522",
+      "label": "阳城县" },
+
+    {
+      "value": "140524",
+      "label": "陵川县" },
+
+    {
+      "value": "140525",
+      "label": "泽州县" },
+
+    {
+      "value": "140581",
+      "label": "高平市" }] },
+
+
+
+  {
+    "value": "140600",
+    "label": "朔州市",
+    "children": [
+    {
+      "value": "140602",
+      "label": "朔城区" },
+
+    {
+      "value": "140603",
+      "label": "平鲁区" },
+
+    {
+      "value": "140621",
+      "label": "山阴县" },
+
+    {
+      "value": "140622",
+      "label": "应　县" },
+
+    {
+      "value": "140623",
+      "label": "右玉县" },
+
+    {
+      "value": "140624",
+      "label": "怀仁县" }] },
+
+
+
+  {
+    "value": "140700",
+    "label": "晋中市",
+    "children": [
+    {
+      "value": "140702",
+      "label": "榆次区" },
+
+    {
+      "value": "140721",
+      "label": "榆社县" },
+
+    {
+      "value": "140722",
+      "label": "左权县" },
+
+    {
+      "value": "140723",
+      "label": "和顺县" },
+
+    {
+      "value": "140724",
+      "label": "昔阳县" },
+
+    {
+      "value": "140725",
+      "label": "寿阳县" },
+
+    {
+      "value": "140726",
+      "label": "太谷县" },
+
+    {
+      "value": "140727",
+      "label": "祁　县" },
+
+    {
+      "value": "140728",
+      "label": "平遥县" },
+
+    {
+      "value": "140729",
+      "label": "灵石县" },
+
+    {
+      "value": "140781",
+      "label": "介休市" }] },
+
+
+
+  {
+    "value": "140800",
+    "label": "运城市",
+    "children": [
+    {
+      "value": "140802",
+      "label": "盐湖区" },
+
+    {
+      "value": "140821",
+      "label": "临猗县" },
+
+    {
+      "value": "140822",
+      "label": "万荣县" },
+
+    {
+      "value": "140823",
+      "label": "闻喜县" },
+
+    {
+      "value": "140824",
+      "label": "稷山县" },
+
+    {
+      "value": "140825",
+      "label": "新绛县" },
+
+    {
+      "value": "140826",
+      "label": "绛　县" },
+
+    {
+      "value": "140827",
+      "label": "垣曲县" },
+
+    {
+      "value": "140828",
+      "label": "夏　县" },
+
+    {
+      "value": "140829",
+      "label": "平陆县" },
+
+    {
+      "value": "140830",
+      "label": "芮城县" },
+
+    {
+      "value": "140881",
+      "label": "永济市" },
+
+    {
+      "value": "140882",
+      "label": "河津市" }] },
+
+
+
+  {
+    "value": "140900",
+    "label": "忻州市",
+    "children": [
+    {
+      "value": "140902",
+      "label": "忻府区" },
+
+    {
+      "value": "140921",
+      "label": "定襄县" },
+
+    {
+      "value": "140922",
+      "label": "五台县" },
+
+    {
+      "value": "140923",
+      "label": "代　县" },
+
+    {
+      "value": "140924",
+      "label": "繁峙县" },
+
+    {
+      "value": "140925",
+      "label": "宁武县" },
+
+    {
+      "value": "140926",
+      "label": "静乐县" },
+
+    {
+      "value": "140927",
+      "label": "神池县" },
+
+    {
+      "value": "140928",
+      "label": "五寨县" },
+
+    {
+      "value": "140929",
+      "label": "岢岚县" },
+
+    {
+      "value": "140930",
+      "label": "河曲县" },
+
+    {
+      "value": "140931",
+      "label": "保德县" },
+
+    {
+      "value": "140932",
+      "label": "偏关县" },
+
+    {
+      "value": "140981",
+      "label": "原平市" }] },
+
+
+
+  {
+    "value": "141000",
+    "label": "临汾市",
+    "children": [
+    {
+      "value": "141002",
+      "label": "尧都区" },
+
+    {
+      "value": "141021",
+      "label": "曲沃县" },
+
+    {
+      "value": "141022",
+      "label": "翼城县" },
+
+    {
+      "value": "141023",
+      "label": "襄汾县" },
+
+    {
+      "value": "141024",
+      "label": "洪洞县" },
+
+    {
+      "value": "141025",
+      "label": "古　县" },
+
+    {
+      "value": "141026",
+      "label": "安泽县" },
+
+    {
+      "value": "141027",
+      "label": "浮山县" },
+
+    {
+      "value": "141028",
+      "label": "吉　县" },
+
+    {
+      "value": "141029",
+      "label": "乡宁县" },
+
+    {
+      "value": "141030",
+      "label": "大宁县" },
+
+    {
+      "value": "141031",
+      "label": "隰　县" },
+
+    {
+      "value": "141032",
+      "label": "永和县" },
+
+    {
+      "value": "141033",
+      "label": "蒲　县" },
+
+    {
+      "value": "141034",
+      "label": "汾西县" },
+
+    {
+      "value": "141081",
+      "label": "侯马市" },
+
+    {
+      "value": "141082",
+      "label": "霍州市" }] },
+
+
+
+  {
+    "value": "141100",
+    "label": "吕梁市",
+    "children": [
+    {
+      "value": "141102",
+      "label": "离石区" },
+
+    {
+      "value": "141121",
+      "label": "文水县" },
+
+    {
+      "value": "141122",
+      "label": "交城县" },
+
+    {
+      "value": "141123",
+      "label": "兴　县" },
+
+    {
+      "value": "141124",
+      "label": "临　县" },
+
+    {
+      "value": "141125",
+      "label": "柳林县" },
+
+    {
+      "value": "141126",
+      "label": "石楼县" },
+
+    {
+      "value": "141127",
+      "label": "岚　县" },
+
+    {
+      "value": "141128",
+      "label": "方山县" },
+
+    {
+      "value": "141129",
+      "label": "中阳县" },
+
+    {
+      "value": "141130",
+      "label": "交口县" },
+
+    {
+      "value": "141181",
+      "label": "孝义市" },
+
+    {
+      "value": "141182",
+      "label": "汾阳市" }] }] },
+
+
+
+
+
+{
+  "value": "150000",
+  "label": "内蒙古自治区",
+  "children": [
+  {
+    "value": "150100",
+    "label": "呼和浩特市",
+    "children": [
+    {
+      "value": "150102",
+      "label": "新城区" },
+
+    {
+      "value": "150103",
+      "label": "回民区" },
+
+    {
+      "value": "150104",
+      "label": "玉泉区" },
+
+    {
+      "value": "150105",
+      "label": "赛罕区" },
+
+    {
+      "value": "150121",
+      "label": "土默特左旗" },
+
+    {
+      "value": "150122",
+      "label": "托克托县" },
+
+    {
+      "value": "150123",
+      "label": "和林格尔县" },
+
+    {
+      "value": "150124",
+      "label": "清水河县" },
+
+    {
+      "value": "150125",
+      "label": "武川县" }] },
+
+
+
+  {
+    "value": "150200",
+    "label": "包头市",
+    "children": [
+    {
+      "value": "150202",
+      "label": "东河区" },
+
+    {
+      "value": "150203",
+      "label": "昆都仑区" },
+
+    {
+      "value": "150204",
+      "label": "青山区" },
+
+    {
+      "value": "150205",
+      "label": "石拐区" },
+
+    {
+      "value": "150206",
+      "label": "白云鄂博矿区" },
+
+    {
+      "value": "150207",
+      "label": "九原区" },
+
+    {
+      "value": "150221",
+      "label": "土默特右旗" },
+
+    {
+      "value": "150222",
+      "label": "固阳县" },
+
+    {
+      "value": "150223",
+      "label": "达尔罕茂明安联合旗" }] },
+
+
+
+  {
+    "value": "150300",
+    "label": "乌海市",
+    "children": [
+    {
+      "value": "150302",
+      "label": "海勃湾区" },
+
+    {
+      "value": "150303",
+      "label": "海南区" },
+
+    {
+      "value": "150304",
+      "label": "乌达区" }] },
+
+
+
+  {
+    "value": "150400",
+    "label": "赤峰市",
+    "children": [
+    {
+      "value": "150402",
+      "label": "红山区" },
+
+    {
+      "value": "150403",
+      "label": "元宝山区" },
+
+    {
+      "value": "150404",
+      "label": "松山区" },
+
+    {
+      "value": "150421",
+      "label": "阿鲁科尔沁旗" },
+
+    {
+      "value": "150422",
+      "label": "巴林左旗" },
+
+    {
+      "value": "150423",
+      "label": "巴林右旗" },
+
+    {
+      "value": "150424",
+      "label": "林西县" },
+
+    {
+      "value": "150425",
+      "label": "克什克腾旗" },
+
+    {
+      "value": "150426",
+      "label": "翁牛特旗" },
+
+    {
+      "value": "150428",
+      "label": "喀喇沁旗" },
+
+    {
+      "value": "150429",
+      "label": "宁城县" },
+
+    {
+      "value": "150430",
+      "label": "敖汉旗" }] },
+
+
+
+  {
+    "value": "150500",
+    "label": "通辽市",
+    "children": [
+    {
+      "value": "150502",
+      "label": "科尔沁区" },
+
+    {
+      "value": "150521",
+      "label": "科尔沁左翼中旗" },
+
+    {
+      "value": "150522",
+      "label": "科尔沁左翼后旗" },
+
+    {
+      "value": "150523",
+      "label": "开鲁县" },
+
+    {
+      "value": "150524",
+      "label": "库伦旗" },
+
+    {
+      "value": "150525",
+      "label": "奈曼旗" },
+
+    {
+      "value": "150526",
+      "label": "扎鲁特旗" },
+
+    {
+      "value": "150581",
+      "label": "霍林郭勒市" }] },
+
+
+
+  {
+    "value": "150600",
+    "label": "鄂尔多斯市",
+    "children": [
+    {
+      "value": "150602",
+      "label": "东胜区" },
+
+    {
+      "value": "150621",
+      "label": "达拉特旗" },
+
+    {
+      "value": "150622",
+      "label": "准格尔旗" },
+
+    {
+      "value": "150623",
+      "label": "鄂托克前旗" },
+
+    {
+      "value": "150624",
+      "label": "鄂托克旗" },
+
+    {
+      "value": "150625",
+      "label": "杭锦旗" },
+
+    {
+      "value": "150626",
+      "label": "乌审旗" },
+
+    {
+      "value": "150627",
+      "label": "伊金霍洛旗" }] },
+
+
+
+  {
+    "value": "150700",
+    "label": "呼伦贝尔市",
+    "children": [
+    {
+      "value": "150702",
+      "label": "海拉尔区" },
+
+    {
+      "value": "150703",
+      "label": "扎赉诺尔区" },
+
+    {
+      "value": "150721",
+      "label": "阿荣旗" },
+
+    {
+      "value": "150722",
+      "label": "莫力达瓦达斡尔族自治旗" },
+
+    {
+      "value": "150723",
+      "label": "鄂伦春自治旗" },
+
+    {
+      "value": "150724",
+      "label": "鄂温克族自治旗" },
+
+    {
+      "value": "150725",
+      "label": "陈巴尔虎旗" },
+
+    {
+      "value": "150726",
+      "label": "新巴尔虎左旗" },
+
+    {
+      "value": "150727",
+      "label": "新巴尔虎右旗" },
+
+    {
+      "value": "150781",
+      "label": "满洲里市" },
+
+    {
+      "value": "150782",
+      "label": "牙克石市" },
+
+    {
+      "value": "150783",
+      "label": "扎兰屯市" },
+
+    {
+      "value": "150784",
+      "label": "额尔古纳市" },
+
+    {
+      "value": "150785",
+      "label": "根河市" }] },
+
+
+
+  {
+    "value": "150800",
+    "label": "巴彦淖尔市",
+    "children": [
+    {
+      "value": "150802",
+      "label": "临河区" },
+
+    {
+      "value": "150821",
+      "label": "五原县" },
+
+    {
+      "value": "150822",
+      "label": "磴口县" },
+
+    {
+      "value": "150823",
+      "label": "乌拉特前旗" },
+
+    {
+      "value": "150824",
+      "label": "乌拉特中旗" },
+
+    {
+      "value": "150825",
+      "label": "乌拉特后旗" },
+
+    {
+      "value": "150826",
+      "label": "杭锦后旗" }] },
+
+
+
+  {
+    "value": "150900",
+    "label": "乌兰察布市",
+    "children": [
+    {
+      "value": "150902",
+      "label": "集宁区" },
+
+    {
+      "value": "150921",
+      "label": "卓资县" },
+
+    {
+      "value": "150922",
+      "label": "化德县" },
+
+    {
+      "value": "150923",
+      "label": "商都县" },
+
+    {
+      "value": "150924",
+      "label": "兴和县" },
+
+    {
+      "value": "150925",
+      "label": "凉城县" },
+
+    {
+      "value": "150926",
+      "label": "察哈尔右翼前旗" },
+
+    {
+      "value": "150927",
+      "label": "察哈尔右翼中旗" },
+
+    {
+      "value": "150928",
+      "label": "察哈尔右翼后旗" },
+
+    {
+      "value": "150929",
+      "label": "四子王旗" },
+
+    {
+      "value": "150981",
+      "label": "丰镇市" }] },
+
+
+
+  {
+    "value": "152200",
+    "label": "兴安盟",
+    "children": [
+    {
+      "value": "152201",
+      "label": "乌兰浩特市" },
+
+    {
+      "value": "152202",
+      "label": "阿尔山市" },
+
+    {
+      "value": "152221",
+      "label": "科尔沁右翼前旗" },
+
+    {
+      "value": "152222",
+      "label": "科尔沁右翼中旗" },
+
+    {
+      "value": "152223",
+      "label": "扎赉特旗" },
+
+    {
+      "value": "152224",
+      "label": "突泉县" }] },
+
+
+
+  {
+    "value": "152500",
+    "label": "锡林郭勒盟",
+    "children": [
+    {
+      "value": "152501",
+      "label": "二连浩特市" },
+
+    {
+      "value": "152502",
+      "label": "锡林浩特市" },
+
+    {
+      "value": "152522",
+      "label": "阿巴嘎旗" },
+
+    {
+      "value": "152523",
+      "label": "苏尼特左旗" },
+
+    {
+      "value": "152524",
+      "label": "苏尼特右旗" },
+
+    {
+      "value": "152525",
+      "label": "东乌珠穆沁旗" },
+
+    {
+      "value": "152526",
+      "label": "西乌珠穆沁旗" },
+
+    {
+      "value": "152527",
+      "label": "太仆寺旗" },
+
+    {
+      "value": "152528",
+      "label": "镶黄旗" },
+
+    {
+      "value": "152529",
+      "label": "正镶白旗" },
+
+    {
+      "value": "152530",
+      "label": "正蓝旗" },
+
+    {
+      "value": "152531",
+      "label": "多伦县" }] },
+
+
+
+  {
+    "value": "152900",
+    "label": "阿拉善盟",
+    "children": [
+    {
+      "value": "152921",
+      "label": "阿拉善左旗" },
+
+    {
+      "value": "152922",
+      "label": "阿拉善右旗" },
+
+    {
+      "value": "152923",
+      "label": "额济纳旗" }] }] },
+
+
+
+
+
+{
+  "value": "210000",
+  "label": "辽宁省",
+  "children": [
+  {
+    "value": "210100",
+    "label": "沈阳市",
+    "children": [
+    {
+      "value": "210102",
+      "label": "和平区" },
+
+    {
+      "value": "210103",
+      "label": "沈河区" },
+
+    {
+      "value": "210104",
+      "label": "大东区" },
+
+    {
+      "value": "210105",
+      "label": "皇姑区" },
+
+    {
+      "value": "210106",
+      "label": "铁西区" },
+
+    {
+      "value": "210111",
+      "label": "苏家屯区" },
+
+    {
+      "value": "210112",
+      "label": "浑南区" },
+
+    {
+      "value": "210113",
+      "label": "沈北新区" },
+
+    {
+      "value": "210114",
+      "label": "于洪区" },
+
+    {
+      "value": "210122",
+      "label": "辽中县" },
+
+    {
+      "value": "210123",
+      "label": "康平县" },
+
+    {
+      "value": "210124",
+      "label": "法库县" },
+
+    {
+      "value": "210181",
+      "label": "新民市" }] },
+
+
+
+  {
+    "value": "210200",
+    "label": "大连市",
+    "children": [
+    {
+      "value": "210202",
+      "label": "中山区" },
+
+    {
+      "value": "210203",
+      "label": "西岗区" },
+
+    {
+      "value": "210204",
+      "label": "沙河口区" },
+
+    {
+      "value": "210211",
+      "label": "甘井子区" },
+
+    {
+      "value": "210212",
+      "label": "旅顺口区" },
+
+    {
+      "value": "210213",
+      "label": "金州区" },
+
+    {
+      "value": "210224",
+      "label": "长海县" },
+
+    {
+      "value": "210281",
+      "label": "瓦房店市" },
+
+    {
+      "value": "210282",
+      "label": "普兰店市" },
+
+    {
+      "value": "210283",
+      "label": "庄河市" }] },
+
+
+
+  {
+    "value": "210300",
+    "label": "鞍山市",
+    "children": [
+    {
+      "value": "210302",
+      "label": "铁东区" },
+
+    {
+      "value": "210303",
+      "label": "铁西区" },
+
+    {
+      "value": "210304",
+      "label": "立山区" },
+
+    {
+      "value": "210311",
+      "label": "千山区" },
+
+    {
+      "value": "210321",
+      "label": "台安县" },
+
+    {
+      "value": "210323",
+      "label": "岫岩满族自治县" },
+
+    {
+      "value": "210381",
+      "label": "海城市" }] },
+
+
+
+  {
+    "value": "210400",
+    "label": "抚顺市",
+    "children": [
+    {
+      "value": "210402",
+      "label": "新抚区" },
+
+    {
+      "value": "210403",
+      "label": "东洲区" },
+
+    {
+      "value": "210404",
+      "label": "望花区" },
+
+    {
+      "value": "210411",
+      "label": "顺城区" },
+
+    {
+      "value": "210421",
+      "label": "抚顺县" },
+
+    {
+      "value": "210422",
+      "label": "新宾满族自治县" },
+
+    {
+      "value": "210423",
+      "label": "清原满族自治县" }] },
+
+
+
+  {
+    "value": "210500",
+    "label": "本溪市",
+    "children": [
+    {
+      "value": "210502",
+      "label": "平山区" },
+
+    {
+      "value": "210503",
+      "label": "溪湖区" },
+
+    {
+      "value": "210504",
+      "label": "明山区" },
+
+    {
+      "value": "210505",
+      "label": "南芬区" },
+
+    {
+      "value": "210521",
+      "label": "本溪满族自治县" },
+
+    {
+      "value": "210522",
+      "label": "桓仁满族自治县" }] },
+
+
+
+  {
+    "value": "210600",
+    "label": "丹东市",
+    "children": [
+    {
+      "value": "210602",
+      "label": "元宝区" },
+
+    {
+      "value": "210603",
+      "label": "振兴区" },
+
+    {
+      "value": "210604",
+      "label": "振安区" },
+
+    {
+      "value": "210624",
+      "label": "宽甸满族自治县" },
+
+    {
+      "value": "210681",
+      "label": "东港市" },
+
+    {
+      "value": "210682",
+      "label": "凤城市" }] },
+
+
+
+  {
+    "value": "210700",
+    "label": "锦州市",
+    "children": [
+    {
+      "value": "210702",
+      "label": "古塔区" },
+
+    {
+      "value": "210703",
+      "label": "凌河区" },
+
+    {
+      "value": "210711",
+      "label": "太和区" },
+
+    {
+      "value": "210726",
+      "label": "黑山县" },
+
+    {
+      "value": "210727",
+      "label": "义　县" },
+
+    {
+      "value": "210781",
+      "label": "凌海市" },
+
+    {
+      "value": "210783",
+      "label": "北镇市" }] },
+
+
+
+  {
+    "value": "210800",
+    "label": "营口市",
+    "children": [
+    {
+      "value": "210802",
+      "label": "站前区" },
+
+    {
+      "value": "210803",
+      "label": "西市区" },
+
+    {
+      "value": "210804",
+      "label": "鲅鱼圈区" },
+
+    {
+      "value": "210811",
+      "label": "老边区" },
+
+    {
+      "value": "210881",
+      "label": "盖州市" },
+
+    {
+      "value": "210882",
+      "label": "大石桥市" }] },
+
+
+
+  {
+    "value": "210900",
+    "label": "阜新市",
+    "children": [
+    {
+      "value": "210902",
+      "label": "海州区" },
+
+    {
+      "value": "210903",
+      "label": "新邱区" },
+
+    {
+      "value": "210904",
+      "label": "太平区" },
+
+    {
+      "value": "210905",
+      "label": "清河门区" },
+
+    {
+      "value": "210911",
+      "label": "细河区" },
+
+    {
+      "value": "210921",
+      "label": "阜新蒙古族自治县" },
+
+    {
+      "value": "210922",
+      "label": "彰武县" }] },
+
+
+
+  {
+    "value": "211000",
+    "label": "辽阳市",
+    "children": [
+    {
+      "value": "211002",
+      "label": "白塔区" },
+
+    {
+      "value": "211003",
+      "label": "文圣区" },
+
+    {
+      "value": "211004",
+      "label": "宏伟区" },
+
+    {
+      "value": "211005",
+      "label": "弓长岭区" },
+
+    {
+      "value": "211011",
+      "label": "太子河区" },
+
+    {
+      "value": "211021",
+      "label": "辽阳县" },
+
+    {
+      "value": "211081",
+      "label": "灯塔市" }] },
+
+
+
+  {
+    "value": "211100",
+    "label": "盘锦市",
+    "children": [
+    {
+      "value": "211102",
+      "label": "双台子区" },
+
+    {
+      "value": "211103",
+      "label": "兴隆台区" },
+
+    {
+      "value": "211121",
+      "label": "大洼县" },
+
+    {
+      "value": "211122",
+      "label": "盘山县" }] },
+
+
+
+  {
+    "value": "211200",
+    "label": "铁岭市",
+    "children": [
+    {
+      "value": "211202",
+      "label": "银州区" },
+
+    {
+      "value": "211204",
+      "label": "清河区" },
+
+    {
+      "value": "211221",
+      "label": "铁岭县" },
+
+    {
+      "value": "211223",
+      "label": "西丰县" },
+
+    {
+      "value": "211224",
+      "label": "昌图县" },
+
+    {
+      "value": "211281",
+      "label": "调兵山市" },
+
+    {
+      "value": "211282",
+      "label": "开原市" }] },
+
+
+
+  {
+    "value": "211300",
+    "label": "朝阳市",
+    "children": [
+    {
+      "value": "211302",
+      "label": "双塔区" },
+
+    {
+      "value": "211303",
+      "label": "龙城区" },
+
+    {
+      "value": "211321",
+      "label": "朝阳县" },
+
+    {
+      "value": "211322",
+      "label": "建平县" },
+
+    {
+      "value": "211324",
+      "label": "喀喇沁左翼蒙古族自治县" },
+
+    {
+      "value": "211381",
+      "label": "北票市" },
+
+    {
+      "value": "211382",
+      "label": "凌源市" }] },
+
+
+
+  {
+    "value": "211400",
+    "label": "葫芦岛市",
+    "children": [
+    {
+      "value": "211402",
+      "label": "连山区" },
+
+    {
+      "value": "211403",
+      "label": "龙港区" },
+
+    {
+      "value": "211404",
+      "label": "南票区" },
+
+    {
+      "value": "211421",
+      "label": "绥中县" },
+
+    {
+      "value": "211422",
+      "label": "建昌县" },
+
+    {
+      "value": "211481",
+      "label": "兴城市" }] }] },
+
+
+
+
+
+{
+  "value": "220000",
+  "label": "吉林省",
+  "children": [
+  {
+    "value": "220100",
+    "label": "长春市",
+    "children": [
+    {
+      "value": "220102",
+      "label": "南关区" },
+
+    {
+      "value": "220103",
+      "label": "宽城区" },
+
+    {
+      "value": "220104",
+      "label": "朝阳区" },
+
+    {
+      "value": "220105",
+      "label": "二道区" },
+
+    {
+      "value": "220106",
+      "label": "绿园区" },
+
+    {
+      "value": "220112",
+      "label": "双阳区" },
+
+    {
+      "value": "220122",
+      "label": "农安县" },
+
+    {
+      "value": "220181",
+      "label": "九台市" },
+
+    {
+      "value": "220182",
+      "label": "榆树市" },
+
+    {
+      "value": "220183",
+      "label": "德惠市" }] },
+
+
+
+  {
+    "value": "220200",
+    "label": "吉林市",
+    "children": [
+    {
+      "value": "220202",
+      "label": "昌邑区" },
+
+    {
+      "value": "220203",
+      "label": "龙潭区" },
+
+    {
+      "value": "220204",
+      "label": "船营区" },
+
+    {
+      "value": "220211",
+      "label": "丰满区" },
+
+    {
+      "value": "220221",
+      "label": "永吉县" },
+
+    {
+      "value": "220281",
+      "label": "蛟河市" },
+
+    {
+      "value": "220282",
+      "label": "桦甸市" },
+
+    {
+      "value": "220283",
+      "label": "舒兰市" },
+
+    {
+      "value": "220284",
+      "label": "磐石市" }] },
+
+
+
+  {
+    "value": "220300",
+    "label": "四平市",
+    "children": [
+    {
+      "value": "220302",
+      "label": "铁西区" },
+
+    {
+      "value": "220303",
+      "label": "铁东区" },
+
+    {
+      "value": "220322",
+      "label": "梨树县" },
+
+    {
+      "value": "220323",
+      "label": "伊通满族自治县" },
+
+    {
+      "value": "220381",
+      "label": "公主岭市" },
+
+    {
+      "value": "220382",
+      "label": "双辽市" }] },
+
+
+
+  {
+    "value": "220400",
+    "label": "辽源市",
+    "children": [
+    {
+      "value": "220402",
+      "label": "龙山区" },
+
+    {
+      "value": "220403",
+      "label": "西安区" },
+
+    {
+      "value": "220421",
+      "label": "东丰县" },
+
+    {
+      "value": "220422",
+      "label": "东辽县" }] },
+
+
+
+  {
+    "value": "220500",
+    "label": "通化市",
+    "children": [
+    {
+      "value": "220502",
+      "label": "东昌区" },
+
+    {
+      "value": "220503",
+      "label": "二道江区" },
+
+    {
+      "value": "220521",
+      "label": "通化县" },
+
+    {
+      "value": "220523",
+      "label": "辉南县" },
+
+    {
+      "value": "220524",
+      "label": "柳河县" },
+
+    {
+      "value": "220581",
+      "label": "梅河口市" },
+
+    {
+      "value": "220582",
+      "label": "集安市" }] },
+
+
+
+  {
+    "value": "220600",
+    "label": "白山市",
+    "children": [
+    {
+      "value": "220602",
+      "label": "浑江区" },
+
+    {
+      "value": "220605",
+      "label": "江源区" },
+
+    {
+      "value": "220621",
+      "label": "抚松县" },
+
+    {
+      "value": "220622",
+      "label": "靖宇县" },
+
+    {
+      "value": "220623",
+      "label": "长白朝鲜族自治县" },
+
+    {
+      "value": "220681",
+      "label": "临江市" }] },
+
+
+
+  {
+    "value": "220700",
+    "label": "松原市",
+    "children": [
+    {
+      "value": "220702",
+      "label": "宁江区" },
+
+    {
+      "value": "220721",
+      "label": "前郭尔罗斯蒙古族自治县" },
+
+    {
+      "value": "220722",
+      "label": "长岭县" },
+
+    {
+      "value": "220723",
+      "label": "乾安县" },
+
+    {
+      "value": "220724",
+      "label": "扶余县" }] },
+
+
+
+  {
+    "value": "220800",
+    "label": "白城市",
+    "children": [
+    {
+      "value": "220802",
+      "label": "洮北区" },
+
+    {
+      "value": "220821",
+      "label": "镇赉县" },
+
+    {
+      "value": "220822",
+      "label": "通榆县" },
+
+    {
+      "value": "220881",
+      "label": "洮南市" },
+
+    {
+      "value": "220882",
+      "label": "大安市" }] },
+
+
+
+  {
+    "value": "222400",
+    "label": "延边朝鲜族自治州",
+    "children": [
+    {
+      "value": "222401",
+      "label": "延吉市" },
+
+    {
+      "value": "222402",
+      "label": "图们市" },
+
+    {
+      "value": "222403",
+      "label": "敦化市" },
+
+    {
+      "value": "222404",
+      "label": "珲春市" },
+
+    {
+      "value": "222405",
+      "label": "龙井市" },
+
+    {
+      "value": "222406",
+      "label": "和龙市" },
+
+    {
+      "value": "222424",
+      "label": "汪清县" },
+
+    {
+      "value": "222426",
+      "label": "安图县" }] }] },
+
+
+
+
+
+{
+  "value": "230000",
+  "label": "黑龙江省",
+  "children": [
+  {
+    "value": "230100",
+    "label": "哈尔滨市",
+    "children": [
+    {
+      "value": "230102",
+      "label": "道里区" },
+
+    {
+      "value": "230103",
+      "label": "南岗区" },
+
+    {
+      "value": "230104",
+      "label": "道外区" },
+
+    {
+      "value": "230106",
+      "label": "香坊区" },
+
+    {
+      "value": "230108",
+      "label": "平房区" },
+
+    {
+      "value": "230109",
+      "label": "松北区" },
+
+    {
+      "value": "230111",
+      "label": "呼兰区" },
+
+    {
+      "value": "230123",
+      "label": "依兰县" },
+
+    {
+      "value": "230124",
+      "label": "方正县" },
+
+    {
+      "value": "230125",
+      "label": "宾　县" },
+
+    {
+      "value": "230126",
+      "label": "巴彦县" },
+
+    {
+      "value": "230127",
+      "label": "木兰县" },
+
+    {
+      "value": "230128",
+      "label": "通河县" },
+
+    {
+      "value": "230129",
+      "label": "延寿县" },
+
+    {
+      "value": "230181",
+      "label": "阿城市" },
+
+    {
+      "value": "230182",
+      "label": "双城市" },
+
+    {
+      "value": "230183",
+      "label": "尚志市" },
+
+    {
+      "value": "230184",
+      "label": "五常市" }] },
+
+
+
+  {
+    "value": "230200",
+    "label": "齐齐哈尔市",
+    "children": [
+    {
+      "value": "230202",
+      "label": "龙沙区" },
+
+    {
+      "value": "230203",
+      "label": "建华区" },
+
+    {
+      "value": "230204",
+      "label": "铁锋区" },
+
+    {
+      "value": "230205",
+      "label": "昂昂溪区" },
+
+    {
+      "value": "230206",
+      "label": "富拉尔基区" },
+
+    {
+      "value": "230207",
+      "label": "碾子山区" },
+
+    {
+      "value": "230208",
+      "label": "梅里斯达斡尔族区" },
+
+    {
+      "value": "230221",
+      "label": "龙江县" },
+
+    {
+      "value": "230223",
+      "label": "依安县" },
+
+    {
+      "value": "230224",
+      "label": "泰来县" },
+
+    {
+      "value": "230225",
+      "label": "甘南县" },
+
+    {
+      "value": "230227",
+      "label": "富裕县" },
+
+    {
+      "value": "230229",
+      "label": "克山县" },
+
+    {
+      "value": "230230",
+      "label": "克东县" },
+
+    {
+      "value": "230231",
+      "label": "拜泉县" },
+
+    {
+      "value": "230281",
+      "label": "讷河市" }] },
+
+
+
+  {
+    "value": "230300",
+    "label": "鸡西市",
+    "children": [
+    {
+      "value": "230302",
+      "label": "鸡冠区" },
+
+    {
+      "value": "230303",
+      "label": "恒山区" },
+
+    {
+      "value": "230304",
+      "label": "滴道区" },
+
+    {
+      "value": "230305",
+      "label": "梨树区" },
+
+    {
+      "value": "230306",
+      "label": "城子河区" },
+
+    {
+      "value": "230307",
+      "label": "麻山区" },
+
+    {
+      "value": "230321",
+      "label": "鸡东县" },
+
+    {
+      "value": "230381",
+      "label": "虎林市" },
+
+    {
+      "value": "230382",
+      "label": "密山市" }] },
+
+
+
+  {
+    "value": "230400",
+    "label": "鹤岗市",
+    "children": [
+    {
+      "value": "230402",
+      "label": "向阳区" },
+
+    {
+      "value": "230403",
+      "label": "工农区" },
+
+    {
+      "value": "230404",
+      "label": "南山区" },
+
+    {
+      "value": "230405",
+      "label": "兴安区" },
+
+    {
+      "value": "230406",
+      "label": "东山区" },
+
+    {
+      "value": "230407",
+      "label": "兴山区" },
+
+    {
+      "value": "230421",
+      "label": "萝北县" },
+
+    {
+      "value": "230422",
+      "label": "绥滨县" }] },
+
+
+
+  {
+    "value": "230500",
+    "label": "双鸭山市",
+    "children": [
+    {
+      "value": "230502",
+      "label": "尖山区" },
+
+    {
+      "value": "230503",
+      "label": "岭东区" },
+
+    {
+      "value": "230505",
+      "label": "四方台区" },
+
+    {
+      "value": "230506",
+      "label": "宝山区" },
+
+    {
+      "value": "230521",
+      "label": "集贤县" },
+
+    {
+      "value": "230522",
+      "label": "友谊县" },
+
+    {
+      "value": "230523",
+      "label": "宝清县" },
+
+    {
+      "value": "230524",
+      "label": "饶河县" }] },
+
+
+
+  {
+    "value": "230600",
+    "label": "大庆市",
+    "children": [
+    {
+      "value": "230602",
+      "label": "萨尔图区" },
+
+    {
+      "value": "230603",
+      "label": "龙凤区" },
+
+    {
+      "value": "230604",
+      "label": "让胡路区" },
+
+    {
+      "value": "230605",
+      "label": "红岗区" },
+
+    {
+      "value": "230606",
+      "label": "大同区" },
+
+    {
+      "value": "230621",
+      "label": "肇州县" },
+
+    {
+      "value": "230622",
+      "label": "肇源县" },
+
+    {
+      "value": "230623",
+      "label": "林甸县" },
+
+    {
+      "value": "230624",
+      "label": "杜尔伯特蒙古族自治县" }] },
+
+
+
+  {
+    "value": "230700",
+    "label": "伊春市",
+    "children": [
+    {
+      "value": "230702",
+      "label": "伊春区" },
+
+    {
+      "value": "230703",
+      "label": "南岔区" },
+
+    {
+      "value": "230704",
+      "label": "友好区" },
+
+    {
+      "value": "230705",
+      "label": "西林区" },
+
+    {
+      "value": "230706",
+      "label": "翠峦区" },
+
+    {
+      "value": "230707",
+      "label": "新青区" },
+
+    {
+      "value": "230708",
+      "label": "美溪区" },
+
+    {
+      "value": "230709",
+      "label": "金山屯区" },
+
+    {
+      "value": "230710",
+      "label": "五营区" },
+
+    {
+      "value": "230711",
+      "label": "乌马河区" },
+
+    {
+      "value": "230712",
+      "label": "汤旺河区" },
+
+    {
+      "value": "230713",
+      "label": "带岭区" },
+
+    {
+      "value": "230714",
+      "label": "乌伊岭区" },
+
+    {
+      "value": "230715",
+      "label": "红星区" },
+
+    {
+      "value": "230716",
+      "label": "上甘岭区" },
+
+    {
+      "value": "230722",
+      "label": "嘉荫县" },
+
+    {
+      "value": "230781",
+      "label": "铁力市" }] },
+
+
+
+  {
+    "value": "230800",
+    "label": "佳木斯市",
+    "children": [
+    {
+      "value": "230803",
+      "label": "向阳区" },
+
+    {
+      "value": "230804",
+      "label": "前进区" },
+
+    {
+      "value": "230805",
+      "label": "东风区" },
+
+    {
+      "value": "230811",
+      "label": "郊　区" },
+
+    {
+      "value": "230822",
+      "label": "桦南县" },
+
+    {
+      "value": "230826",
+      "label": "桦川县" },
+
+    {
+      "value": "230828",
+      "label": "汤原县" },
+
+    {
+      "value": "230833",
+      "label": "抚远县" },
+
+    {
+      "value": "230881",
+      "label": "同江市" },
+
+    {
+      "value": "230882",
+      "label": "富锦市" }] },
+
+
+
+  {
+    "value": "230900",
+    "label": "七台河市",
+    "children": [
+    {
+      "value": "230902",
+      "label": "新兴区" },
+
+    {
+      "value": "230903",
+      "label": "桃山区" },
+
+    {
+      "value": "230904",
+      "label": "茄子河区" },
+
+    {
+      "value": "230921",
+      "label": "勃利县" }] },
+
+
+
+  {
+    "value": "231000",
+    "label": "牡丹江市",
+    "children": [
+    {
+      "value": "231002",
+      "label": "东安区" },
+
+    {
+      "value": "231003",
+      "label": "阳明区" },
+
+    {
+      "value": "231004",
+      "label": "爱民区" },
+
+    {
+      "value": "231005",
+      "label": "西安区" },
+
+    {
+      "value": "231024",
+      "label": "东宁县" },
+
+    {
+      "value": "231025",
+      "label": "林口县" },
+
+    {
+      "value": "231081",
+      "label": "绥芬河市" },
+
+    {
+      "value": "231083",
+      "label": "海林市" },
+
+    {
+      "value": "231084",
+      "label": "宁安市" },
+
+    {
+      "value": "231085",
+      "label": "穆棱市" }] },
+
+
+
+  {
+    "value": "231100",
+    "label": "黑河市",
+    "children": [
+    {
+      "value": "231102",
+      "label": "爱辉区" },
+
+    {
+      "value": "231121",
+      "label": "嫩江县" },
+
+    {
+      "value": "231123",
+      "label": "逊克县" },
+
+    {
+      "value": "231124",
+      "label": "孙吴县" },
+
+    {
+      "value": "231181",
+      "label": "北安市" },
+
+    {
+      "value": "231182",
+      "label": "五大连池市" }] },
+
+
+
+  {
+    "value": "231200",
+    "label": "绥化市",
+    "children": [
+    {
+      "value": "231202",
+      "label": "北林区" },
+
+    {
+      "value": "231221",
+      "label": "望奎县" },
+
+    {
+      "value": "231222",
+      "label": "兰西县" },
+
+    {
+      "value": "231223",
+      "label": "青冈县" },
+
+    {
+      "value": "231224",
+      "label": "庆安县" },
+
+    {
+      "value": "231225",
+      "label": "明水县" },
+
+    {
+      "value": "231226",
+      "label": "绥棱县" },
+
+    {
+      "value": "231281",
+      "label": "安达市" },
+
+    {
+      "value": "231282",
+      "label": "肇东市" },
+
+    {
+      "value": "231283",
+      "label": "海伦市" }] },
+
+
+
+  {
+    "value": "232700",
+    "label": "大兴安岭地区",
+    "children": [
+    {
+      "value": "232721",
+      "label": "呼玛县" },
+
+    {
+      "value": "232722",
+      "label": "塔河县" },
+
+    {
+      "value": "232723",
+      "label": "漠河县" }] }] },
+
+
+
+
+
+{
+  "value": "310000",
+  "label": "上海市",
+  "children": [
+  {
+    "value": "310100",
+    "label": "上海市",
+    "children": [
+    {
+      "value": "310101",
+      "label": "黄浦区" },
+
+    {
+      "value": "310104",
+      "label": "徐汇区" },
+
+    {
+      "value": "310105",
+      "label": "长宁区" },
+
+    {
+      "value": "310106",
+      "label": "静安区" },
+
+    {
+      "value": "310107",
+      "label": "普陀区" },
+
+    {
+      "value": "310109",
+      "label": "虹口区" },
+
+    {
+      "value": "310110",
+      "label": "杨浦区" },
+
+    {
+      "value": "310112",
+      "label": "闵行区" },
+
+    {
+      "value": "310113",
+      "label": "宝山区" },
+
+    {
+      "value": "310114",
+      "label": "嘉定区" },
+
+    {
+      "value": "310115",
+      "label": "浦东新区" },
+
+    {
+      "value": "310116",
+      "label": "金山区" },
+
+    {
+      "value": "310117",
+      "label": "松江区" },
+
+    {
+      "value": "310118",
+      "label": "青浦区" },
+
+    {
+      "value": "310120",
+      "label": "奉贤区" },
+
+    {
+      "value": "310230",
+      "label": "崇明区" }] }] },
+
+
+
+
+
+{
+  "value": "320000",
+  "label": "江苏省",
+  "children": [
+  {
+    "value": "320100",
+    "label": "南京市",
+    "children": [
+    {
+      "value": "320102",
+      "label": "玄武区" },
+
+    {
+      "value": "320104",
+      "label": "秦淮区" },
+
+    {
+      "value": "320105",
+      "label": "建邺区" },
+
+    {
+      "value": "320106",
+      "label": "鼓楼区" },
+
+    {
+      "value": "320111",
+      "label": "浦口区" },
+
+    {
+      "value": "320113",
+      "label": "栖霞区" },
+
+    {
+      "value": "320114",
+      "label": "雨花台区" },
+
+    {
+      "value": "320115",
+      "label": "江宁区" },
+
+    {
+      "value": "320116",
+      "label": "六合区" },
+
+    {
+      "value": "320124",
+      "label": "溧水区" },
+
+    {
+      "value": "320125",
+      "label": "高淳区" }] },
+
+
+
+  {
+    "value": "320200",
+    "label": "无锡市",
+    "children": [
+    {
+      "value": "320202",
+      "label": "崇安区" },
+
+    {
+      "value": "320203",
+      "label": "南长区" },
+
+    {
+      "value": "320204",
+      "label": "北塘区" },
+
+    {
+      "value": "320205",
+      "label": "锡山区" },
+
+    {
+      "value": "320206",
+      "label": "惠山区" },
+
+    {
+      "value": "320211",
+      "label": "滨湖区" },
+
+    {
+      "value": "320281",
+      "label": "江阴市" },
+
+    {
+      "value": "320282",
+      "label": "宜兴市" }] },
+
+
+
+  {
+    "value": "320300",
+    "label": "徐州市",
+    "children": [
+    {
+      "value": "320302",
+      "label": "鼓楼区" },
+
+    {
+      "value": "320303",
+      "label": "云龙区" },
+
+    {
+      "value": "320305",
+      "label": "贾汪区" },
+
+    {
+      "value": "320311",
+      "label": "泉山区" },
+
+    {
+      "value": "320312",
+      "label": "铜山区" },
+
+    {
+      "value": "320321",
+      "label": "丰　县" },
+
+    {
+      "value": "320322",
+      "label": "沛　县" },
+
+    {
+      "value": "320324",
+      "label": "睢宁县" },
+
+    {
+      "value": "320381",
+      "label": "新沂市" },
+
+    {
+      "value": "320382",
+      "label": "邳州市" }] },
+
+
+
+  {
+    "value": "320400",
+    "label": "常州市",
+    "children": [
+    {
+      "value": "320402",
+      "label": "天宁区" },
+
+    {
+      "value": "320404",
+      "label": "钟楼区" },
+
+    {
+      "value": "320411",
+      "label": "新北区" },
+
+    {
+      "value": "320412",
+      "label": "武进区" },
+
+    {
+      "value": "320413",
+      "label": "金坛区" },
+
+    {
+      "value": "320481",
+      "label": "溧阳市" }] },
+
+
+
+  {
+    "value": "320500",
+    "label": "苏州市",
+    "children": [
+    {
+      "value": "320505",
+      "label": "虎丘区" },
+
+    {
+      "value": "320506",
+      "label": "吴中区" },
+
+    {
+      "value": "320507",
+      "label": "相城区" },
+
+    {
+      "value": "320508",
+      "label": "姑苏区" },
+
+    {
+      "value": "320509",
+      "label": "吴江区" },
+
+    {
+      "value": "320581",
+      "label": "常熟市" },
+
+    {
+      "value": "320582",
+      "label": "张家港市" },
+
+    {
+      "value": "320583",
+      "label": "昆山市" },
+
+    {
+      "value": "320585",
+      "label": "太仓市" }] },
+
+
+
+  {
+    "value": "320600",
+    "label": "南通市",
+    "children": [
+    {
+      "value": "320602",
+      "label": "崇川区" },
+
+    {
+      "value": "320611",
+      "label": "港闸区" },
+
+    {
+      "value": "320612",
+      "label": "通州区" },
+
+    {
+      "value": "320621",
+      "label": "海安县" },
+
+    {
+      "value": "320623",
+      "label": "如东县" },
+
+    {
+      "value": "320681",
+      "label": "启东市" },
+
+    {
+      "value": "320682",
+      "label": "如皋市" },
+
+    {
+      "value": "320684",
+      "label": "海门市" }] },
+
+
+
+  {
+    "value": "320700",
+    "label": "连云港市",
+    "children": [
+    {
+      "value": "320703",
+      "label": "连云区" },
+
+    {
+      "value": "320706",
+      "label": "海州区" },
+
+    {
+      "value": "320707",
+      "label": "赣榆县" },
+
+    {
+      "value": "320722",
+      "label": "东海县" },
+
+    {
+      "value": "320723",
+      "label": "灌云县" },
+
+    {
+      "value": "320724",
+      "label": "灌南县" }] },
+
+
+
+  {
+    "value": "320800",
+    "label": "淮安市",
+    "children": [
+    {
+      "value": "320802",
+      "label": "清河区" },
+
+    {
+      "value": "320803",
+      "label": "淮安区" },
+
+    {
+      "value": "320804",
+      "label": "淮阴区" },
+
+    {
+      "value": "320811",
+      "label": "清浦区" },
+
+    {
+      "value": "320826",
+      "label": "涟水县" },
+
+    {
+      "value": "320829",
+      "label": "洪泽县" },
+
+    {
+      "value": "320830",
+      "label": "盱眙县" },
+
+    {
+      "value": "320831",
+      "label": "金湖县" }] },
+
+
+
+  {
+    "value": "320900",
+    "label": "盐城市",
+    "children": [
+    {
+      "value": "320902",
+      "label": "亭湖区" },
+
+    {
+      "value": "320903",
+      "label": "盐都区" },
+
+    {
+      "value": "320904",
+      "label": "大丰市" },
+
+    {
+      "value": "320921",
+      "label": "响水县" },
+
+    {
+      "value": "320922",
+      "label": "滨海县" },
+
+    {
+      "value": "320923",
+      "label": "阜宁县" },
+
+    {
+      "value": "320924",
+      "label": "射阳县" },
+
+    {
+      "value": "320925",
+      "label": "建湖县" },
+
+    {
+      "value": "320981",
+      "label": "东台市" }] },
+
+
+
+  {
+    "value": "321000",
+    "label": "扬州市",
+    "children": [
+    {
+      "value": "321002",
+      "label": "广陵区" },
+
+    {
+      "value": "321003",
+      "label": "邗江区" },
+
+    {
+      "value": "321012",
+      "label": "江都区" },
+
+    {
+      "value": "321023",
+      "label": "宝应县" },
+
+    {
+      "value": "321081",
+      "label": "仪征市" },
+
+    {
+      "value": "321084",
+      "label": "高邮市" }] },
+
+
+
+  {
+    "value": "321100",
+    "label": "镇江市",
+    "children": [
+    {
+      "value": "321102",
+      "label": "京口区" },
+
+    {
+      "value": "321111",
+      "label": "润州区" },
+
+    {
+      "value": "321112",
+      "label": "丹徒区" },
+
+    {
+      "value": "321181",
+      "label": "丹阳市" },
+
+    {
+      "value": "321182",
+      "label": "扬中市" },
+
+    {
+      "value": "321183",
+      "label": "句容市" }] },
+
+
+
+  {
+    "value": "321200",
+    "label": "泰州市",
+    "children": [
+    {
+      "value": "321202",
+      "label": "海陵区" },
+
+    {
+      "value": "321203",
+      "label": "高港区" },
+
+    {
+      "value": "321204",
+      "label": "姜堰区" },
+
+    {
+      "value": "321281",
+      "label": "兴化市" },
+
+    {
+      "value": "321282",
+      "label": "靖江市" },
+
+    {
+      "value": "321283",
+      "label": "泰兴市" }] },
+
+
+
+  {
+    "value": "321300",
+    "label": "宿迁市",
+    "children": [
+    {
+      "value": "321302",
+      "label": "宿城区" },
+
+    {
+      "value": "321311",
+      "label": "宿豫区" },
+
+    {
+      "value": "321322",
+      "label": "沭阳县" },
+
+    {
+      "value": "321323",
+      "label": "泗阳县" },
+
+    {
+      "value": "321324",
+      "label": "泗洪县" }] }] },
+
+
+
+
+
+{
+  "value": "330000",
+  "label": "浙江省",
+  "children": [
+  {
+    "value": "330100",
+    "label": "杭州市",
+    "children": [
+    {
+      "value": "330102",
+      "label": "上城区" },
+
+    {
+      "value": "330103",
+      "label": "下城区" },
+
+    {
+      "value": "330104",
+      "label": "江干区" },
+
+    {
+      "value": "330105",
+      "label": "拱墅区" },
+
+    {
+      "value": "330106",
+      "label": "西湖区" },
+
+    {
+      "value": "330108",
+      "label": "滨江区" },
+
+    {
+      "value": "330109",
+      "label": "萧山区" },
+
+    {
+      "value": "330110",
+      "label": "余杭区" },
+
+    {
+      "value": "330111",
+      "label": "富阳区" },
+
+    {
+      "value": "330122",
+      "label": "桐庐县" },
+
+    {
+      "value": "330127",
+      "label": "淳安县" },
+
+    {
+      "value": "330182",
+      "label": "建德市" },
+
+    {
+      "value": "330185",
+      "label": "临安市" }] },
+
+
+
+  {
+    "value": "330200",
+    "label": "宁波市",
+    "children": [
+    {
+      "value": "330203",
+      "label": "海曙区" },
+
+    {
+      "value": "330204",
+      "label": "江东区" },
+
+    {
+      "value": "330205",
+      "label": "江北区" },
+
+    {
+      "value": "330206",
+      "label": "北仑区" },
+
+    {
+      "value": "330211",
+      "label": "镇海区" },
+
+    {
+      "value": "330212",
+      "label": "鄞州区" },
+
+    {
+      "value": "330225",
+      "label": "象山县" },
+
+    {
+      "value": "330226",
+      "label": "宁海县" },
+
+    {
+      "value": "330281",
+      "label": "余姚市" },
+
+    {
+      "value": "330282",
+      "label": "慈溪市" },
+
+    {
+      "value": "330283",
+      "label": "奉化市" }] },
+
+
+
+  {
+    "value": "330300",
+    "label": "温州市",
+    "children": [
+    {
+      "value": "330302",
+      "label": "鹿城区" },
+
+    {
+      "value": "330303",
+      "label": "龙湾区" },
+
+    {
+      "value": "330304",
+      "label": "瓯海区" },
+
+    {
+      "value": "330305",
+      "label": "洞头区" },
+
+    {
+      "value": "330324",
+      "label": "永嘉县" },
+
+    {
+      "value": "330326",
+      "label": "平阳县" },
+
+    {
+      "value": "330327",
+      "label": "苍南县" },
+
+    {
+      "value": "330328",
+      "label": "文成县" },
+
+    {
+      "value": "330329",
+      "label": "泰顺县" },
+
+    {
+      "value": "330381",
+      "label": "瑞安市" },
+
+    {
+      "value": "330382",
+      "label": "乐清市" }] },
+
+
+
+  {
+    "value": "330400",
+    "label": "嘉兴市",
+    "children": [
+    {
+      "value": "330402",
+      "label": "南湖区" },
+
+    {
+      "value": "330411",
+      "label": "秀洲区" },
+
+    {
+      "value": "330421",
+      "label": "嘉善县" },
+
+    {
+      "value": "330424",
+      "label": "海盐县" },
+
+    {
+      "value": "330481",
+      "label": "海宁市" },
+
+    {
+      "value": "330482",
+      "label": "平湖市" },
+
+    {
+      "value": "330483",
+      "label": "桐乡市" }] },
+
+
+
+  {
+    "value": "330500",
+    "label": "湖州市",
+    "children": [
+    {
+      "value": "330502",
+      "label": "吴兴区" },
+
+    {
+      "value": "330503",
+      "label": "南浔区" },
+
+    {
+      "value": "330521",
+      "label": "德清县" },
+
+    {
+      "value": "330522",
+      "label": "长兴县" },
+
+    {
+      "value": "330523",
+      "label": "安吉县" }] },
+
+
+
+  {
+    "value": "330600",
+    "label": "绍兴市",
+    "children": [
+    {
+      "value": "330602",
+      "label": "越城区" },
+
+    {
+      "value": "330603",
+      "label": "柯桥区" },
+
+    {
+      "value": "330604",
+      "label": "上虞区" },
+
+    {
+      "value": "330624",
+      "label": "新昌县" },
+
+    {
+      "value": "330681",
+      "label": "诸暨市" },
+
+    {
+      "value": "330683",
+      "label": "嵊州市" }] },
+
+
+
+  {
+    "value": "330700",
+    "label": "金华市",
+    "children": [
+    {
+      "value": "330702",
+      "label": "婺城区" },
+
+    {
+      "value": "330703",
+      "label": "金东区" },
+
+    {
+      "value": "330723",
+      "label": "武义县" },
+
+    {
+      "value": "330726",
+      "label": "浦江县" },
+
+    {
+      "value": "330727",
+      "label": "磐安县" },
+
+    {
+      "value": "330781",
+      "label": "兰溪市" },
+
+    {
+      "value": "330782",
+      "label": "义乌市" },
+
+    {
+      "value": "330783",
+      "label": "东阳市" },
+
+    {
+      "value": "330784",
+      "label": "永康市" }] },
+
+
+
+  {
+    "value": "330800",
+    "label": "衢州市",
+    "children": [
+    {
+      "value": "330802",
+      "label": "柯城区" },
+
+    {
+      "value": "330803",
+      "label": "衢江区" },
+
+    {
+      "value": "330822",
+      "label": "常山县" },
+
+    {
+      "value": "330824",
+      "label": "开化县" },
+
+    {
+      "value": "330825",
+      "label": "龙游县" },
+
+    {
+      "value": "330881",
+      "label": "江山市" }] },
+
+
+
+  {
+    "value": "330900",
+    "label": "舟山市",
+    "children": [
+    {
+      "value": "330902",
+      "label": "定海区" },
+
+    {
+      "value": "330903",
+      "label": "普陀区" },
+
+    {
+      "value": "330921",
+      "label": "岱山县" },
+
+    {
+      "value": "330922",
+      "label": "嵊泗县" }] },
+
+
+
+  {
+    "value": "331000",
+    "label": "台州市",
+    "children": [
+    {
+      "value": "331002",
+      "label": "椒江区" },
+
+    {
+      "value": "331003",
+      "label": "黄岩区" },
+
+    {
+      "value": "331004",
+      "label": "路桥区" },
+
+    {
+      "value": "331021",
+      "label": "玉环县" },
+
+    {
+      "value": "331022",
+      "label": "三门县" },
+
+    {
+      "value": "331023",
+      "label": "天台县" },
+
+    {
+      "value": "331024",
+      "label": "仙居县" },
+
+    {
+      "value": "331081",
+      "label": "温岭市" },
+
+    {
+      "value": "331082",
+      "label": "临海市" }] },
+
+
+
+  {
+    "value": "331100",
+    "label": "丽水市",
+    "children": [
+    {
+      "value": "331102",
+      "label": "莲都区" },
+
+    {
+      "value": "331121",
+      "label": "青田县" },
+
+    {
+      "value": "331122",
+      "label": "缙云县" },
+
+    {
+      "value": "331123",
+      "label": "遂昌县" },
+
+    {
+      "value": "331124",
+      "label": "松阳县" },
+
+    {
+      "value": "331125",
+      "label": "云和县" },
+
+    {
+      "value": "331126",
+      "label": "庆元县" },
+
+    {
+      "value": "331127",
+      "label": "景宁畲族自治县" },
+
+    {
+      "value": "331181",
+      "label": "龙泉市" }] }] },
+
+
+
+
+
+{
+  "value": "340000",
+  "label": "安徽省",
+  "children": [
+  {
+    "value": "340100",
+    "label": "合肥市",
+    "children": [
+    {
+      "value": "340102",
+      "label": "瑶海区" },
+
+    {
+      "value": "340103",
+      "label": "庐阳区" },
+
+    {
+      "value": "340104",
+      "label": "蜀山区" },
+
+    {
+      "value": "340111",
+      "label": "包河区" },
+
+    {
+      "value": "340121",
+      "label": "长丰县" },
+
+    {
+      "value": "340122",
+      "label": "肥东县" },
+
+    {
+      "value": "340123",
+      "label": "肥西县" },
+
+    {
+      "value": "340124",
+      "label": "庐江县" },
+
+    {
+      "value": "340181",
+      "label": "巢湖市" }] },
+
+
+
+  {
+    "value": "340200",
+    "label": "芜湖市",
+    "children": [
+    {
+      "value": "340202",
+      "label": "镜湖区" },
+
+    {
+      "value": "340203",
+      "label": "弋江区" },
+
+    {
+      "value": "340207",
+      "label": "鸠江区" },
+
+    {
+      "value": "340208",
+      "label": "三山区" },
+
+    {
+      "value": "340221",
+      "label": "芜湖县" },
+
+    {
+      "value": "340222",
+      "label": "繁昌县" },
+
+    {
+      "value": "340223",
+      "label": "南陵县" },
+
+    {
+      "value": "340225",
+      "label": "无为县" }] },
+
+
+
+  {
+    "value": "340300",
+    "label": "蚌埠市",
+    "children": [
+    {
+      "value": "340302",
+      "label": "龙子湖区" },
+
+    {
+      "value": "340303",
+      "label": "蚌山区" },
+
+    {
+      "value": "340304",
+      "label": "禹会区" },
+
+    {
+      "value": "340311",
+      "label": "淮上区" },
+
+    {
+      "value": "340321",
+      "label": "怀远县" },
+
+    {
+      "value": "340322",
+      "label": "五河县" },
+
+    {
+      "value": "340323",
+      "label": "固镇县" }] },
+
+
+
+  {
+    "value": "340400",
+    "label": "淮南市",
+    "children": [
+    {
+      "value": "340402",
+      "label": "大通区" },
+
+    {
+      "value": "340403",
+      "label": "田家庵区" },
+
+    {
+      "value": "340404",
+      "label": "谢家集区" },
+
+    {
+      "value": "340405",
+      "label": "八公山区" },
+
+    {
+      "value": "340406",
+      "label": "潘集区" },
+
+    {
+      "value": "340421",
+      "label": "凤台县" }] },
+
+
+
+  {
+    "value": "340500",
+    "label": "马鞍山市",
+    "children": [
+    {
+      "value": "340503",
+      "label": "花山区" },
+
+    {
+      "value": "340504",
+      "label": "雨山区" },
+
+    {
+      "value": "340506",
+      "label": "博望区" },
+
+    {
+      "value": "340521",
+      "label": "当涂县" },
+
+    {
+      "value": "340522",
+      "label": "含山县" },
+
+    {
+      "value": "340523",
+      "label": "和县" }] },
+
+
+
+  {
+    "value": "340600",
+    "label": "淮北市",
+    "children": [
+    {
+      "value": "340602",
+      "label": "杜集区" },
+
+    {
+      "value": "340603",
+      "label": "相山区" },
+
+    {
+      "value": "340604",
+      "label": "烈山区" },
+
+    {
+      "value": "340621",
+      "label": "濉溪县" }] },
+
+
+
+  {
+    "value": "340700",
+    "label": "铜陵市",
+    "children": [
+    {
+      "value": "340702",
+      "label": "铜官山区" },
+
+    {
+      "value": "340703",
+      "label": "狮子山区" },
+
+    {
+      "value": "340711",
+      "label": "郊　区" },
+
+    {
+      "value": "340721",
+      "label": "铜陵县" }] },
+
+
+
+  {
+    "value": "340800",
+    "label": "安庆市",
+    "children": [
+    {
+      "value": "340802",
+      "label": "迎江区" },
+
+    {
+      "value": "340803",
+      "label": "大观区" },
+
+    {
+      "value": "340811",
+      "label": "宜秀区" },
+
+    {
+      "value": "340822",
+      "label": "怀宁县" },
+
+    {
+      "value": "340823",
+      "label": "枞阳县" },
+
+    {
+      "value": "340824",
+      "label": "潜山县" },
+
+    {
+      "value": "340825",
+      "label": "太湖县" },
+
+    {
+      "value": "340826",
+      "label": "宿松县" },
+
+    {
+      "value": "340827",
+      "label": "望江县" },
+
+    {
+      "value": "340828",
+      "label": "岳西县" },
+
+    {
+      "value": "340881",
+      "label": "桐城市" }] },
+
+
+
+  {
+    "value": "341000",
+    "label": "黄山市",
+    "children": [
+    {
+      "value": "341002",
+      "label": "屯溪区" },
+
+    {
+      "value": "341003",
+      "label": "黄山区" },
+
+    {
+      "value": "341004",
+      "label": "徽州区" },
+
+    {
+      "value": "341021",
+      "label": "歙　县" },
+
+    {
+      "value": "341022",
+      "label": "休宁县" },
+
+    {
+      "value": "341023",
+      "label": "黟　县" },
+
+    {
+      "value": "341024",
+      "label": "祁门县" }] },
+
+
+
+  {
+    "value": "341100",
+    "label": "滁州市",
+    "children": [
+    {
+      "value": "341102",
+      "label": "琅琊区" },
+
+    {
+      "value": "341103",
+      "label": "南谯区" },
+
+    {
+      "value": "341122",
+      "label": "来安县" },
+
+    {
+      "value": "341124",
+      "label": "全椒县" },
+
+    {
+      "value": "341125",
+      "label": "定远县" },
+
+    {
+      "value": "341126",
+      "label": "凤阳县" },
+
+    {
+      "value": "341181",
+      "label": "天长市" },
+
+    {
+      "value": "341182",
+      "label": "明光市" }] },
+
+
+
+  {
+    "value": "341200",
+    "label": "阜阳市",
+    "children": [
+    {
+      "value": "341202",
+      "label": "颍州区" },
+
+    {
+      "value": "341203",
+      "label": "颍东区" },
+
+    {
+      "value": "341204",
+      "label": "颍泉区" },
+
+    {
+      "value": "341221",
+      "label": "临泉县" },
+
+    {
+      "value": "341222",
+      "label": "太和县" },
+
+    {
+      "value": "341225",
+      "label": "阜南县" },
+
+    {
+      "value": "341226",
+      "label": "颍上县" },
+
+    {
+      "value": "341282",
+      "label": "界首市" }] },
+
+
+
+  {
+    "value": "341300",
+    "label": "宿州市",
+    "children": [
+    {
+      "value": "341302",
+      "label": "墉桥区" },
+
+    {
+      "value": "341321",
+      "label": "砀山县" },
+
+    {
+      "value": "341322",
+      "label": "萧　县" },
+
+    {
+      "value": "341323",
+      "label": "灵璧县" },
+
+    {
+      "value": "341324",
+      "label": "泗　县" }] },
+
+
+
+  {
+    "value": "341500",
+    "label": "六安市",
+    "children": [
+    {
+      "value": "341502",
+      "label": "金安区" },
+
+    {
+      "value": "341503",
+      "label": "裕安区" },
+
+    {
+      "value": "341521",
+      "label": "寿　县" },
+
+    {
+      "value": "341522",
+      "label": "霍邱县" },
+
+    {
+      "value": "341523",
+      "label": "舒城县" },
+
+    {
+      "value": "341524",
+      "label": "金寨县" },
+
+    {
+      "value": "341525",
+      "label": "霍山县" }] },
+
+
+
+  {
+    "value": "341600",
+    "label": "亳州市",
+    "children": [
+    {
+      "value": "341602",
+      "label": "谯城区" },
+
+    {
+      "value": "341621",
+      "label": "涡阳县" },
+
+    {
+      "value": "341622",
+      "label": "蒙城县" },
+
+    {
+      "value": "341623",
+      "label": "利辛县" }] },
+
+
+
+  {
+    "value": "341700",
+    "label": "池州市",
+    "children": [
+    {
+      "value": "341702",
+      "label": "贵池区" },
+
+    {
+      "value": "341721",
+      "label": "东至县" },
+
+    {
+      "value": "341722",
+      "label": "石台县" },
+
+    {
+      "value": "341723",
+      "label": "青阳县" }] },
+
+
+
+  {
+    "value": "341800",
+    "label": "宣城市",
+    "children": [
+    {
+      "value": "341802",
+      "label": "宣州区" },
+
+    {
+      "value": "341821",
+      "label": "郎溪县" },
+
+    {
+      "value": "341822",
+      "label": "广德县" },
+
+    {
+      "value": "341823",
+      "label": "泾　县" },
+
+    {
+      "value": "341824",
+      "label": "绩溪县" },
+
+    {
+      "value": "341825",
+      "label": "旌德县" },
+
+    {
+      "value": "341881",
+      "label": "宁国市" }] }] },
+
+
+
+
+
+{
+  "value": "350000",
+  "label": "福建省",
+  "children": [
+  {
+    "value": "350100",
+    "label": "福州市",
+    "children": [
+    {
+      "value": "350102",
+      "label": "鼓楼区" },
+
+    {
+      "value": "350103",
+      "label": "台江区" },
+
+    {
+      "value": "350104",
+      "label": "仓山区" },
+
+    {
+      "value": "350105",
+      "label": "马尾区" },
+
+    {
+      "value": "350111",
+      "label": "晋安区" },
+
+    {
+      "value": "350121",
+      "label": "闽侯县" },
+
+    {
+      "value": "350122",
+      "label": "连江县" },
+
+    {
+      "value": "350123",
+      "label": "罗源县" },
+
+    {
+      "value": "350124",
+      "label": "闽清县" },
+
+    {
+      "value": "350125",
+      "label": "永泰县" },
+
+    {
+      "value": "350128",
+      "label": "平潭县" },
+
+    {
+      "value": "350181",
+      "label": "福清市" },
+
+    {
+      "value": "350182",
+      "label": "长乐市" }] },
+
+
+
+  {
+    "value": "350200",
+    "label": "厦门市",
+    "children": [
+    {
+      "value": "350203",
+      "label": "思明区" },
+
+    {
+      "value": "350205",
+      "label": "海沧区" },
+
+    {
+      "value": "350206",
+      "label": "湖里区" },
+
+    {
+      "value": "350211",
+      "label": "集美区" },
+
+    {
+      "value": "350212",
+      "label": "同安区" },
+
+    {
+      "value": "350213",
+      "label": "翔安区" }] },
+
+
+
+  {
+    "value": "350300",
+    "label": "莆田市",
+    "children": [
+    {
+      "value": "350302",
+      "label": "城厢区" },
+
+    {
+      "value": "350303",
+      "label": "涵江区" },
+
+    {
+      "value": "350304",
+      "label": "荔城区" },
+
+    {
+      "value": "350305",
+      "label": "秀屿区" },
+
+    {
+      "value": "350322",
+      "label": "仙游县" }] },
+
+
+
+  {
+    "value": "350400",
+    "label": "三明市",
+    "children": [
+    {
+      "value": "350402",
+      "label": "梅列区" },
+
+    {
+      "value": "350403",
+      "label": "三元区" },
+
+    {
+      "value": "350421",
+      "label": "明溪县" },
+
+    {
+      "value": "350423",
+      "label": "清流县" },
+
+    {
+      "value": "350424",
+      "label": "宁化县" },
+
+    {
+      "value": "350425",
+      "label": "大田县" },
+
+    {
+      "value": "350426",
+      "label": "尤溪县" },
+
+    {
+      "value": "350427",
+      "label": "沙　县" },
+
+    {
+      "value": "350428",
+      "label": "将乐县" },
+
+    {
+      "value": "350429",
+      "label": "泰宁县" },
+
+    {
+      "value": "350430",
+      "label": "建宁县" },
+
+    {
+      "value": "350481",
+      "label": "永安市" }] },
+
+
+
+  {
+    "value": "350500",
+    "label": "泉州市",
+    "children": [
+    {
+      "value": "350502",
+      "label": "鲤城区" },
+
+    {
+      "value": "350503",
+      "label": "丰泽区" },
+
+    {
+      "value": "350504",
+      "label": "洛江区" },
+
+    {
+      "value": "350505",
+      "label": "泉港区" },
+
+    {
+      "value": "350521",
+      "label": "惠安县" },
+
+    {
+      "value": "350524",
+      "label": "安溪县" },
+
+    {
+      "value": "350525",
+      "label": "永春县" },
+
+    {
+      "value": "350526",
+      "label": "德化县" },
+
+    {
+      "value": "350527",
+      "label": "金门县" },
+
+    {
+      "value": "350581",
+      "label": "石狮市" },
+
+    {
+      "value": "350582",
+      "label": "晋江市" },
+
+    {
+      "value": "350583",
+      "label": "南安市" }] },
+
+
+
+  {
+    "value": "350600",
+    "label": "漳州市",
+    "children": [
+    {
+      "value": "350602",
+      "label": "芗城区" },
+
+    {
+      "value": "350603",
+      "label": "龙文区" },
+
+    {
+      "value": "350622",
+      "label": "云霄县" },
+
+    {
+      "value": "350623",
+      "label": "漳浦县" },
+
+    {
+      "value": "350624",
+      "label": "诏安县" },
+
+    {
+      "value": "350625",
+      "label": "长泰县" },
+
+    {
+      "value": "350626",
+      "label": "东山县" },
+
+    {
+      "value": "350627",
+      "label": "南靖县" },
+
+    {
+      "value": "350628",
+      "label": "平和县" },
+
+    {
+      "value": "350629",
+      "label": "华安县" },
+
+    {
+      "value": "350681",
+      "label": "龙海市" }] },
+
+
+
+  {
+    "value": "350700",
+    "label": "南平市",
+    "children": [
+    {
+      "value": "350702",
+      "label": "延平区" },
+
+    {
+      "value": "350703",
+      "label": "建阳区" },
+
+    {
+      "value": "350721",
+      "label": "顺昌县" },
+
+    {
+      "value": "350722",
+      "label": "浦城县" },
+
+    {
+      "value": "350723",
+      "label": "光泽县" },
+
+    {
+      "value": "350724",
+      "label": "松溪县" },
+
+    {
+      "value": "350725",
+      "label": "政和县" },
+
+    {
+      "value": "350781",
+      "label": "邵武市" },
+
+    {
+      "value": "350782",
+      "label": "武夷山市" },
+
+    {
+      "value": "350783",
+      "label": "建瓯市" }] },
+
+
+
+  {
+    "value": "350800",
+    "label": "龙岩市",
+    "children": [
+    {
+      "value": "350802",
+      "label": "新罗区" },
+
+    {
+      "value": "350803",
+      "label": "永定区" },
+
+    {
+      "value": "350821",
+      "label": "长汀县" },
+
+    {
+      "value": "350823",
+      "label": "上杭县" },
+
+    {
+      "value": "350824",
+      "label": "武平县" },
+
+    {
+      "value": "350825",
+      "label": "连城县" },
+
+    {
+      "value": "350881",
+      "label": "漳平市" }] },
+
+
+
+  {
+    "value": "350900",
+    "label": "宁德市",
+    "children": [
+    {
+      "value": "350902",
+      "label": "蕉城区" },
+
+    {
+      "value": "350921",
+      "label": "霞浦县" },
+
+    {
+      "value": "350922",
+      "label": "古田县" },
+
+    {
+      "value": "350923",
+      "label": "屏南县" },
+
+    {
+      "value": "350924",
+      "label": "寿宁县" },
+
+    {
+      "value": "350925",
+      "label": "周宁县" },
+
+    {
+      "value": "350926",
+      "label": "柘荣县" },
+
+    {
+      "value": "350981",
+      "label": "福安市" },
+
+    {
+      "value": "350982",
+      "label": "福鼎市" }] }] },
+
+
+
+
+
+{
+  "value": "360000",
+  "label": "江西省",
+  "children": [
+  {
+    "value": "360100",
+    "label": "南昌市",
+    "children": [
+    {
+      "value": "360102",
+      "label": "东湖区" },
+
+    {
+      "value": "360103",
+      "label": "西湖区" },
+
+    {
+      "value": "360104",
+      "label": "青云谱区" },
+
+    {
+      "value": "360105",
+      "label": "湾里区" },
+
+    {
+      "value": "360111",
+      "label": "青山湖区" },
+
+    {
+      "value": "360112",
+      "label": "新建区" },
+
+    {
+      "value": "360121",
+      "label": "南昌县" },
+
+    {
+      "value": "360123",
+      "label": "安义县" },
+
+    {
+      "value": "360124",
+      "label": "进贤县" }] },
+
+
+
+  {
+    "value": "360200",
+    "label": "景德镇市",
+    "children": [
+    {
+      "value": "360202",
+      "label": "昌江区" },
+
+    {
+      "value": "360203",
+      "label": "珠山区" },
+
+    {
+      "value": "360222",
+      "label": "浮梁县" },
+
+    {
+      "value": "360281",
+      "label": "乐平市" }] },
+
+
+
+  {
+    "value": "360300",
+    "label": "萍乡市",
+    "children": [
+    {
+      "value": "360302",
+      "label": "安源区" },
+
+    {
+      "value": "360313",
+      "label": "湘东区" },
+
+    {
+      "value": "360321",
+      "label": "莲花县" },
+
+    {
+      "value": "360322",
+      "label": "上栗县" },
+
+    {
+      "value": "360323",
+      "label": "芦溪县" }] },
+
+
+
+  {
+    "value": "360400",
+    "label": "九江市",
+    "children": [
+    {
+      "value": "360402",
+      "label": "庐山区" },
+
+    {
+      "value": "360403",
+      "label": "浔阳区" },
+
+    {
+      "value": "360421",
+      "label": "九江县" },
+
+    {
+      "value": "360423",
+      "label": "武宁县" },
+
+    {
+      "value": "360424",
+      "label": "修水县" },
+
+    {
+      "value": "360425",
+      "label": "永修县" },
+
+    {
+      "value": "360426",
+      "label": "德安县" },
+
+    {
+      "value": "360427",
+      "label": "星子县" },
+
+    {
+      "value": "360428",
+      "label": "都昌县" },
+
+    {
+      "value": "360429",
+      "label": "湖口县" },
+
+    {
+      "value": "360430",
+      "label": "彭泽县" },
+
+    {
+      "value": "360481",
+      "label": "瑞昌市" },
+
+    {
+      "value": "360482",
+      "label": "共青城市" }] },
+
+
+
+  {
+    "value": "360500",
+    "label": "新余市",
+    "children": [
+    {
+      "value": "360502",
+      "label": "渝水区" },
+
+    {
+      "value": "360521",
+      "label": "分宜县" }] },
+
+
+
+  {
+    "value": "360600",
+    "label": "鹰潭市",
+    "children": [
+    {
+      "value": "360602",
+      "label": "月湖区" },
+
+    {
+      "value": "360622",
+      "label": "余江县" },
+
+    {
+      "value": "360681",
+      "label": "贵溪市" }] },
+
+
+
+  {
+    "value": "360700",
+    "label": "赣州市",
+    "children": [
+    {
+      "value": "360702",
+      "label": "章贡区" },
+
+    {
+      "value": "360703",
+      "label": "南康区" },
+
+    {
+      "value": "360721",
+      "label": "赣　县" },
+
+    {
+      "value": "360722",
+      "label": "信丰县" },
+
+    {
+      "value": "360723",
+      "label": "大余县" },
+
+    {
+      "value": "360724",
+      "label": "上犹县" },
+
+    {
+      "value": "360725",
+      "label": "崇义县" },
+
+    {
+      "value": "360726",
+      "label": "安远县" },
+
+    {
+      "value": "360727",
+      "label": "龙南县" },
+
+    {
+      "value": "360728",
+      "label": "定南县" },
+
+    {
+      "value": "360729",
+      "label": "全南县" },
+
+    {
+      "value": "360730",
+      "label": "宁都县" },
+
+    {
+      "value": "360731",
+      "label": "于都县" },
+
+    {
+      "value": "360732",
+      "label": "兴国县" },
+
+    {
+      "value": "360733",
+      "label": "会昌县" },
+
+    {
+      "value": "360734",
+      "label": "寻乌县" },
+
+    {
+      "value": "360735",
+      "label": "石城县" },
+
+    {
+      "value": "360781",
+      "label": "瑞金市" }] },
+
+
+
+  {
+    "value": "360800",
+    "label": "吉安市",
+    "children": [
+    {
+      "value": "360802",
+      "label": "吉州区" },
+
+    {
+      "value": "360803",
+      "label": "青原区" },
+
+    {
+      "value": "360821",
+      "label": "吉安县" },
+
+    {
+      "value": "360822",
+      "label": "吉水县" },
+
+    {
+      "value": "360823",
+      "label": "峡江县" },
+
+    {
+      "value": "360824",
+      "label": "新干县" },
+
+    {
+      "value": "360825",
+      "label": "永丰县" },
+
+    {
+      "value": "360826",
+      "label": "泰和县" },
+
+    {
+      "value": "360827",
+      "label": "遂川县" },
+
+    {
+      "value": "360828",
+      "label": "万安县" },
+
+    {
+      "value": "360829",
+      "label": "安福县" },
+
+    {
+      "value": "360830",
+      "label": "永新县" },
+
+    {
+      "value": "360881",
+      "label": "井冈山市" }] },
+
+
+
+  {
+    "value": "360900",
+    "label": "宜春市",
+    "children": [
+    {
+      "value": "360902",
+      "label": "袁州区" },
+
+    {
+      "value": "360921",
+      "label": "奉新县" },
+
+    {
+      "value": "360922",
+      "label": "万载县" },
+
+    {
+      "value": "360923",
+      "label": "上高县" },
+
+    {
+      "value": "360924",
+      "label": "宜丰县" },
+
+    {
+      "value": "360925",
+      "label": "靖安县" },
+
+    {
+      "value": "360926",
+      "label": "铜鼓县" },
+
+    {
+      "value": "360981",
+      "label": "丰城市" },
+
+    {
+      "value": "360982",
+      "label": "樟树市" },
+
+    {
+      "value": "360983",
+      "label": "高安市" }] },
+
+
+
+  {
+    "value": "361000",
+    "label": "抚州市",
+    "children": [
+    {
+      "value": "361002",
+      "label": "临川区" },
+
+    {
+      "value": "361021",
+      "label": "南城县" },
+
+    {
+      "value": "361022",
+      "label": "黎川县" },
+
+    {
+      "value": "361023",
+      "label": "南丰县" },
+
+    {
+      "value": "361024",
+      "label": "崇仁县" },
+
+    {
+      "value": "361025",
+      "label": "乐安县" },
+
+    {
+      "value": "361026",
+      "label": "宜黄县" },
+
+    {
+      "value": "361027",
+      "label": "金溪县" },
+
+    {
+      "value": "361028",
+      "label": "资溪县" },
+
+    {
+      "value": "361029",
+      "label": "东乡县" },
+
+    {
+      "value": "361030",
+      "label": "广昌县" }] },
+
+
+
+  {
+    "value": "361100",
+    "label": "上饶市",
+    "children": [
+    {
+      "value": "361102",
+      "label": "信州区" },
+
+    {
+      "value": "361103",
+      "label": "广丰区" },
+
+    {
+      "value": "361121",
+      "label": "上饶县" },
+
+    {
+      "value": "361123",
+      "label": "玉山县" },
+
+    {
+      "value": "361124",
+      "label": "铅山县" },
+
+    {
+      "value": "361125",
+      "label": "横峰县" },
+
+    {
+      "value": "361126",
+      "label": "弋阳县" },
+
+    {
+      "value": "361127",
+      "label": "余干县" },
+
+    {
+      "value": "361128",
+      "label": "鄱阳县" },
+
+    {
+      "value": "361129",
+      "label": "万年县" },
+
+    {
+      "value": "361130",
+      "label": "婺源县" },
+
+    {
+      "value": "361181",
+      "label": "德兴市" }] }] },
+
+
+
+
+
+{
+  "value": "370000",
+  "label": "山东省",
+  "children": [
+  {
+    "value": "370100",
+    "label": "济南市",
+    "children": [
+    {
+      "value": "370102",
+      "label": "历下区" },
+
+    {
+      "value": "370103",
+      "label": "市中区" },
+
+    {
+      "value": "370104",
+      "label": "槐荫区" },
+
+    {
+      "value": "370105",
+      "label": "天桥区" },
+
+    {
+      "value": "370112",
+      "label": "历城区" },
+
+    {
+      "value": "370113",
+      "label": "长清区" },
+
+    {
+      "value": "370124",
+      "label": "平阴县" },
+
+    {
+      "value": "370125",
+      "label": "济阳县" },
+
+    {
+      "value": "370126",
+      "label": "商河县" },
+
+    {
+      "value": "370181",
+      "label": "章丘市" }] },
+
+
+
+  {
+    "value": "370200",
+    "label": "青岛市",
+    "children": [
+    {
+      "value": "370202",
+      "label": "市南区" },
+
+    {
+      "value": "370203",
+      "label": "市北区" },
+
+    {
+      "value": "370205",
+      "label": "四方区" },
+
+    {
+      "value": "370211",
+      "label": "黄岛区" },
+
+    {
+      "value": "370212",
+      "label": "崂山区" },
+
+    {
+      "value": "370213",
+      "label": "李沧区" },
+
+    {
+      "value": "370214",
+      "label": "城阳区" },
+
+    {
+      "value": "370281",
+      "label": "胶州市" },
+
+    {
+      "value": "370282",
+      "label": "即墨市" },
+
+    {
+      "value": "370283",
+      "label": "平度市" },
+
+    {
+      "value": "370285",
+      "label": "莱西市" }] },
+
+
+
+  {
+    "value": "370300",
+    "label": "淄博市",
+    "children": [
+    {
+      "value": "370302",
+      "label": "淄川区" },
+
+    {
+      "value": "370303",
+      "label": "张店区" },
+
+    {
+      "value": "370304",
+      "label": "博山区" },
+
+    {
+      "value": "370305",
+      "label": "临淄区" },
+
+    {
+      "value": "370306",
+      "label": "周村区" },
+
+    {
+      "value": "370321",
+      "label": "桓台县" },
+
+    {
+      "value": "370322",
+      "label": "高青县" },
+
+    {
+      "value": "370323",
+      "label": "沂源县" }] },
+
+
+
+  {
+    "value": "370400",
+    "label": "枣庄市",
+    "children": [
+    {
+      "value": "370402",
+      "label": "市中区" },
+
+    {
+      "value": "370403",
+      "label": "薛城区" },
+
+    {
+      "value": "370404",
+      "label": "峄城区" },
+
+    {
+      "value": "370405",
+      "label": "台儿庄区" },
+
+    {
+      "value": "370406",
+      "label": "山亭区" },
+
+    {
+      "value": "370481",
+      "label": "滕州市" }] },
+
+
+
+  {
+    "value": "370500",
+    "label": "东营市",
+    "children": [
+    {
+      "value": "370502",
+      "label": "东营区" },
+
+    {
+      "value": "370503",
+      "label": "河口区" },
+
+    {
+      "value": "370521",
+      "label": "垦利县" },
+
+    {
+      "value": "370522",
+      "label": "利津县" },
+
+    {
+      "value": "370523",
+      "label": "广饶县" }] },
+
+
+
+  {
+    "value": "370600",
+    "label": "烟台市",
+    "children": [
+    {
+      "value": "370602",
+      "label": "芝罘区" },
+
+    {
+      "value": "370611",
+      "label": "福山区" },
+
+    {
+      "value": "370612",
+      "label": "牟平区" },
+
+    {
+      "value": "370613",
+      "label": "莱山区" },
+
+    {
+      "value": "370634",
+      "label": "长岛县" },
+
+    {
+      "value": "370681",
+      "label": "龙口市" },
+
+    {
+      "value": "370682",
+      "label": "莱阳市" },
+
+    {
+      "value": "370683",
+      "label": "莱州市" },
+
+    {
+      "value": "370684",
+      "label": "蓬莱市" },
+
+    {
+      "value": "370685",
+      "label": "招远市" },
+
+    {
+      "value": "370686",
+      "label": "栖霞市" },
+
+    {
+      "value": "370687",
+      "label": "海阳市" }] },
+
+
+
+  {
+    "value": "370700",
+    "label": "潍坊市",
+    "children": [
+    {
+      "value": "370702",
+      "label": "潍城区" },
+
+    {
+      "value": "370703",
+      "label": "寒亭区" },
+
+    {
+      "value": "370704",
+      "label": "坊子区" },
+
+    {
+      "value": "370705",
+      "label": "奎文区" },
+
+    {
+      "value": "370724",
+      "label": "临朐县" },
+
+    {
+      "value": "370725",
+      "label": "昌乐县" },
+
+    {
+      "value": "370781",
+      "label": "青州市" },
+
+    {
+      "value": "370782",
+      "label": "诸城市" },
+
+    {
+      "value": "370783",
+      "label": "寿光市" },
+
+    {
+      "value": "370784",
+      "label": "安丘市" },
+
+    {
+      "value": "370785",
+      "label": "高密市" },
+
+    {
+      "value": "370786",
+      "label": "昌邑市" }] },
+
+
+
+  {
+    "value": "370800",
+    "label": "济宁市",
+    "children": [
+    {
+      "value": "370811",
+      "label": "任城区" },
+
+    {
+      "value": "370812",
+      "label": "兖州区" },
+
+    {
+      "value": "370826",
+      "label": "微山县" },
+
+    {
+      "value": "370827",
+      "label": "鱼台县" },
+
+    {
+      "value": "370828",
+      "label": "金乡县" },
+
+    {
+      "value": "370829",
+      "label": "嘉祥县" },
+
+    {
+      "value": "370830",
+      "label": "汶上县" },
+
+    {
+      "value": "370831",
+      "label": "泗水县" },
+
+    {
+      "value": "370832",
+      "label": "梁山县" },
+
+    {
+      "value": "370881",
+      "label": "曲阜市" },
+
+    {
+      "value": "370883",
+      "label": "邹城市" }] },
+
+
+
+  {
+    "value": "370900",
+    "label": "泰安市",
+    "children": [
+    {
+      "value": "370902",
+      "label": "泰山区" },
+
+    {
+      "value": "370903",
+      "label": "岱岳区" },
+
+    {
+      "value": "370921",
+      "label": "宁阳县" },
+
+    {
+      "value": "370923",
+      "label": "东平县" },
+
+    {
+      "value": "370982",
+      "label": "新泰市" },
+
+    {
+      "value": "370983",
+      "label": "肥城市" }] },
+
+
+
+  {
+    "value": "371000",
+    "label": "威海市",
+    "children": [
+    {
+      "value": "371002",
+      "label": "环翠区" },
+
+    {
+      "value": "371081",
+      "label": "文登区" },
+
+    {
+      "value": "371082",
+      "label": "荣成市" },
+
+    {
+      "value": "371083",
+      "label": "乳山市" }] },
+
+
+
+  {
+    "value": "371100",
+    "label": "日照市",
+    "children": [
+    {
+      "value": "371102",
+      "label": "东港区" },
+
+    {
+      "value": "371103",
+      "label": "岚山区" },
+
+    {
+      "value": "371121",
+      "label": "五莲县" },
+
+    {
+      "value": "371122",
+      "label": "莒　县" }] },
+
+
+
+  {
+    "value": "371200",
+    "label": "莱芜市",
+    "children": [
+    {
+      "value": "371202",
+      "label": "莱城区" },
+
+    {
+      "value": "371203",
+      "label": "钢城区" }] },
+
+
+
+  {
+    "value": "371300",
+    "label": "临沂市",
+    "children": [
+    {
+      "value": "371302",
+      "label": "兰山区" },
+
+    {
+      "value": "371311",
+      "label": "罗庄区" },
+
+    {
+      "value": "371312",
+      "label": "河东区" },
+
+    {
+      "value": "371321",
+      "label": "沂南县" },
+
+    {
+      "value": "371322",
+      "label": "郯城县" },
+
+    {
+      "value": "371323",
+      "label": "沂水县" },
+
+    {
+      "value": "371324",
+      "label": "兰陵县" },
+
+    {
+      "value": "371325",
+      "label": "费　县" },
+
+    {
+      "value": "371326",
+      "label": "平邑县" },
+
+    {
+      "value": "371327",
+      "label": "莒南县" },
+
+    {
+      "value": "371328",
+      "label": "蒙阴县" },
+
+    {
+      "value": "371329",
+      "label": "临沭县" }] },
+
+
+
+  {
+    "value": "371400",
+    "label": "德州市",
+    "children": [
+    {
+      "value": "371402",
+      "label": "德城区" },
+
+    {
+      "value": "371421",
+      "label": "陵城区" },
+
+    {
+      "value": "371422",
+      "label": "宁津县" },
+
+    {
+      "value": "371423",
+      "label": "庆云县" },
+
+    {
+      "value": "371424",
+      "label": "临邑县" },
+
+    {
+      "value": "371425",
+      "label": "齐河县" },
+
+    {
+      "value": "371426",
+      "label": "平原县" },
+
+    {
+      "value": "371427",
+      "label": "夏津县" },
+
+    {
+      "value": "371428",
+      "label": "武城县" },
+
+    {
+      "value": "371481",
+      "label": "乐陵市" },
+
+    {
+      "value": "371482",
+      "label": "禹城市" }] },
+
+
+
+  {
+    "value": "371500",
+    "label": "聊城市",
+    "children": [
+    {
+      "value": "371502",
+      "label": "东昌府区" },
+
+    {
+      "value": "371521",
+      "label": "阳谷县" },
+
+    {
+      "value": "371522",
+      "label": "莘　县" },
+
+    {
+      "value": "371523",
+      "label": "茌平县" },
+
+    {
+      "value": "371524",
+      "label": "东阿县" },
+
+    {
+      "value": "371525",
+      "label": "冠　县" },
+
+    {
+      "value": "371526",
+      "label": "高唐县" },
+
+    {
+      "value": "371581",
+      "label": "临清市" }] },
+
+
+
+  {
+    "value": "371600",
+    "label": "滨州市",
+    "children": [
+    {
+      "value": "371602",
+      "label": "滨城区" },
+
+    {
+      "value": "371603",
+      "label": "沾化区" },
+
+    {
+      "value": "371621",
+      "label": "惠民县" },
+
+    {
+      "value": "371622",
+      "label": "阳信县" },
+
+    {
+      "value": "371623",
+      "label": "无棣县" },
+
+    {
+      "value": "371625",
+      "label": "博兴县" },
+
+    {
+      "value": "371626",
+      "label": "邹平县" }] },
+
+
+
+  {
+    "value": "371700",
+    "label": "荷泽市",
+    "children": [
+    {
+      "value": "371702",
+      "label": "牡丹区" },
+
+    {
+      "value": "371721",
+      "label": "曹 县" },
+
+    {
+      "value": "371722",
+      "label": "单 县" },
+
+    {
+      "value": "371723",
+      "label": "成武县" },
+
+    {
+      "value": "371724",
+      "label": "巨野县" },
+
+    {
+      "value": "371725",
+      "label": "郓城县" },
+
+    {
+      "value": "371726",
+      "label": "鄄城县" },
+
+    {
+      "value": "371727",
+      "label": "定陶县" },
+
+    {
+      "value": "371728",
+      "label": "东明县" }] }] },
+
+
+
+
+
+{
+  "value": "410000",
+  "label": "河南省",
+  "children": [
+  {
+    "value": "410100",
+    "label": "郑州市",
+    "children": [
+    {
+      "value": "410102",
+      "label": "中原区" },
+
+    {
+      "value": "410103",
+      "label": "二七区" },
+
+    {
+      "value": "410104",
+      "label": "管城回族区" },
+
+    {
+      "value": "410105",
+      "label": "金水区" },
+
+    {
+      "value": "410106",
+      "label": "上街区" },
+
+    {
+      "value": "410108",
+      "label": "惠济区" },
+
+    {
+      "value": "410122",
+      "label": "中牟县" },
+
+    {
+      "value": "410181",
+      "label": "巩义市" },
+
+    {
+      "value": "410182",
+      "label": "荥阳市" },
+
+    {
+      "value": "410183",
+      "label": "新密市" },
+
+    {
+      "value": "410184",
+      "label": "新郑市" },
+
+    {
+      "value": "410185",
+      "label": "登封市" }] },
+
+
+
+  {
+    "value": "410200",
+    "label": "开封市",
+    "children": [
+    {
+      "value": "410202",
+      "label": "龙亭区" },
+
+    {
+      "value": "410203",
+      "label": "顺河回族区" },
+
+    {
+      "value": "410204",
+      "label": "鼓楼区" },
+
+    {
+      "value": "410205",
+      "label": "禹王台区" },
+
+    {
+      "value": "410211",
+      "label": "金明区" },
+
+    {
+      "value": "410212",
+      "label": "祥符区" },
+
+    {
+      "value": "410221",
+      "label": "杞　县" },
+
+    {
+      "value": "410222",
+      "label": "通许县" },
+
+    {
+      "value": "410223",
+      "label": "尉氏县" },
+
+    {
+      "value": "410224",
+      "label": "开封县" },
+
+    {
+      "value": "410225",
+      "label": "兰考县" }] },
+
+
+
+  {
+    "value": "410300",
+    "label": "洛阳市",
+    "children": [
+    {
+      "value": "410302",
+      "label": "老城区" },
+
+    {
+      "value": "410303",
+      "label": "西工区" },
+
+    {
+      "value": "410304",
+      "label": "廛河回族区" },
+
+    {
+      "value": "410305",
+      "label": "涧西区" },
+
+    {
+      "value": "410306",
+      "label": "吉利区" },
+
+    {
+      "value": "410307",
+      "label": "洛龙区" },
+
+    {
+      "value": "410322",
+      "label": "孟津县" },
+
+    {
+      "value": "410323",
+      "label": "新安县" },
+
+    {
+      "value": "410324",
+      "label": "栾川县" },
+
+    {
+      "value": "410325",
+      "label": "嵩　县" },
+
+    {
+      "value": "410326",
+      "label": "汝阳县" },
+
+    {
+      "value": "410327",
+      "label": "宜阳县" },
+
+    {
+      "value": "410328",
+      "label": "洛宁县" },
+
+    {
+      "value": "410329",
+      "label": "伊川县" },
+
+    {
+      "value": "410381",
+      "label": "偃师市" }] },
+
+
+
+  {
+    "value": "410400",
+    "label": "平顶山市",
+    "children": [
+    {
+      "value": "410402",
+      "label": "新华区" },
+
+    {
+      "value": "410403",
+      "label": "卫东区" },
+
+    {
+      "value": "410404",
+      "label": "石龙区" },
+
+    {
+      "value": "410411",
+      "label": "湛河区" },
+
+    {
+      "value": "410421",
+      "label": "宝丰县" },
+
+    {
+      "value": "410422",
+      "label": "叶　县" },
+
+    {
+      "value": "410423",
+      "label": "鲁山县" },
+
+    {
+      "value": "410425",
+      "label": "郏　县" },
+
+    {
+      "value": "410481",
+      "label": "舞钢市" },
+
+    {
+      "value": "410482",
+      "label": "汝州市" }] },
+
+
+
+  {
+    "value": "410500",
+    "label": "安阳市",
+    "children": [
+    {
+      "value": "410502",
+      "label": "文峰区" },
+
+    {
+      "value": "410503",
+      "label": "北关区" },
+
+    {
+      "value": "410505",
+      "label": "殷都区" },
+
+    {
+      "value": "410506",
+      "label": "龙安区" },
+
+    {
+      "value": "410522",
+      "label": "安阳县" },
+
+    {
+      "value": "410523",
+      "label": "汤阴县" },
+
+    {
+      "value": "410526",
+      "label": "滑　县" },
+
+    {
+      "value": "410527",
+      "label": "内黄县" },
+
+    {
+      "value": "410581",
+      "label": "林州市" }] },
+
+
+
+  {
+    "value": "410600",
+    "label": "鹤壁市",
+    "children": [
+    {
+      "value": "410602",
+      "label": "鹤山区" },
+
+    {
+      "value": "410603",
+      "label": "山城区" },
+
+    {
+      "value": "410611",
+      "label": "淇滨区" },
+
+    {
+      "value": "410621",
+      "label": "浚　县" },
+
+    {
+      "value": "410622",
+      "label": "淇　县" }] },
+
+
+
+  {
+    "value": "410700",
+    "label": "新乡市",
+    "children": [
+    {
+      "value": "410702",
+      "label": "红旗区" },
+
+    {
+      "value": "410703",
+      "label": "卫滨区" },
+
+    {
+      "value": "410704",
+      "label": "凤泉区" },
+
+    {
+      "value": "410711",
+      "label": "牧野区" },
+
+    {
+      "value": "410721",
+      "label": "新乡县" },
+
+    {
+      "value": "410724",
+      "label": "获嘉县" },
+
+    {
+      "value": "410725",
+      "label": "原阳县" },
+
+    {
+      "value": "410726",
+      "label": "延津县" },
+
+    {
+      "value": "410727",
+      "label": "封丘县" },
+
+    {
+      "value": "410728",
+      "label": "长垣县" },
+
+    {
+      "value": "410781",
+      "label": "卫辉市" },
+
+    {
+      "value": "410782",
+      "label": "辉县市" }] },
+
+
+
+  {
+    "value": "410800",
+    "label": "焦作市",
+    "children": [
+    {
+      "value": "410802",
+      "label": "解放区" },
+
+    {
+      "value": "410803",
+      "label": "中站区" },
+
+    {
+      "value": "410804",
+      "label": "马村区" },
+
+    {
+      "value": "410811",
+      "label": "山阳区" },
+
+    {
+      "value": "410821",
+      "label": "修武县" },
+
+    {
+      "value": "410822",
+      "label": "博爱县" },
+
+    {
+      "value": "410823",
+      "label": "武陟县" },
+
+    {
+      "value": "410825",
+      "label": "温　县" },
+
+    {
+      "value": "410882",
+      "label": "沁阳市" },
+
+    {
+      "value": "410883",
+      "label": "孟州市" }] },
+
+
+
+  {
+    "value": "410900",
+    "label": "濮阳市",
+    "children": [
+    {
+      "value": "410902",
+      "label": "华龙区" },
+
+    {
+      "value": "410922",
+      "label": "清丰县" },
+
+    {
+      "value": "410923",
+      "label": "南乐县" },
+
+    {
+      "value": "410926",
+      "label": "范　县" },
+
+    {
+      "value": "410927",
+      "label": "台前县" },
+
+    {
+      "value": "410928",
+      "label": "濮阳县" }] },
+
+
+
+  {
+    "value": "411000",
+    "label": "许昌市",
+    "children": [
+    {
+      "value": "411002",
+      "label": "魏都区" },
+
+    {
+      "value": "411023",
+      "label": "许昌县" },
+
+    {
+      "value": "411024",
+      "label": "鄢陵县" },
+
+    {
+      "value": "411025",
+      "label": "襄城县" },
+
+    {
+      "value": "411081",
+      "label": "禹州市" },
+
+    {
+      "value": "411082",
+      "label": "长葛市" }] },
+
+
+
+  {
+    "value": "411100",
+    "label": "漯河市",
+    "children": [
+    {
+      "value": "411102",
+      "label": "源汇区" },
+
+    {
+      "value": "411103",
+      "label": "郾城区" },
+
+    {
+      "value": "411104",
+      "label": "召陵区" },
+
+    {
+      "value": "411121",
+      "label": "舞阳县" },
+
+    {
+      "value": "411122",
+      "label": "临颍县" }] },
+
+
+
+  {
+    "value": "411200",
+    "label": "三门峡市",
+    "children": [
+    {
+      "value": "411202",
+      "label": "湖滨区" },
+
+    {
+      "value": "411221",
+      "label": "渑池县" },
+
+    {
+      "value": "411222",
+      "label": "陕　县" },
+
+    {
+      "value": "411224",
+      "label": "卢氏县" },
+
+    {
+      "value": "411281",
+      "label": "义马市" },
+
+    {
+      "value": "411282",
+      "label": "灵宝市" }] },
+
+
+
+  {
+    "value": "411300",
+    "label": "南阳市",
+    "children": [
+    {
+      "value": "411302",
+      "label": "宛城区" },
+
+    {
+      "value": "411303",
+      "label": "卧龙区" },
+
+    {
+      "value": "411321",
+      "label": "南召县" },
+
+    {
+      "value": "411322",
+      "label": "方城县" },
+
+    {
+      "value": "411323",
+      "label": "西峡县" },
+
+    {
+      "value": "411324",
+      "label": "镇平县" },
+
+    {
+      "value": "411325",
+      "label": "内乡县" },
+
+    {
+      "value": "411326",
+      "label": "淅川县" },
+
+    {
+      "value": "411327",
+      "label": "社旗县" },
+
+    {
+      "value": "411328",
+      "label": "唐河县" },
+
+    {
+      "value": "411329",
+      "label": "新野县" },
+
+    {
+      "value": "411330",
+      "label": "桐柏县" },
+
+    {
+      "value": "411381",
+      "label": "邓州市" }] },
+
+
+
+  {
+    "value": "411400",
+    "label": "商丘市",
+    "children": [
+    {
+      "value": "411402",
+      "label": "梁园区" },
+
+    {
+      "value": "411403",
+      "label": "睢阳区" },
+
+    {
+      "value": "411421",
+      "label": "民权县" },
+
+    {
+      "value": "411422",
+      "label": "睢　县" },
+
+    {
+      "value": "411423",
+      "label": "宁陵县" },
+
+    {
+      "value": "411424",
+      "label": "柘城县" },
+
+    {
+      "value": "411425",
+      "label": "虞城县" },
+
+    {
+      "value": "411426",
+      "label": "夏邑县" },
+
+    {
+      "value": "411481",
+      "label": "永城市" }] },
+
+
+
+  {
+    "value": "411500",
+    "label": "信阳市",
+    "children": [
+    {
+      "value": "411502",
+      "label": "浉河区" },
+
+    {
+      "value": "411503",
+      "label": "平桥区" },
+
+    {
+      "value": "411521",
+      "label": "罗山县" },
+
+    {
+      "value": "411522",
+      "label": "光山县" },
+
+    {
+      "value": "411523",
+      "label": "新　县" },
+
+    {
+      "value": "411524",
+      "label": "商城县" },
+
+    {
+      "value": "411525",
+      "label": "固始县" },
+
+    {
+      "value": "411526",
+      "label": "潢川县" },
+
+    {
+      "value": "411527",
+      "label": "淮滨县" },
+
+    {
+      "value": "411528",
+      "label": "息　县" }] },
+
+
+
+  {
+    "value": "411600",
+    "label": "周口市",
+    "children": [
+    {
+      "value": "411602",
+      "label": "川汇区" },
+
+    {
+      "value": "411621",
+      "label": "扶沟县" },
+
+    {
+      "value": "411622",
+      "label": "西华县" },
+
+    {
+      "value": "411623",
+      "label": "商水县" },
+
+    {
+      "value": "411624",
+      "label": "沈丘县" },
+
+    {
+      "value": "411625",
+      "label": "郸城县" },
+
+    {
+      "value": "411626",
+      "label": "淮阳县" },
+
+    {
+      "value": "411627",
+      "label": "太康县" },
+
+    {
+      "value": "411628",
+      "label": "鹿邑县" },
+
+    {
+      "value": "411681",
+      "label": "项城市" }] },
+
+
+
+  {
+    "value": "411700",
+    "label": "驻马店市",
+    "children": [
+    {
+      "value": "411702",
+      "label": "驿城区" },
+
+    {
+      "value": "411721",
+      "label": "西平县" },
+
+    {
+      "value": "411722",
+      "label": "上蔡县" },
+
+    {
+      "value": "411723",
+      "label": "平舆县" },
+
+    {
+      "value": "411724",
+      "label": "正阳县" },
+
+    {
+      "value": "411725",
+      "label": "确山县" },
+
+    {
+      "value": "411726",
+      "label": "泌阳县" },
+
+    {
+      "value": "411727",
+      "label": "汝南县" },
+
+    {
+      "value": "411728",
+      "label": "遂平县" },
+
+    {
+      "value": "411729",
+      "label": "新蔡县" }] },
+
+
+
+  {
+    "value": "419000",
+    "label": "省直辖县级行政区划",
+    "children": [
+    {
+      "value": "419001",
+      "label": "济源市" }] }] },
+
+
+
+
+
+{
+  "value": "420000",
+  "label": "湖北省",
+  "children": [
+  {
+    "value": "420100",
+    "label": "武汉市",
+    "children": [
+    {
+      "value": "420102",
+      "label": "江岸区" },
+
+    {
+      "value": "420103",
+      "label": "江汉区" },
+
+    {
+      "value": "420104",
+      "label": "硚口区" },
+
+    {
+      "value": "420105",
+      "label": "汉阳区" },
+
+    {
+      "value": "420106",
+      "label": "武昌区" },
+
+    {
+      "value": "420107",
+      "label": "青山区" },
+
+    {
+      "value": "420111",
+      "label": "洪山区" },
+
+    {
+      "value": "420112",
+      "label": "东西湖区" },
+
+    {
+      "value": "420113",
+      "label": "汉南区" },
+
+    {
+      "value": "420114",
+      "label": "蔡甸区" },
+
+    {
+      "value": "420115",
+      "label": "江夏区" },
+
+    {
+      "value": "420116",
+      "label": "黄陂区" },
+
+    {
+      "value": "420117",
+      "label": "新洲区" }] },
+
+
+
+  {
+    "value": "420200",
+    "label": "黄石市",
+    "children": [
+    {
+      "value": "420202",
+      "label": "黄石港区" },
+
+    {
+      "value": "420203",
+      "label": "西塞山区" },
+
+    {
+      "value": "420204",
+      "label": "下陆区" },
+
+    {
+      "value": "420205",
+      "label": "铁山区" },
+
+    {
+      "value": "420222",
+      "label": "阳新县" },
+
+    {
+      "value": "420281",
+      "label": "大冶市" }] },
+
+
+
+  {
+    "value": "420300",
+    "label": "十堰市",
+    "children": [
+    {
+      "value": "420302",
+      "label": "茅箭区" },
+
+    {
+      "value": "420303",
+      "label": "张湾区" },
+
+    {
+      "value": "420304",
+      "label": "郧阳区" },
+
+    {
+      "value": "420322",
+      "label": "郧西县" },
+
+    {
+      "value": "420323",
+      "label": "竹山县" },
+
+    {
+      "value": "420324",
+      "label": "竹溪县" },
+
+    {
+      "value": "420325",
+      "label": "房　县" },
+
+    {
+      "value": "420381",
+      "label": "丹江口市" }] },
+
+
+
+  {
+    "value": "420500",
+    "label": "宜昌市",
+    "children": [
+    {
+      "value": "420502",
+      "label": "西陵区" },
+
+    {
+      "value": "420503",
+      "label": "伍家岗区" },
+
+    {
+      "value": "420504",
+      "label": "点军区" },
+
+    {
+      "value": "420505",
+      "label": "猇亭区" },
+
+    {
+      "value": "420506",
+      "label": "夷陵区" },
+
+    {
+      "value": "420525",
+      "label": "远安县" },
+
+    {
+      "value": "420526",
+      "label": "兴山县" },
+
+    {
+      "value": "420527",
+      "label": "秭归县" },
+
+    {
+      "value": "420528",
+      "label": "长阳土家族自治县" },
+
+    {
+      "value": "420529",
+      "label": "五峰土家族自治县" },
+
+    {
+      "value": "420581",
+      "label": "宜都市" },
+
+    {
+      "value": "420582",
+      "label": "当阳市" },
+
+    {
+      "value": "420583",
+      "label": "枝江市" }] },
+
+
+
+  {
+    "value": "420600",
+    "label": "襄阳市",
+    "children": [
+    {
+      "value": "420602",
+      "label": "襄城区" },
+
+    {
+      "value": "420606",
+      "label": "樊城区" },
+
+    {
+      "value": "420607",
+      "label": "襄州区" },
+
+    {
+      "value": "420624",
+      "label": "南漳县" },
+
+    {
+      "value": "420625",
+      "label": "谷城县" },
+
+    {
+      "value": "420626",
+      "label": "保康县" },
+
+    {
+      "value": "420682",
+      "label": "老河口市" },
+
+    {
+      "value": "420683",
+      "label": "枣阳市" },
+
+    {
+      "value": "420684",
+      "label": "宜城市" }] },
+
+
+
+  {
+    "value": "420700",
+    "label": "鄂州市",
+    "children": [
+    {
+      "value": "420702",
+      "label": "梁子湖区" },
+
+    {
+      "value": "420703",
+      "label": "华容区" },
+
+    {
+      "value": "420704",
+      "label": "鄂城区" }] },
+
+
+
+  {
+    "value": "420800",
+    "label": "荆门市",
+    "children": [
+    {
+      "value": "420802",
+      "label": "东宝区" },
+
+    {
+      "value": "420804",
+      "label": "掇刀区" },
+
+    {
+      "value": "420821",
+      "label": "京山县" },
+
+    {
+      "value": "420822",
+      "label": "沙洋县" },
+
+    {
+      "value": "420881",
+      "label": "钟祥市" }] },
+
+
+
+  {
+    "value": "420900",
+    "label": "孝感市",
+    "children": [
+    {
+      "value": "420902",
+      "label": "孝南区" },
+
+    {
+      "value": "420921",
+      "label": "孝昌县" },
+
+    {
+      "value": "420922",
+      "label": "大悟县" },
+
+    {
+      "value": "420923",
+      "label": "云梦县" },
+
+    {
+      "value": "420981",
+      "label": "应城市" },
+
+    {
+      "value": "420982",
+      "label": "安陆市" },
+
+    {
+      "value": "420984",
+      "label": "汉川市" }] },
+
+
+
+  {
+    "value": "421000",
+    "label": "荆州市",
+    "children": [
+    {
+      "value": "421002",
+      "label": "沙市区" },
+
+    {
+      "value": "421003",
+      "label": "荆州区" },
+
+    {
+      "value": "421022",
+      "label": "公安县" },
+
+    {
+      "value": "421023",
+      "label": "监利县" },
+
+    {
+      "value": "421024",
+      "label": "江陵县" },
+
+    {
+      "value": "421081",
+      "label": "石首市" },
+
+    {
+      "value": "421083",
+      "label": "洪湖市" },
+
+    {
+      "value": "421087",
+      "label": "松滋市" }] },
+
+
+
+  {
+    "value": "421100",
+    "label": "黄冈市",
+    "children": [
+    {
+      "value": "421102",
+      "label": "黄州区" },
+
+    {
+      "value": "421121",
+      "label": "团风县" },
+
+    {
+      "value": "421122",
+      "label": "红安县" },
+
+    {
+      "value": "421123",
+      "label": "罗田县" },
+
+    {
+      "value": "421124",
+      "label": "英山县" },
+
+    {
+      "value": "421125",
+      "label": "浠水县" },
+
+    {
+      "value": "421126",
+      "label": "蕲春县" },
+
+    {
+      "value": "421127",
+      "label": "黄梅县" },
+
+    {
+      "value": "421181",
+      "label": "麻城市" },
+
+    {
+      "value": "421182",
+      "label": "武穴市" }] },
+
+
+
+  {
+    "value": "421200",
+    "label": "咸宁市",
+    "children": [
+    {
+      "value": "421202",
+      "label": "咸安区" },
+
+    {
+      "value": "421221",
+      "label": "嘉鱼县" },
+
+    {
+      "value": "421222",
+      "label": "通城县" },
+
+    {
+      "value": "421223",
+      "label": "崇阳县" },
+
+    {
+      "value": "421224",
+      "label": "通山县" },
+
+    {
+      "value": "421281",
+      "label": "赤壁市" }] },
+
+
+
+  {
+    "value": "421300",
+    "label": "随州市",
+    "children": [
+    {
+      "value": "421302",
+      "label": "曾都区" },
+
+    {
+      "value": "421321",
+      "label": "随县" },
+
+    {
+      "value": "421381",
+      "label": "广水市" }] },
+
+
+
+  {
+    "value": "422800",
+    "label": "恩施土家族苗族自治州",
+    "children": [
+    {
+      "value": "422801",
+      "label": "恩施市" },
+
+    {
+      "value": "422802",
+      "label": "利川市" },
+
+    {
+      "value": "422822",
+      "label": "建始县" },
+
+    {
+      "value": "422823",
+      "label": "巴东县" },
+
+    {
+      "value": "422825",
+      "label": "宣恩县" },
+
+    {
+      "value": "422826",
+      "label": "咸丰县" },
+
+    {
+      "value": "422827",
+      "label": "来凤县" },
+
+    {
+      "value": "422828",
+      "label": "鹤峰县" }] },
+
+
+
+  {
+    "value": "429000",
+    "label": "省直辖县级行政区划",
+    "children": [
+    {
+      "value": "429004",
+      "label": "仙桃市" },
+
+    {
+      "value": "429005",
+      "label": "潜江市" },
+
+    {
+      "value": "429006",
+      "label": "天门市" },
+
+    {
+      "value": "429021",
+      "label": "神农架林区" }] }] },
+
+
+
+
+
+{
+  "value": "430000",
+  "label": "湖南省",
+  "children": [
+  {
+    "value": "430100",
+    "label": "长沙市",
+    "children": [
+    {
+      "value": "430102",
+      "label": "芙蓉区" },
+
+    {
+      "value": "430103",
+      "label": "天心区" },
+
+    {
+      "value": "430104",
+      "label": "岳麓区" },
+
+    {
+      "value": "430105",
+      "label": "开福区" },
+
+    {
+      "value": "430111",
+      "label": "雨花区" },
+
+    {
+      "value": "430112",
+      "label": "望城区" },
+
+    {
+      "value": "430121",
+      "label": "长沙县" },
+
+    {
+      "value": "430124",
+      "label": "宁乡县" },
+
+    {
+      "value": "430181",
+      "label": "浏阳市" }] },
+
+
+
+  {
+    "value": "430200",
+    "label": "株洲市",
+    "children": [
+    {
+      "value": "430202",
+      "label": "荷塘区" },
+
+    {
+      "value": "430203",
+      "label": "芦淞区" },
+
+    {
+      "value": "430204",
+      "label": "石峰区" },
+
+    {
+      "value": "430211",
+      "label": "天元区" },
+
+    {
+      "value": "430221",
+      "label": "株洲县" },
+
+    {
+      "value": "430223",
+      "label": "攸　县" },
+
+    {
+      "value": "430224",
+      "label": "茶陵县" },
+
+    {
+      "value": "430225",
+      "label": "炎陵县" },
+
+    {
+      "value": "430281",
+      "label": "醴陵市" }] },
+
+
+
+  {
+    "value": "430300",
+    "label": "湘潭市",
+    "children": [
+    {
+      "value": "430302",
+      "label": "雨湖区" },
+
+    {
+      "value": "430304",
+      "label": "岳塘区" },
+
+    {
+      "value": "430321",
+      "label": "湘潭县" },
+
+    {
+      "value": "430381",
+      "label": "湘乡市" },
+
+    {
+      "value": "430382",
+      "label": "韶山市" }] },
+
+
+
+  {
+    "value": "430400",
+    "label": "衡阳市",
+    "children": [
+    {
+      "value": "430405",
+      "label": "珠晖区" },
+
+    {
+      "value": "430406",
+      "label": "雁峰区" },
+
+    {
+      "value": "430407",
+      "label": "石鼓区" },
+
+    {
+      "value": "430408",
+      "label": "蒸湘区" },
+
+    {
+      "value": "430412",
+      "label": "南岳区" },
+
+    {
+      "value": "430421",
+      "label": "衡阳县" },
+
+    {
+      "value": "430422",
+      "label": "衡南县" },
+
+    {
+      "value": "430423",
+      "label": "衡山县" },
+
+    {
+      "value": "430424",
+      "label": "衡东县" },
+
+    {
+      "value": "430426",
+      "label": "祁东县" },
+
+    {
+      "value": "430481",
+      "label": "耒阳市" },
+
+    {
+      "value": "430482",
+      "label": "常宁市" }] },
+
+
+
+  {
+    "value": "430500",
+    "label": "邵阳市",
+    "children": [
+    {
+      "value": "430502",
+      "label": "双清区" },
+
+    {
+      "value": "430503",
+      "label": "大祥区" },
+
+    {
+      "value": "430511",
+      "label": "北塔区" },
+
+    {
+      "value": "430521",
+      "label": "邵东县" },
+
+    {
+      "value": "430522",
+      "label": "新邵县" },
+
+    {
+      "value": "430523",
+      "label": "邵阳县" },
+
+    {
+      "value": "430524",
+      "label": "隆回县" },
+
+    {
+      "value": "430525",
+      "label": "洞口县" },
+
+    {
+      "value": "430527",
+      "label": "绥宁县" },
+
+    {
+      "value": "430528",
+      "label": "新宁县" },
+
+    {
+      "value": "430529",
+      "label": "城步苗族自治县" },
+
+    {
+      "value": "430581",
+      "label": "武冈市" }] },
+
+
+
+  {
+    "value": "430600",
+    "label": "岳阳市",
+    "children": [
+    {
+      "value": "430602",
+      "label": "岳阳楼区" },
+
+    {
+      "value": "430603",
+      "label": "云溪区" },
+
+    {
+      "value": "430611",
+      "label": "君山区" },
+
+    {
+      "value": "430621",
+      "label": "岳阳县" },
+
+    {
+      "value": "430623",
+      "label": "华容县" },
+
+    {
+      "value": "430624",
+      "label": "湘阴县" },
+
+    {
+      "value": "430626",
+      "label": "平江县" },
+
+    {
+      "value": "430681",
+      "label": "汨罗市" },
+
+    {
+      "value": "430682",
+      "label": "临湘市" }] },
+
+
+
+  {
+    "value": "430700",
+    "label": "常德市",
+    "children": [
+    {
+      "value": "430702",
+      "label": "武陵区" },
+
+    {
+      "value": "430703",
+      "label": "鼎城区" },
+
+    {
+      "value": "430721",
+      "label": "安乡县" },
+
+    {
+      "value": "430722",
+      "label": "汉寿县" },
+
+    {
+      "value": "430723",
+      "label": "澧　县" },
+
+    {
+      "value": "430724",
+      "label": "临澧县" },
+
+    {
+      "value": "430725",
+      "label": "桃源县" },
+
+    {
+      "value": "430726",
+      "label": "石门县" },
+
+    {
+      "value": "430781",
+      "label": "津市市" }] },
+
+
+
+  {
+    "value": "430800",
+    "label": "张家界市",
+    "children": [
+    {
+      "value": "430802",
+      "label": "永定区" },
+
+    {
+      "value": "430811",
+      "label": "武陵源区" },
+
+    {
+      "value": "430821",
+      "label": "慈利县" },
+
+    {
+      "value": "430822",
+      "label": "桑植县" }] },
+
+
+
+  {
+    "value": "430900",
+    "label": "益阳市",
+    "children": [
+    {
+      "value": "430902",
+      "label": "资阳区" },
+
+    {
+      "value": "430903",
+      "label": "赫山区" },
+
+    {
+      "value": "430921",
+      "label": "南　县" },
+
+    {
+      "value": "430922",
+      "label": "桃江县" },
+
+    {
+      "value": "430923",
+      "label": "安化县" },
+
+    {
+      "value": "430981",
+      "label": "沅江市" }] },
+
+
+
+  {
+    "value": "431000",
+    "label": "郴州市",
+    "children": [
+    {
+      "value": "431002",
+      "label": "北湖区" },
+
+    {
+      "value": "431003",
+      "label": "苏仙区" },
+
+    {
+      "value": "431021",
+      "label": "桂阳县" },
+
+    {
+      "value": "431022",
+      "label": "宜章县" },
+
+    {
+      "value": "431023",
+      "label": "永兴县" },
+
+    {
+      "value": "431024",
+      "label": "嘉禾县" },
+
+    {
+      "value": "431025",
+      "label": "临武县" },
+
+    {
+      "value": "431026",
+      "label": "汝城县" },
+
+    {
+      "value": "431027",
+      "label": "桂东县" },
+
+    {
+      "value": "431028",
+      "label": "安仁县" },
+
+    {
+      "value": "431081",
+      "label": "资兴市" }] },
+
+
+
+  {
+    "value": "431100",
+    "label": "永州市",
+    "children": [
+    {
+      "value": "431102",
+      "label": "零陵区" },
+
+    {
+      "value": "431103",
+      "label": "冷水滩区" },
+
+    {
+      "value": "431121",
+      "label": "祁阳县" },
+
+    {
+      "value": "431122",
+      "label": "东安县" },
+
+    {
+      "value": "431123",
+      "label": "双牌县" },
+
+    {
+      "value": "431124",
+      "label": "道　县" },
+
+    {
+      "value": "431125",
+      "label": "江永县" },
+
+    {
+      "value": "431126",
+      "label": "宁远县" },
+
+    {
+      "value": "431127",
+      "label": "蓝山县" },
+
+    {
+      "value": "431128",
+      "label": "新田县" },
+
+    {
+      "value": "431129",
+      "label": "江华瑶族自治县" }] },
+
+
+
+  {
+    "value": "431200",
+    "label": "怀化市",
+    "children": [
+    {
+      "value": "431202",
+      "label": "鹤城区" },
+
+    {
+      "value": "431221",
+      "label": "中方县" },
+
+    {
+      "value": "431222",
+      "label": "沅陵县" },
+
+    {
+      "value": "431223",
+      "label": "辰溪县" },
+
+    {
+      "value": "431224",
+      "label": "溆浦县" },
+
+    {
+      "value": "431225",
+      "label": "会同县" },
+
+    {
+      "value": "431226",
+      "label": "麻阳苗族自治县" },
+
+    {
+      "value": "431227",
+      "label": "新晃侗族自治县" },
+
+    {
+      "value": "431228",
+      "label": "芷江侗族自治县" },
+
+    {
+      "value": "431229",
+      "label": "靖州苗族侗族自治县" },
+
+    {
+      "value": "431230",
+      "label": "通道侗族自治县" },
+
+    {
+      "value": "431281",
+      "label": "洪江市" }] },
+
+
+
+  {
+    "value": "431300",
+    "label": "娄底市",
+    "children": [
+    {
+      "value": "431302",
+      "label": "娄星区" },
+
+    {
+      "value": "431321",
+      "label": "双峰县" },
+
+    {
+      "value": "431322",
+      "label": "新化县" },
+
+    {
+      "value": "431381",
+      "label": "冷水江市" },
+
+    {
+      "value": "431382",
+      "label": "涟源市" }] },
+
+
+
+  {
+    "value": "433100",
+    "label": "湘西土家族苗族自治州",
+    "children": [
+    {
+      "value": "433101",
+      "label": "吉首市" },
+
+    {
+      "value": "433122",
+      "label": "泸溪县" },
+
+    {
+      "value": "433123",
+      "label": "凤凰县" },
+
+    {
+      "value": "433124",
+      "label": "花垣县" },
+
+    {
+      "value": "433125",
+      "label": "保靖县" },
+
+    {
+      "value": "433126",
+      "label": "古丈县" },
+
+    {
+      "value": "433127",
+      "label": "永顺县" },
+
+    {
+      "value": "433130",
+      "label": "龙山县" }] }] },
+
+
+
+
+
+{
+  "value": "440000",
+  "label": "广东省",
+  "children": [
+  {
+    "value": "440100",
+    "label": "广州市",
+    "children": [
+    {
+      "value": "440103",
+      "label": "荔湾区" },
+
+    {
+      "value": "440104",
+      "label": "越秀区" },
+
+    {
+      "value": "440105",
+      "label": "海珠区" },
+
+    {
+      "value": "440106",
+      "label": "天河区" },
+
+    {
+      "value": "440111",
+      "label": "白云区" },
+
+    {
+      "value": "440112",
+      "label": "黄埔区" },
+
+    {
+      "value": "440113",
+      "label": "番禺区" },
+
+    {
+      "value": "440114",
+      "label": "花都区" },
+
+    {
+      "value": "440115",
+      "label": "南沙区" },
+
+    {
+      "value": "440117",
+      "label": "萝岗区" },
+
+    {
+      "value": "440183",
+      "label": "增城市" },
+
+    {
+      "value": "440184",
+      "label": "从化区" }] },
+
+
+
+  {
+    "value": "440200",
+    "label": "韶关市",
+    "children": [
+    {
+      "value": "440203",
+      "label": "武江区" },
+
+    {
+      "value": "440204",
+      "label": "浈江区" },
+
+    {
+      "value": "440205",
+      "label": "曲江区" },
+
+    {
+      "value": "440222",
+      "label": "始兴县" },
+
+    {
+      "value": "440224",
+      "label": "仁化县" },
+
+    {
+      "value": "440229",
+      "label": "翁源县" },
+
+    {
+      "value": "440232",
+      "label": "乳源瑶族自治县" },
+
+    {
+      "value": "440233",
+      "label": "新丰县" },
+
+    {
+      "value": "440281",
+      "label": "乐昌市" },
+
+    {
+      "value": "440282",
+      "label": "南雄市" }] },
+
+
+
+  {
+    "value": "440300",
+    "label": "深圳市",
+    "children": [
+    {
+      "value": "440303",
+      "label": "罗湖区" },
+
+    {
+      "value": "440304",
+      "label": "福田区" },
+
+    {
+      "value": "440305",
+      "label": "南山区" },
+
+    {
+      "value": "440306",
+      "label": "宝安区" },
+
+    {
+      "value": "440307",
+      "label": "龙岗区" },
+
+    {
+      "value": "440308",
+      "label": "盐田区" },
+
+    {
+      "value": "440309",
+      "label": "大鹏新区" },
+
+    {
+      "value": "440310",
+      "label": "坪山新区" },
+
+    {
+      "value": "440311",
+      "label": "光明新区" },
+
+    {
+      "value": "440312",
+      "label": "龙华新区" }] },
+
+
+
+  {
+    "value": "440400",
+    "label": "珠海市",
+    "children": [
+    {
+      "value": "440402",
+      "label": "香洲区" },
+
+    {
+      "value": "440403",
+      "label": "斗门区" },
+
+    {
+      "value": "440404",
+      "label": "金湾区" }] },
+
+
+
+  {
+    "value": "440500",
+    "label": "汕头市",
+    "children": [
+    {
+      "value": "440507",
+      "label": "龙湖区" },
+
+    {
+      "value": "440511",
+      "label": "金平区" },
+
+    {
+      "value": "440512",
+      "label": "濠江区" },
+
+    {
+      "value": "440513",
+      "label": "潮阳区" },
+
+    {
+      "value": "440514",
+      "label": "潮南区" },
+
+    {
+      "value": "440515",
+      "label": "澄海区" },
+
+    {
+      "value": "440523",
+      "label": "南澳县" }] },
+
+
+
+  {
+    "value": "440600",
+    "label": "佛山市",
+    "children": [
+    {
+      "value": "440604",
+      "label": "禅城区" },
+
+    {
+      "value": "440605",
+      "label": "南海区" },
+
+    {
+      "value": "440606",
+      "label": "顺德区" },
+
+    {
+      "value": "440607",
+      "label": "三水区" },
+
+    {
+      "value": "440608",
+      "label": "高明区" }] },
+
+
+
+  {
+    "value": "440700",
+    "label": "江门市",
+    "children": [
+    {
+      "value": "440703",
+      "label": "蓬江区" },
+
+    {
+      "value": "440704",
+      "label": "江海区" },
+
+    {
+      "value": "440705",
+      "label": "新会区" },
+
+    {
+      "value": "440781",
+      "label": "台山市" },
+
+    {
+      "value": "440783",
+      "label": "开平市" },
+
+    {
+      "value": "440784",
+      "label": "鹤山市" },
+
+    {
+      "value": "440785",
+      "label": "恩平市" }] },
+
+
+
+  {
+    "value": "440800",
+    "label": "湛江市",
+    "children": [
+    {
+      "value": "440802",
+      "label": "赤坎区" },
+
+    {
+      "value": "440803",
+      "label": "霞山区" },
+
+    {
+      "value": "440804",
+      "label": "坡头区" },
+
+    {
+      "value": "440811",
+      "label": "麻章区" },
+
+    {
+      "value": "440823",
+      "label": "遂溪县" },
+
+    {
+      "value": "440825",
+      "label": "徐闻县" },
+
+    {
+      "value": "440881",
+      "label": "廉江市" },
+
+    {
+      "value": "440882",
+      "label": "雷州市" },
+
+    {
+      "value": "440883",
+      "label": "吴川市" },
+
+    {
+      "value": "440890",
+      "label": "经济技术开发区" }] },
+
+
+
+  {
+    "value": "440900",
+    "label": "茂名市",
+    "children": [
+    {
+      "value": "440902",
+      "label": "茂南区" },
+
+    {
+      "value": "440903",
+      "label": "茂港区" },
+
+    {
+      "value": "440923",
+      "label": "电白县" },
+
+    {
+      "value": "440981",
+      "label": "高州市" },
+
+    {
+      "value": "440982",
+      "label": "化州市" },
+
+    {
+      "value": "440983",
+      "label": "信宜市" }] },
+
+
+
+  {
+    "value": "441200",
+    "label": "肇庆市",
+    "children": [
+    {
+      "value": "441202",
+      "label": "端州区" },
+
+    {
+      "value": "441203",
+      "label": "鼎湖区" },
+
+    {
+      "value": "441204",
+      "label": "高要区" },
+
+    {
+      "value": "441223",
+      "label": "广宁县" },
+
+    {
+      "value": "441224",
+      "label": "怀集县" },
+
+    {
+      "value": "441225",
+      "label": "封开县" },
+
+    {
+      "value": "441226",
+      "label": "德庆县" },
+
+    {
+      "value": "441284",
+      "label": "四会市" }] },
+
+
+
+  {
+    "value": "441300",
+    "label": "惠州市",
+    "children": [
+    {
+      "value": "441302",
+      "label": "惠城区" },
+
+    {
+      "value": "441303",
+      "label": "惠阳区" },
+
+    {
+      "value": "441322",
+      "label": "博罗县" },
+
+    {
+      "value": "441323",
+      "label": "惠东县" },
+
+    {
+      "value": "441324",
+      "label": "龙门县" },
+
+    {
+      "value": "441326",
+      "label": "大亚湾区" }] },
+
+
+
+  {
+    "value": "441400",
+    "label": "梅州市",
+    "children": [
+    {
+      "value": "441402",
+      "label": "梅江区" },
+
+    {
+      "value": "441421",
+      "label": "梅　县" },
+
+    {
+      "value": "441422",
+      "label": "大埔县" },
+
+    {
+      "value": "441423",
+      "label": "丰顺县" },
+
+    {
+      "value": "441424",
+      "label": "五华县" },
+
+    {
+      "value": "441426",
+      "label": "平远县" },
+
+    {
+      "value": "441427",
+      "label": "蕉岭县" },
+
+    {
+      "value": "441481",
+      "label": "兴宁市" }] },
+
+
+
+  {
+    "value": "441500",
+    "label": "汕尾市",
+    "children": [
+    {
+      "value": "441502",
+      "label": "城　区" },
+
+    {
+      "value": "441521",
+      "label": "海丰县" },
+
+    {
+      "value": "441523",
+      "label": "陆河县" },
+
+    {
+      "value": "441581",
+      "label": "陆丰市" }] },
+
+
+
+  {
+    "value": "441600",
+    "label": "河源市",
+    "children": [
+    {
+      "value": "441602",
+      "label": "源城区" },
+
+    {
+      "value": "441621",
+      "label": "紫金县" },
+
+    {
+      "value": "441622",
+      "label": "龙川县" },
+
+    {
+      "value": "441623",
+      "label": "连平县" },
+
+    {
+      "value": "441624",
+      "label": "和平县" },
+
+    {
+      "value": "441625",
+      "label": "东源县" }] },
+
+
+
+  {
+    "value": "441700",
+    "label": "阳江市",
+    "children": [
+    {
+      "value": "441702",
+      "label": "江城区" },
+
+    {
+      "value": "441704",
+      "label": "阳东区" },
+
+    {
+      "value": "441721",
+      "label": "阳西县" },
+
+    {
+      "value": "441781",
+      "label": "阳春市" }] },
+
+
+
+  {
+    "value": "441800",
+    "label": "清远市",
+    "children": [
+    {
+      "value": "441802",
+      "label": "清城区" },
+
+    {
+      "value": "441803",
+      "label": "清新区" },
+
+    {
+      "value": "441821",
+      "label": "佛冈县" },
+
+    {
+      "value": "441823",
+      "label": "阳山县" },
+
+    {
+      "value": "441825",
+      "label": "连山壮族瑶族自治县" },
+
+    {
+      "value": "441826",
+      "label": "连南瑶族自治县" },
+
+    {
+      "value": "441881",
+      "label": "英德市" },
+
+    {
+      "value": "441882",
+      "label": "连州市" }] },
+
+
+
+  {
+    "value": "441900",
+    "label": "东莞市",
+    "children": [
+    {
+      "value": "659005",
+      "label": "莞城区" },
+
+    {
+      "value": "659006",
+      "label": "南城区" },
+
+    {
+      "value": "659007",
+      "label": "东城区" },
+
+    {
+      "value": "659008",
+      "label": "万江区" },
+
+    {
+      "value": "659009",
+      "label": "石碣镇" },
+
+    {
+      "value": "659010",
+      "label": "石龙镇" },
+
+    {
+      "value": "659011",
+      "label": "茶山镇" },
+
+    {
+      "value": "659012",
+      "label": "石排镇" },
+
+    {
+      "value": "659013",
+      "label": "企石镇" },
+
+    {
+      "value": "659014",
+      "label": "横沥镇" },
+
+    {
+      "value": "659015",
+      "label": "桥头镇" },
+
+    {
+      "value": "659016",
+      "label": "谢岗镇" },
+
+    {
+      "value": "659017",
+      "label": "东坑镇" },
+
+    {
+      "value": "659018",
+      "label": "常平镇" },
+
+    {
+      "value": "659019",
+      "label": "寮步镇" },
+
+    {
+      "value": "659020",
+      "label": "大朗镇" },
+
+    {
+      "value": "659021",
+      "label": "黄江镇" },
+
+    {
+      "value": "659022",
+      "label": "清溪镇" },
+
+    {
+      "value": "659023",
+      "label": "塘厦镇" },
+
+    {
+      "value": "659024",
+      "label": "凤岗镇" },
+
+    {
+      "value": "659025",
+      "label": "长安镇" },
+
+    {
+      "value": "659026",
+      "label": "虎门镇" },
+
+    {
+      "value": "659027",
+      "label": "厚街镇" },
+
+    {
+      "value": "659028",
+      "label": "沙田镇" },
+
+    {
+      "value": "659029",
+      "label": "道滘镇" },
+
+    {
+      "value": "659030",
+      "label": "洪梅镇" },
+
+    {
+      "value": "659031",
+      "label": "麻涌镇" },
+
+    {
+      "value": "659032",
+      "label": "中堂镇" },
+
+    {
+      "value": "659033",
+      "label": "高埗镇" },
+
+    {
+      "value": "659034",
+      "label": "樟木头镇" },
+
+    {
+      "value": "659035",
+      "label": "大岭山镇" },
+
+    {
+      "value": "659036",
+      "label": "望牛墩镇" }] },
+
+
+
+  {
+    "value": "442000",
+    "label": "中山市",
+    "children": [
+    {
+      "value": "442001",
+      "label": "石岐区街道" },
+
+    {
+      "value": "442002",
+      "label": "东区街道" },
+
+    {
+      "value": "442003",
+      "label": "火炬开发区" },
+
+    {
+      "value": "442004",
+      "label": "西区街道" },
+
+    {
+      "value": "442005",
+      "label": "南区街道" },
+
+    {
+      "value": "442006",
+      "label": "五桂山街道" },
+
+    {
+      "value": "659037",
+      "label": "板芙镇" },
+
+    {
+      "value": "659038",
+      "label": "大涌镇" },
+
+    {
+      "value": "659039",
+      "label": "东凤镇" },
+
+    {
+      "value": "659040",
+      "label": "东升镇" },
+
+    {
+      "value": "659041",
+      "label": "阜沙镇" },
+
+    {
+      "value": "659042",
+      "label": "港口镇" },
+
+    {
+      "value": "659043",
+      "label": "古镇" },
+
+    {
+      "value": "659044",
+      "label": "横栏镇" },
+
+    {
+      "value": "659045",
+      "label": "黄圃镇" },
+
+    {
+      "value": "659046",
+      "label": "民众镇" },
+
+    {
+      "value": "659047",
+      "label": "南朗镇" },
+
+    {
+      "value": "659048",
+      "label": "南头镇" },
+
+    {
+      "value": "659049",
+      "label": "三角镇" },
+
+    {
+      "value": "659050",
+      "label": "三乡镇" },
+
+    {
+      "value": "659051",
+      "label": "沙溪镇" },
+
+    {
+      "value": "659052",
+      "label": "神湾镇" },
+
+    {
+      "value": "659053",
+      "label": "坦洲镇" },
+
+    {
+      "value": "659054",
+      "label": "小榄镇" }] },
+
+
+
+  {
+    "value": "445100",
+    "label": "潮州市",
+    "children": [
+    {
+      "value": "445102",
+      "label": "湘桥区" },
+
+    {
+      "value": "445103",
+      "label": "潮安区" },
+
+    {
+      "value": "445104",
+      "label": "枫溪区" },
+
+    {
+      "value": "445122",
+      "label": "饶平县" }] },
+
+
+
+  {
+    "value": "445200",
+    "label": "揭阳市",
+    "children": [
+    {
+      "value": "445202",
+      "label": "榕城区" },
+
+    {
+      "value": "445221",
+      "label": "揭东区" },
+
+    {
+      "value": "445222",
+      "label": "揭西县" },
+
+    {
+      "value": "445224",
+      "label": "惠来县" },
+
+    {
+      "value": "445281",
+      "label": "普宁市" }] },
+
+
+
+  {
+    "value": "445300",
+    "label": "云浮市",
+    "children": [
+    {
+      "value": "445302",
+      "label": "云城区" },
+
+    {
+      "value": "445303",
+      "label": "云安区" },
+
+    {
+      "value": "445321",
+      "label": "新兴县" },
+
+    {
+      "value": "445322",
+      "label": "郁南县" },
+
+    {
+      "value": "445381",
+      "label": "罗定市" }] }] },
+
+
+
+
+
+{
+  "value": "450000",
+  "label": "广西壮族自治区",
+  "children": [
+  {
+    "value": "450100",
+    "label": "南宁市",
+    "children": [
+    {
+      "value": "450102",
+      "label": "兴宁区" },
+
+    {
+      "value": "450103",
+      "label": "青秀区" },
+
+    {
+      "value": "450105",
+      "label": "江南区" },
+
+    {
+      "value": "450107",
+      "label": "西乡塘区" },
+
+    {
+      "value": "450108",
+      "label": "良庆区" },
+
+    {
+      "value": "450109",
+      "label": "邕宁区" },
+
+    {
+      "value": "450122",
+      "label": "武鸣县" },
+
+    {
+      "value": "450123",
+      "label": "隆安县" },
+
+    {
+      "value": "450124",
+      "label": "马山县" },
+
+    {
+      "value": "450125",
+      "label": "上林县" },
+
+    {
+      "value": "450126",
+      "label": "宾阳县" },
+
+    {
+      "value": "450127",
+      "label": "横　县" }] },
+
+
+
+  {
+    "value": "450200",
+    "label": "柳州市",
+    "children": [
+    {
+      "value": "450202",
+      "label": "城中区" },
+
+    {
+      "value": "450203",
+      "label": "鱼峰区" },
+
+    {
+      "value": "450204",
+      "label": "柳南区" },
+
+    {
+      "value": "450205",
+      "label": "柳北区" },
+
+    {
+      "value": "450221",
+      "label": "柳江县" },
+
+    {
+      "value": "450222",
+      "label": "柳城县" },
+
+    {
+      "value": "450223",
+      "label": "鹿寨县" },
+
+    {
+      "value": "450224",
+      "label": "融安县" },
+
+    {
+      "value": "450225",
+      "label": "融水苗族自治县" },
+
+    {
+      "value": "450226",
+      "label": "三江侗族自治县" }] },
+
+
+
+  {
+    "value": "450300",
+    "label": "桂林市",
+    "children": [
+    {
+      "value": "450302",
+      "label": "秀峰区" },
+
+    {
+      "value": "450303",
+      "label": "叠彩区" },
+
+    {
+      "value": "450304",
+      "label": "象山区" },
+
+    {
+      "value": "450305",
+      "label": "七星区" },
+
+    {
+      "value": "450311",
+      "label": "雁山区" },
+
+    {
+      "value": "450321",
+      "label": "阳朔县" },
+
+    {
+      "value": "450322",
+      "label": "临桂区" },
+
+    {
+      "value": "450323",
+      "label": "灵川县" },
+
+    {
+      "value": "450324",
+      "label": "全州县" },
+
+    {
+      "value": "450325",
+      "label": "兴安县" },
+
+    {
+      "value": "450326",
+      "label": "永福县" },
+
+    {
+      "value": "450327",
+      "label": "灌阳县" },
+
+    {
+      "value": "450328",
+      "label": "龙胜各族自治县" },
+
+    {
+      "value": "450329",
+      "label": "资源县" },
+
+    {
+      "value": "450330",
+      "label": "平乐县" },
+
+    {
+      "value": "450331",
+      "label": "荔蒲县" },
+
+    {
+      "value": "450332",
+      "label": "恭城瑶族自治县" }] },
+
+
+
+  {
+    "value": "450400",
+    "label": "梧州市",
+    "children": [
+    {
+      "value": "450403",
+      "label": "万秀区" },
+
+    {
+      "value": "450405",
+      "label": "长洲区" },
+
+    {
+      "value": "450406",
+      "label": "龙圩区" },
+
+    {
+      "value": "450421",
+      "label": "苍梧县" },
+
+    {
+      "value": "450422",
+      "label": "藤　县" },
+
+    {
+      "value": "450423",
+      "label": "蒙山县" },
+
+    {
+      "value": "450481",
+      "label": "岑溪市" }] },
+
+
+
+  {
+    "value": "450500",
+    "label": "北海市",
+    "children": [
+    {
+      "value": "450502",
+      "label": "海城区" },
+
+    {
+      "value": "450503",
+      "label": "银海区" },
+
+    {
+      "value": "450512",
+      "label": "铁山港区" },
+
+    {
+      "value": "450521",
+      "label": "合浦县" }] },
+
+
+
+  {
+    "value": "450600",
+    "label": "防城港市",
+    "children": [
+    {
+      "value": "450602",
+      "label": "港口区" },
+
+    {
+      "value": "450603",
+      "label": "防城区" },
+
+    {
+      "value": "450621",
+      "label": "上思县" },
+
+    {
+      "value": "450681",
+      "label": "东兴市" }] },
+
+
+
+  {
+    "value": "450700",
+    "label": "钦州市",
+    "children": [
+    {
+      "value": "450702",
+      "label": "钦南区" },
+
+    {
+      "value": "450703",
+      "label": "钦北区" },
+
+    {
+      "value": "450721",
+      "label": "灵山县" },
+
+    {
+      "value": "450722",
+      "label": "浦北县" }] },
+
+
+
+  {
+    "value": "450800",
+    "label": "贵港市",
+    "children": [
+    {
+      "value": "450802",
+      "label": "港北区" },
+
+    {
+      "value": "450803",
+      "label": "港南区" },
+
+    {
+      "value": "450804",
+      "label": "覃塘区" },
+
+    {
+      "value": "450821",
+      "label": "平南县" },
+
+    {
+      "value": "450881",
+      "label": "桂平市" }] },
+
+
+
+  {
+    "value": "450900",
+    "label": "玉林市",
+    "children": [
+    {
+      "value": "450902",
+      "label": "玉州区" },
+
+    {
+      "value": "450903",
+      "label": "福绵区" },
+
+    {
+      "value": "450921",
+      "label": "容　县" },
+
+    {
+      "value": "450922",
+      "label": "陆川县" },
+
+    {
+      "value": "450923",
+      "label": "博白县" },
+
+    {
+      "value": "450924",
+      "label": "兴业县" },
+
+    {
+      "value": "450981",
+      "label": "北流市" }] },
+
+
+
+  {
+    "value": "451000",
+    "label": "百色市",
+    "children": [
+    {
+      "value": "451002",
+      "label": "右江区" },
+
+    {
+      "value": "451021",
+      "label": "田阳县" },
+
+    {
+      "value": "451022",
+      "label": "田东县" },
+
+    {
+      "value": "451023",
+      "label": "平果县" },
+
+    {
+      "value": "451024",
+      "label": "德保县" },
+
+    {
+      "value": "451025",
+      "label": "靖西市" },
+
+    {
+      "value": "451026",
+      "label": "那坡县" },
+
+    {
+      "value": "451027",
+      "label": "凌云县" },
+
+    {
+      "value": "451028",
+      "label": "乐业县" },
+
+    {
+      "value": "451029",
+      "label": "田林县" },
+
+    {
+      "value": "451030",
+      "label": "西林县" },
+
+    {
+      "value": "451031",
+      "label": "隆林各族自治县" }] },
+
+
+
+  {
+    "value": "451100",
+    "label": "贺州市",
+    "children": [
+    {
+      "value": "451102",
+      "label": "八步区" },
+
+    {
+      "value": "451121",
+      "label": "昭平县" },
+
+    {
+      "value": "451122",
+      "label": "钟山县" },
+
+    {
+      "value": "451123",
+      "label": "富川瑶族自治县" }] },
+
+
+
+  {
+    "value": "451200",
+    "label": "河池市",
+    "children": [
+    {
+      "value": "451202",
+      "label": "金城江区" },
+
+    {
+      "value": "451221",
+      "label": "南丹县" },
+
+    {
+      "value": "451222",
+      "label": "天峨县" },
+
+    {
+      "value": "451223",
+      "label": "凤山县" },
+
+    {
+      "value": "451224",
+      "label": "东兰县" },
+
+    {
+      "value": "451225",
+      "label": "罗城仫佬族自治县" },
+
+    {
+      "value": "451226",
+      "label": "环江毛南族自治县" },
+
+    {
+      "value": "451227",
+      "label": "巴马瑶族自治县" },
+
+    {
+      "value": "451228",
+      "label": "都安瑶族自治县" },
+
+    {
+      "value": "451229",
+      "label": "大化瑶族自治县" },
+
+    {
+      "value": "451281",
+      "label": "宜州市" }] },
+
+
+
+  {
+    "value": "451300",
+    "label": "来宾市",
+    "children": [
+    {
+      "value": "451302",
+      "label": "兴宾区" },
+
+    {
+      "value": "451321",
+      "label": "忻城县" },
+
+    {
+      "value": "451322",
+      "label": "象州县" },
+
+    {
+      "value": "451323",
+      "label": "武宣县" },
+
+    {
+      "value": "451324",
+      "label": "金秀瑶族自治县" },
+
+    {
+      "value": "451381",
+      "label": "合山市" }] },
+
+
+
+  {
+    "value": "451400",
+    "label": "崇左市",
+    "children": [
+    {
+      "value": "451402",
+      "label": "江洲区" },
+
+    {
+      "value": "451421",
+      "label": "扶绥县" },
+
+    {
+      "value": "451422",
+      "label": "宁明县" },
+
+    {
+      "value": "451423",
+      "label": "龙州县" },
+
+    {
+      "value": "451424",
+      "label": "大新县" },
+
+    {
+      "value": "451425",
+      "label": "天等县" },
+
+    {
+      "value": "451481",
+      "label": "凭祥市" }] }] },
+
+
+
+
+
+{
+  "value": "460000",
+  "label": "海南省",
+  "children": [
+  {
+    "value": "460100",
+    "label": "海口市",
+    "children": [
+    {
+      "value": "460105",
+      "label": "秀英区" },
+
+    {
+      "value": "460106",
+      "label": "龙华区" },
+
+    {
+      "value": "460107",
+      "label": "琼山区" },
+
+    {
+      "value": "460108",
+      "label": "美兰区" }] },
+
+
+
+  {
+    "value": "460200",
+    "label": "三亚市",
+    "children": [
+    {
+      "value": "659055",
+      "label": "吉阳区" },
+
+    {
+      "value": "659056",
+      "label": "天涯区" },
+
+    {
+      "value": "659057",
+      "label": "崖州区" },
+
+    {
+      "value": "659058",
+      "label": "海棠区" }] },
+
+
+
+  {
+    "value": "460300",
+    "label": "三沙市",
+    "children": [
+    {
+      "value": "460321",
+      "label": "西沙群岛" },
+
+    {
+      "value": "460322",
+      "label": "南沙群岛" },
+
+    {
+      "value": "460323",
+      "label": "中沙群岛的岛礁及其海域" }] },
+
+
+
+  {
+    "value": "469000",
+    "label": "省直辖县级行政区划",
+    "children": [
+    {
+      "value": "469001",
+      "label": "五指山市" },
+
+    {
+      "value": "469002",
+      "label": "琼海市" },
+
+    {
+      "value": "469003",
+      "label": "儋州市" },
+
+    {
+      "value": "469005",
+      "label": "文昌市" },
+
+    {
+      "value": "469006",
+      "label": "万宁市" },
+
+    {
+      "value": "469007",
+      "label": "东方市" },
+
+    {
+      "value": "469021",
+      "label": "定安县" },
+
+    {
+      "value": "469022",
+      "label": "屯昌县" },
+
+    {
+      "value": "469023",
+      "label": "澄迈县" },
+
+    {
+      "value": "469024",
+      "label": "临高县" },
+
+    {
+      "value": "469025",
+      "label": "白沙黎族自治县" },
+
+    {
+      "value": "469026",
+      "label": "昌江黎族自治县" },
+
+    {
+      "value": "469027",
+      "label": "乐东黎族自治县" },
+
+    {
+      "value": "469028",
+      "label": "陵水黎族自治县" },
+
+    {
+      "value": "469029",
+      "label": "保亭黎族苗族自治县" },
+
+    {
+      "value": "469030",
+      "label": "琼中黎族苗族自治县" }] }] },
+
+
+
+
+
+{
+  "value": "500000",
+  "label": "重庆市",
+  "children": [
+  {
+    "value": "500100",
+    "label": "重庆市",
+    "children": [
+    {
+      "value": "500101",
+      "label": "万州区" },
+
+    {
+      "value": "500102",
+      "label": "涪陵区" },
+
+    {
+      "value": "500103",
+      "label": "渝中区" },
+
+    {
+      "value": "500104",
+      "label": "大渡口区" },
+
+    {
+      "value": "500105",
+      "label": "江北区" },
+
+    {
+      "value": "500106",
+      "label": "沙坪坝区" },
+
+    {
+      "value": "500107",
+      "label": "九龙坡区" },
+
+    {
+      "value": "500108",
+      "label": "南岸区" },
+
+    {
+      "value": "500109",
+      "label": "北碚区" },
+
+    {
+      "value": "500110",
+      "label": "綦江区" },
+
+    {
+      "value": "500111",
+      "label": "大足区" },
+
+    {
+      "value": "500112",
+      "label": "渝北区" },
+
+    {
+      "value": "500113",
+      "label": "巴南区" },
+
+    {
+      "value": "500114",
+      "label": "黔江区" },
+
+    {
+      "value": "500115",
+      "label": "长寿区" },
+
+    {
+      "value": "500116",
+      "label": "江津区" },
+
+    {
+      "value": "500117",
+      "label": "合川区" },
+
+    {
+      "value": "500118",
+      "label": "永川区" },
+
+    {
+      "value": "500119",
+      "label": "南川区" },
+
+    {
+      "value": "500120",
+      "label": "璧山区" },
+
+    {
+      "value": "500223",
+      "label": "潼南区" },
+
+    {
+      "value": "500224",
+      "label": "铜梁区" },
+
+    {
+      "value": "500226",
+      "label": "荣昌区" },
+
+    {
+      "value": "500228",
+      "label": "梁平县" },
+
+    {
+      "value": "500229",
+      "label": "城口县" },
+
+    {
+      "value": "500230",
+      "label": "丰都县" },
+
+    {
+      "value": "500231",
+      "label": "垫江县" },
+
+    {
+      "value": "500232",
+      "label": "武隆县" },
+
+    {
+      "value": "500233",
+      "label": "忠　县" },
+
+    {
+      "value": "500234",
+      "label": "开　县" },
+
+    {
+      "value": "500235",
+      "label": "云阳县" },
+
+    {
+      "value": "500236",
+      "label": "奉节县" },
+
+    {
+      "value": "500237",
+      "label": "巫山县" },
+
+    {
+      "value": "500238",
+      "label": "巫溪县" },
+
+    {
+      "value": "500240",
+      "label": "石柱土家族自治县" },
+
+    {
+      "value": "500241",
+      "label": "秀山土家族苗族自治县" },
+
+    {
+      "value": "500242",
+      "label": "酉阳土家族苗族自治县" },
+
+    {
+      "value": "500243",
+      "label": "彭水苗族土家族自治县" }] }] },
+
+
+
+
+
+{
+  "value": "510000",
+  "label": "四川省",
+  "children": [
+  {
+    "value": "510100",
+    "label": "成都市",
+    "children": [
+    {
+      "value": "510104",
+      "label": "锦江区" },
+
+    {
+      "value": "510105",
+      "label": "青羊区" },
+
+    {
+      "value": "510106",
+      "label": "金牛区" },
+
+    {
+      "value": "510107",
+      "label": "武侯区" },
+
+    {
+      "value": "510108",
+      "label": "成华区" },
+
+    {
+      "value": "510112",
+      "label": "龙泉驿区" },
+
+    {
+      "value": "510113",
+      "label": "青白江区" },
+
+    {
+      "value": "510114",
+      "label": "新都区" },
+
+    {
+      "value": "510115",
+      "label": "温江区" },
+
+    {
+      "value": "510121",
+      "label": "金堂县" },
+
+    {
+      "value": "510122",
+      "label": "双流县" },
+
+    {
+      "value": "510124",
+      "label": "郫　县" },
+
+    {
+      "value": "510129",
+      "label": "大邑县" },
+
+    {
+      "value": "510131",
+      "label": "蒲江县" },
+
+    {
+      "value": "510132",
+      "label": "新津县" },
+
+    {
+      "value": "510181",
+      "label": "都江堰市" },
+
+    {
+      "value": "510182",
+      "label": "彭州市" },
+
+    {
+      "value": "510183",
+      "label": "邛崃市" },
+
+    {
+      "value": "510184",
+      "label": "崇州市" }] },
+
+
+
+  {
+    "value": "510300",
+    "label": "自贡市",
+    "children": [
+    {
+      "value": "510302",
+      "label": "自流井区" },
+
+    {
+      "value": "510303",
+      "label": "贡井区" },
+
+    {
+      "value": "510304",
+      "label": "大安区" },
+
+    {
+      "value": "510311",
+      "label": "沿滩区" },
+
+    {
+      "value": "510321",
+      "label": "荣　县" },
+
+    {
+      "value": "510322",
+      "label": "富顺县" }] },
+
+
+
+  {
+    "value": "510400",
+    "label": "攀枝花市",
+    "children": [
+    {
+      "value": "510402",
+      "label": "东　区" },
+
+    {
+      "value": "510403",
+      "label": "西　区" },
+
+    {
+      "value": "510411",
+      "label": "仁和区" },
+
+    {
+      "value": "510421",
+      "label": "米易县" },
+
+    {
+      "value": "510422",
+      "label": "盐边县" }] },
+
+
+
+  {
+    "value": "510500",
+    "label": "泸州市",
+    "children": [
+    {
+      "value": "510502",
+      "label": "江阳区" },
+
+    {
+      "value": "510503",
+      "label": "纳溪区" },
+
+    {
+      "value": "510504",
+      "label": "龙马潭区" },
+
+    {
+      "value": "510521",
+      "label": "泸　县" },
+
+    {
+      "value": "510522",
+      "label": "合江县" },
+
+    {
+      "value": "510524",
+      "label": "叙永县" },
+
+    {
+      "value": "510525",
+      "label": "古蔺县" }] },
+
+
+
+  {
+    "value": "510600",
+    "label": "德阳市",
+    "children": [
+    {
+      "value": "510603",
+      "label": "旌阳区" },
+
+    {
+      "value": "510623",
+      "label": "中江县" },
+
+    {
+      "value": "510626",
+      "label": "罗江县" },
+
+    {
+      "value": "510681",
+      "label": "广汉市" },
+
+    {
+      "value": "510682",
+      "label": "什邡市" },
+
+    {
+      "value": "510683",
+      "label": "绵竹市" }] },
+
+
+
+  {
+    "value": "510700",
+    "label": "绵阳市",
+    "children": [
+    {
+      "value": "510703",
+      "label": "涪城区" },
+
+    {
+      "value": "510704",
+      "label": "游仙区" },
+
+    {
+      "value": "510722",
+      "label": "三台县" },
+
+    {
+      "value": "510723",
+      "label": "盐亭县" },
+
+    {
+      "value": "510724",
+      "label": "安　县" },
+
+    {
+      "value": "510725",
+      "label": "梓潼县" },
+
+    {
+      "value": "510726",
+      "label": "北川羌族自治县" },
+
+    {
+      "value": "510727",
+      "label": "平武县" },
+
+    {
+      "value": "510781",
+      "label": "江油市" }] },
+
+
+
+  {
+    "value": "510800",
+    "label": "广元市",
+    "children": [
+    {
+      "value": "510802",
+      "label": "利州区" },
+
+    {
+      "value": "510811",
+      "label": "昭化区" },
+
+    {
+      "value": "510812",
+      "label": "朝天区" },
+
+    {
+      "value": "510821",
+      "label": "旺苍县" },
+
+    {
+      "value": "510822",
+      "label": "青川县" },
+
+    {
+      "value": "510823",
+      "label": "剑阁县" },
+
+    {
+      "value": "510824",
+      "label": "苍溪县" }] },
+
+
+
+  {
+    "value": "510900",
+    "label": "遂宁市",
+    "children": [
+    {
+      "value": "510903",
+      "label": "船山区" },
+
+    {
+      "value": "510904",
+      "label": "安居区" },
+
+    {
+      "value": "510921",
+      "label": "蓬溪县" },
+
+    {
+      "value": "510922",
+      "label": "射洪县" },
+
+    {
+      "value": "510923",
+      "label": "大英县" }] },
+
+
+
+  {
+    "value": "511000",
+    "label": "内江市",
+    "children": [
+    {
+      "value": "511002",
+      "label": "市中区" },
+
+    {
+      "value": "511011",
+      "label": "东兴区" },
+
+    {
+      "value": "511024",
+      "label": "威远县" },
+
+    {
+      "value": "511025",
+      "label": "资中县" },
+
+    {
+      "value": "511028",
+      "label": "隆昌县" }] },
+
+
+
+  {
+    "value": "511100",
+    "label": "乐山市",
+    "children": [
+    {
+      "value": "511102",
+      "label": "市中区" },
+
+    {
+      "value": "511111",
+      "label": "沙湾区" },
+
+    {
+      "value": "511112",
+      "label": "五通桥区" },
+
+    {
+      "value": "511113",
+      "label": "金口河区" },
+
+    {
+      "value": "511123",
+      "label": "犍为县" },
+
+    {
+      "value": "511124",
+      "label": "井研县" },
+
+    {
+      "value": "511126",
+      "label": "夹江县" },
+
+    {
+      "value": "511129",
+      "label": "沐川县" },
+
+    {
+      "value": "511132",
+      "label": "峨边彝族自治县" },
+
+    {
+      "value": "511133",
+      "label": "马边彝族自治县" },
+
+    {
+      "value": "511181",
+      "label": "峨眉山市" }] },
+
+
+
+  {
+    "value": "511300",
+    "label": "南充市",
+    "children": [
+    {
+      "value": "511302",
+      "label": "顺庆区" },
+
+    {
+      "value": "511303",
+      "label": "高坪区" },
+
+    {
+      "value": "511304",
+      "label": "嘉陵区" },
+
+    {
+      "value": "511321",
+      "label": "南部县" },
+
+    {
+      "value": "511322",
+      "label": "营山县" },
+
+    {
+      "value": "511323",
+      "label": "蓬安县" },
+
+    {
+      "value": "511324",
+      "label": "仪陇县" },
+
+    {
+      "value": "511325",
+      "label": "西充县" },
+
+    {
+      "value": "511381",
+      "label": "阆中市" }] },
+
+
+
+  {
+    "value": "511400",
+    "label": "眉山市",
+    "children": [
+    {
+      "value": "511402",
+      "label": "东坡区" },
+
+    {
+      "value": "511403",
+      "label": "彭山区" },
+
+    {
+      "value": "511421",
+      "label": "仁寿县" },
+
+    {
+      "value": "511423",
+      "label": "洪雅县" },
+
+    {
+      "value": "511424",
+      "label": "丹棱县" },
+
+    {
+      "value": "511425",
+      "label": "青神县" }] },
+
+
+
+  {
+    "value": "511500",
+    "label": "宜宾市",
+    "children": [
+    {
+      "value": "511502",
+      "label": "翠屏区" },
+
+    {
+      "value": "511503",
+      "label": "南溪区" },
+
+    {
+      "value": "511521",
+      "label": "宜宾县" },
+
+    {
+      "value": "511523",
+      "label": "江安县" },
+
+    {
+      "value": "511524",
+      "label": "长宁县" },
+
+    {
+      "value": "511525",
+      "label": "高　县" },
+
+    {
+      "value": "511526",
+      "label": "珙　县" },
+
+    {
+      "value": "511527",
+      "label": "筠连县" },
+
+    {
+      "value": "511528",
+      "label": "兴文县" },
+
+    {
+      "value": "511529",
+      "label": "屏山县" }] },
+
+
+
+  {
+    "value": "511600",
+    "label": "广安市",
+    "children": [
+    {
+      "value": "511602",
+      "label": "广安区" },
+
+    {
+      "value": "511603",
+      "label": "前锋区" },
+
+    {
+      "value": "511621",
+      "label": "岳池县" },
+
+    {
+      "value": "511622",
+      "label": "武胜县" },
+
+    {
+      "value": "511623",
+      "label": "邻水县" },
+
+    {
+      "value": "511681",
+      "label": "华蓥市" }] },
+
+
+
+  {
+    "value": "511700",
+    "label": "达州市",
+    "children": [
+    {
+      "value": "511702",
+      "label": "通川区" },
+
+    {
+      "value": "511703",
+      "label": "达川区" },
+
+    {
+      "value": "511722",
+      "label": "宣汉县" },
+
+    {
+      "value": "511723",
+      "label": "开江县" },
+
+    {
+      "value": "511724",
+      "label": "大竹县" },
+
+    {
+      "value": "511725",
+      "label": "渠　县" },
+
+    {
+      "value": "511781",
+      "label": "万源市" }] },
+
+
+
+  {
+    "value": "511800",
+    "label": "雅安市",
+    "children": [
+    {
+      "value": "511802",
+      "label": "雨城区" },
+
+    {
+      "value": "511803",
+      "label": "名山区" },
+
+    {
+      "value": "511822",
+      "label": "荥经县" },
+
+    {
+      "value": "511823",
+      "label": "汉源县" },
+
+    {
+      "value": "511824",
+      "label": "石棉县" },
+
+    {
+      "value": "511825",
+      "label": "天全县" },
+
+    {
+      "value": "511826",
+      "label": "芦山县" },
+
+    {
+      "value": "511827",
+      "label": "宝兴县" }] },
+
+
+
+  {
+    "value": "511900",
+    "label": "巴中市",
+    "children": [
+    {
+      "value": "511902",
+      "label": "巴州区" },
+
+    {
+      "value": "511903",
+      "label": "恩阳区" },
+
+    {
+      "value": "511921",
+      "label": "通江县" },
+
+    {
+      "value": "511922",
+      "label": "南江县" },
+
+    {
+      "value": "511923",
+      "label": "平昌县" }] },
+
+
+
+  {
+    "value": "512000",
+    "label": "资阳市",
+    "children": [
+    {
+      "value": "512002",
+      "label": "雁江区" },
+
+    {
+      "value": "512021",
+      "label": "安岳县" },
+
+    {
+      "value": "512022",
+      "label": "乐至县" },
+
+    {
+      "value": "512081",
+      "label": "简阳市" }] },
+
+
+
+  {
+    "value": "513200",
+    "label": "阿坝藏族羌族自治州",
+    "children": [
+    {
+      "value": "513221",
+      "label": "汶川县" },
+
+    {
+      "value": "513222",
+      "label": "理　县" },
+
+    {
+      "value": "513223",
+      "label": "茂　县" },
+
+    {
+      "value": "513224",
+      "label": "松潘县" },
+
+    {
+      "value": "513225",
+      "label": "九寨沟县" },
+
+    {
+      "value": "513226",
+      "label": "金川县" },
+
+    {
+      "value": "513227",
+      "label": "小金县" },
+
+    {
+      "value": "513228",
+      "label": "黑水县" },
+
+    {
+      "value": "513229",
+      "label": "马尔康县" },
+
+    {
+      "value": "513230",
+      "label": "壤塘县" },
+
+    {
+      "value": "513231",
+      "label": "阿坝县" },
+
+    {
+      "value": "513232",
+      "label": "若尔盖县" },
+
+    {
+      "value": "513233",
+      "label": "红原县" }] },
+
+
+
+  {
+    "value": "513300",
+    "label": "甘孜藏族自治州",
+    "children": [
+    {
+      "value": "513321",
+      "label": "康定县" },
+
+    {
+      "value": "513322",
+      "label": "泸定县" },
+
+    {
+      "value": "513323",
+      "label": "丹巴县" },
+
+    {
+      "value": "513324",
+      "label": "九龙县" },
+
+    {
+      "value": "513325",
+      "label": "雅江县" },
+
+    {
+      "value": "513326",
+      "label": "道孚县" },
+
+    {
+      "value": "513327",
+      "label": "炉霍县" },
+
+    {
+      "value": "513328",
+      "label": "甘孜县" },
+
+    {
+      "value": "513329",
+      "label": "新龙县" },
+
+    {
+      "value": "513330",
+      "label": "德格县" },
+
+    {
+      "value": "513331",
+      "label": "白玉县" },
+
+    {
+      "value": "513332",
+      "label": "石渠县" },
+
+    {
+      "value": "513333",
+      "label": "色达县" },
+
+    {
+      "value": "513334",
+      "label": "理塘县" },
+
+    {
+      "value": "513335",
+      "label": "巴塘县" },
+
+    {
+      "value": "513336",
+      "label": "乡城县" },
+
+    {
+      "value": "513337",
+      "label": "稻城县" },
+
+    {
+      "value": "513338",
+      "label": "得荣县" }] },
+
+
+
+  {
+    "value": "513400",
+    "label": "凉山彝族自治州",
+    "children": [
+    {
+      "value": "513401",
+      "label": "西昌市" },
+
+    {
+      "value": "513422",
+      "label": "木里藏族自治县" },
+
+    {
+      "value": "513423",
+      "label": "盐源县" },
+
+    {
+      "value": "513424",
+      "label": "德昌县" },
+
+    {
+      "value": "513425",
+      "label": "会理县" },
+
+    {
+      "value": "513426",
+      "label": "会东县" },
+
+    {
+      "value": "513427",
+      "label": "宁南县" },
+
+    {
+      "value": "513428",
+      "label": "普格县" },
+
+    {
+      "value": "513429",
+      "label": "布拖县" },
+
+    {
+      "value": "513430",
+      "label": "金阳县" },
+
+    {
+      "value": "513431",
+      "label": "昭觉县" },
+
+    {
+      "value": "513432",
+      "label": "喜德县" },
+
+    {
+      "value": "513433",
+      "label": "冕宁县" },
+
+    {
+      "value": "513434",
+      "label": "越西县" },
+
+    {
+      "value": "513435",
+      "label": "甘洛县" },
+
+    {
+      "value": "513436",
+      "label": "美姑县" },
+
+    {
+      "value": "513437",
+      "label": "雷波县" }] }] },
+
+
+
+
+
+{
+  "value": "520000",
+  "label": "贵州省",
+  "children": [
+  {
+    "value": "520100",
+    "label": "贵阳市",
+    "children": [
+    {
+      "value": "520102",
+      "label": "南明区" },
+
+    {
+      "value": "520103",
+      "label": "云岩区" },
+
+    {
+      "value": "520111",
+      "label": "花溪区" },
+
+    {
+      "value": "520112",
+      "label": "乌当区" },
+
+    {
+      "value": "520113",
+      "label": "白云区" },
+
+    {
+      "value": "520115",
+      "label": "观山湖区" },
+
+    {
+      "value": "520121",
+      "label": "开阳县" },
+
+    {
+      "value": "520122",
+      "label": "息烽县" },
+
+    {
+      "value": "520123",
+      "label": "修文县" },
+
+    {
+      "value": "520181",
+      "label": "清镇市" }] },
+
+
+
+  {
+    "value": "520200",
+    "label": "六盘水市",
+    "children": [
+    {
+      "value": "520201",
+      "label": "钟山区" },
+
+    {
+      "value": "520203",
+      "label": "六枝特区" },
+
+    {
+      "value": "520221",
+      "label": "水城县" },
+
+    {
+      "value": "520222",
+      "label": "盘　县" }] },
+
+
+
+  {
+    "value": "520300",
+    "label": "遵义市",
+    "children": [
+    {
+      "value": "520302",
+      "label": "红花岗区" },
+
+    {
+      "value": "520303",
+      "label": "汇川区" },
+
+    {
+      "value": "520321",
+      "label": "遵义县" },
+
+    {
+      "value": "520322",
+      "label": "桐梓县" },
+
+    {
+      "value": "520323",
+      "label": "绥阳县" },
+
+    {
+      "value": "520324",
+      "label": "正安县" },
+
+    {
+      "value": "520325",
+      "label": "道真仡佬族苗族自治县" },
+
+    {
+      "value": "520326",
+      "label": "务川仡佬族苗族自治县" },
+
+    {
+      "value": "520327",
+      "label": "凤冈县" },
+
+    {
+      "value": "520328",
+      "label": "湄潭县" },
+
+    {
+      "value": "520329",
+      "label": "余庆县" },
+
+    {
+      "value": "520330",
+      "label": "习水县" },
+
+    {
+      "value": "520381",
+      "label": "赤水市" },
+
+    {
+      "value": "520382",
+      "label": "仁怀市" }] },
+
+
+
+  {
+    "value": "520400",
+    "label": "安顺市",
+    "children": [
+    {
+      "value": "520402",
+      "label": "西秀区" },
+
+    {
+      "value": "520421",
+      "label": "平坝县" },
+
+    {
+      "value": "520422",
+      "label": "普定县" },
+
+    {
+      "value": "520423",
+      "label": "镇宁布依族苗族自治县" },
+
+    {
+      "value": "520424",
+      "label": "关岭布依族苗族自治县" },
+
+    {
+      "value": "520425",
+      "label": "紫云苗族布依族自治县" }] },
+
+
+
+  {
+    "value": "522200",
+    "label": "铜仁市",
+    "children": [
+    {
+      "value": "520602",
+      "label": "碧江区" },
+
+    {
+      "value": "520603",
+      "label": "万山区" },
+
+    {
+      "value": "522222",
+      "label": "江口县" },
+
+    {
+      "value": "522223",
+      "label": "玉屏侗族自治县" },
+
+    {
+      "value": "522224",
+      "label": "石阡县" },
+
+    {
+      "value": "522225",
+      "label": "思南县" },
+
+    {
+      "value": "522226",
+      "label": "印江土家族苗族自治县" },
+
+    {
+      "value": "522227",
+      "label": "德江县" },
+
+    {
+      "value": "522228",
+      "label": "沿河土家族自治县" },
+
+    {
+      "value": "522229",
+      "label": "松桃苗族自治县" }] },
+
+
+
+  {
+    "value": "522400",
+    "label": "毕节市",
+    "children": [
+    {
+      "value": "522401",
+      "label": "七星关区" },
+
+    {
+      "value": "522422",
+      "label": "大方县" },
+
+    {
+      "value": "522423",
+      "label": "黔西县" },
+
+    {
+      "value": "522424",
+      "label": "金沙县" },
+
+    {
+      "value": "522425",
+      "label": "织金县" },
+
+    {
+      "value": "522426",
+      "label": "纳雍县" },
+
+    {
+      "value": "522427",
+      "label": "威宁彝族回族苗族自治县" },
+
+    {
+      "value": "522428",
+      "label": "赫章县" }] },
+
+
+
+  {
+    "value": "522300",
+    "label": "黔西南布依族苗族自治州",
+    "children": [
+    {
+      "value": "522301",
+      "label": "兴义市" },
+
+    {
+      "value": "522322",
+      "label": "兴仁县" },
+
+    {
+      "value": "522323",
+      "label": "普安县" },
+
+    {
+      "value": "522324",
+      "label": "晴隆县" },
+
+    {
+      "value": "522325",
+      "label": "贞丰县" },
+
+    {
+      "value": "522326",
+      "label": "望谟县" },
+
+    {
+      "value": "522327",
+      "label": "册亨县" },
+
+    {
+      "value": "522328",
+      "label": "安龙县" }] },
+
+
+
+  {
+    "value": "522600",
+    "label": "黔东南苗族侗族自治州",
+    "children": [
+    {
+      "value": "522601",
+      "label": "凯里市" },
+
+    {
+      "value": "522622",
+      "label": "黄平县" },
+
+    {
+      "value": "522623",
+      "label": "施秉县" },
+
+    {
+      "value": "522624",
+      "label": "三穗县" },
+
+    {
+      "value": "522625",
+      "label": "镇远县" },
+
+    {
+      "value": "522626",
+      "label": "岑巩县" },
+
+    {
+      "value": "522627",
+      "label": "天柱县" },
+
+    {
+      "value": "522628",
+      "label": "锦屏县" },
+
+    {
+      "value": "522629",
+      "label": "剑河县" },
+
+    {
+      "value": "522630",
+      "label": "台江县" },
+
+    {
+      "value": "522631",
+      "label": "黎平县" },
+
+    {
+      "value": "522632",
+      "label": "榕江县" },
+
+    {
+      "value": "522633",
+      "label": "从江县" },
+
+    {
+      "value": "522634",
+      "label": "雷山县" },
+
+    {
+      "value": "522635",
+      "label": "麻江县" },
+
+    {
+      "value": "522636",
+      "label": "丹寨县" }] },
+
+
+
+  {
+    "value": "522700",
+    "label": "黔南布依族苗族自治州",
+    "children": [
+    {
+      "value": "522701",
+      "label": "都匀市" },
+
+    {
+      "value": "522702",
+      "label": "福泉市" },
+
+    {
+      "value": "522722",
+      "label": "荔波县" },
+
+    {
+      "value": "522723",
+      "label": "贵定县" },
+
+    {
+      "value": "522725",
+      "label": "瓮安县" },
+
+    {
+      "value": "522726",
+      "label": "独山县" },
+
+    {
+      "value": "522727",
+      "label": "平塘县" },
+
+    {
+      "value": "522728",
+      "label": "罗甸县" },
+
+    {
+      "value": "522729",
+      "label": "长顺县" },
+
+    {
+      "value": "522730",
+      "label": "龙里县" },
+
+    {
+      "value": "522731",
+      "label": "惠水县" },
+
+    {
+      "value": "522732",
+      "label": "三都水族自治县" }] }] },
+
+
+
+
+
+{
+  "value": "530000",
+  "label": "云南省",
+  "children": [
+  {
+    "value": "530100",
+    "label": "昆明市",
+    "children": [
+    {
+      "value": "530102",
+      "label": "五华区" },
+
+    {
+      "value": "530103",
+      "label": "盘龙区" },
+
+    {
+      "value": "530111",
+      "label": "官渡区" },
+
+    {
+      "value": "530112",
+      "label": "西山区" },
+
+    {
+      "value": "530113",
+      "label": "东川区" },
+
+    {
+      "value": "530121",
+      "label": "呈贡县" },
+
+    {
+      "value": "530122",
+      "label": "晋宁县" },
+
+    {
+      "value": "530124",
+      "label": "富民县" },
+
+    {
+      "value": "530125",
+      "label": "宜良县" },
+
+    {
+      "value": "530126",
+      "label": "石林彝族自治县" },
+
+    {
+      "value": "530127",
+      "label": "嵩明县" },
+
+    {
+      "value": "530128",
+      "label": "禄劝彝族苗族自治县" },
+
+    {
+      "value": "530129",
+      "label": "寻甸回族彝族自治县" },
+
+    {
+      "value": "530181",
+      "label": "安宁市" }] },
+
+
+
+  {
+    "value": "530300",
+    "label": "曲靖市",
+    "children": [
+    {
+      "value": "530302",
+      "label": "麒麟区" },
+
+    {
+      "value": "530321",
+      "label": "马龙县" },
+
+    {
+      "value": "530322",
+      "label": "陆良县" },
+
+    {
+      "value": "530323",
+      "label": "师宗县" },
+
+    {
+      "value": "530324",
+      "label": "罗平县" },
+
+    {
+      "value": "530325",
+      "label": "富源县" },
+
+    {
+      "value": "530326",
+      "label": "会泽县" },
+
+    {
+      "value": "530328",
+      "label": "沾益县" },
+
+    {
+      "value": "530381",
+      "label": "宣威市" }] },
+
+
+
+  {
+    "value": "530400",
+    "label": "玉溪市",
+    "children": [
+    {
+      "value": "530402",
+      "label": "红塔区" },
+
+    {
+      "value": "530421",
+      "label": "江川县" },
+
+    {
+      "value": "530422",
+      "label": "澄江县" },
+
+    {
+      "value": "530423",
+      "label": "通海县" },
+
+    {
+      "value": "530424",
+      "label": "华宁县" },
+
+    {
+      "value": "530425",
+      "label": "易门县" },
+
+    {
+      "value": "530426",
+      "label": "峨山彝族自治县" },
+
+    {
+      "value": "530427",
+      "label": "新平彝族傣族自治县" },
+
+    {
+      "value": "530428",
+      "label": "元江哈尼族彝族傣族自治县" }] },
+
+
+
+  {
+    "value": "530500",
+    "label": "保山市",
+    "children": [
+    {
+      "value": "530502",
+      "label": "隆阳区" },
+
+    {
+      "value": "530521",
+      "label": "施甸县" },
+
+    {
+      "value": "530522",
+      "label": "腾冲县" },
+
+    {
+      "value": "530523",
+      "label": "龙陵县" },
+
+    {
+      "value": "530524",
+      "label": "昌宁县" }] },
+
+
+
+  {
+    "value": "530600",
+    "label": "昭通市",
+    "children": [
+    {
+      "value": "530602",
+      "label": "昭阳区" },
+
+    {
+      "value": "530621",
+      "label": "鲁甸县" },
+
+    {
+      "value": "530622",
+      "label": "巧家县" },
+
+    {
+      "value": "530623",
+      "label": "盐津县" },
+
+    {
+      "value": "530624",
+      "label": "大关县" },
+
+    {
+      "value": "530625",
+      "label": "永善县" },
+
+    {
+      "value": "530626",
+      "label": "绥江县" },
+
+    {
+      "value": "530627",
+      "label": "镇雄县" },
+
+    {
+      "value": "530628",
+      "label": "彝良县" },
+
+    {
+      "value": "530629",
+      "label": "威信县" },
+
+    {
+      "value": "530630",
+      "label": "水富县" }] },
+
+
+
+  {
+    "value": "530700",
+    "label": "丽江市",
+    "children": [
+    {
+      "value": "530702",
+      "label": "古城区" },
+
+    {
+      "value": "530721",
+      "label": "玉龙纳西族自治县" },
+
+    {
+      "value": "530722",
+      "label": "永胜县" },
+
+    {
+      "value": "530723",
+      "label": "华坪县" },
+
+    {
+      "value": "530724",
+      "label": "宁蒗彝族自治县" }] },
+
+
+
+  {
+    "value": "530800",
+    "label": "普洱市",
+    "children": [
+    {
+      "value": "530802",
+      "label": "思茅区" },
+
+    {
+      "value": "530821",
+      "label": "宁洱哈尼族彝族自治县" },
+
+    {
+      "value": "530822",
+      "label": "墨江哈尼族自治县" },
+
+    {
+      "value": "530823",
+      "label": "景东彝族自治县" },
+
+    {
+      "value": "530824",
+      "label": "景谷傣族彝族自治县" },
+
+    {
+      "value": "530825",
+      "label": "镇沅彝族哈尼族拉祜族自治县" },
+
+    {
+      "value": "530826",
+      "label": "江城哈尼族彝族自治县" },
+
+    {
+      "value": "530827",
+      "label": "孟连傣族拉祜族佤族自治县" },
+
+    {
+      "value": "530828",
+      "label": "澜沧拉祜族自治县" },
+
+    {
+      "value": "530829",
+      "label": "西盟佤族自治县" }] },
+
+
+
+  {
+    "value": "530900",
+    "label": "临沧市",
+    "children": [
+    {
+      "value": "530902",
+      "label": "临翔区" },
+
+    {
+      "value": "530921",
+      "label": "凤庆县" },
+
+    {
+      "value": "530922",
+      "label": "云　县" },
+
+    {
+      "value": "530923",
+      "label": "永德县" },
+
+    {
+      "value": "530924",
+      "label": "镇康县" },
+
+    {
+      "value": "530925",
+      "label": "双江拉祜族佤族布朗族傣族自治县" },
+
+    {
+      "value": "530926",
+      "label": "耿马傣族佤族自治县" },
+
+    {
+      "value": "530927",
+      "label": "沧源佤族自治县" }] },
+
+
+
+  {
+    "value": "532300",
+    "label": "楚雄彝族自治州",
+    "children": [
+    {
+      "value": "532301",
+      "label": "楚雄市" },
+
+    {
+      "value": "532322",
+      "label": "双柏县" },
+
+    {
+      "value": "532323",
+      "label": "牟定县" },
+
+    {
+      "value": "532324",
+      "label": "南华县" },
+
+    {
+      "value": "532325",
+      "label": "姚安县" },
+
+    {
+      "value": "532326",
+      "label": "大姚县" },
+
+    {
+      "value": "532327",
+      "label": "永仁县" },
+
+    {
+      "value": "532328",
+      "label": "元谋县" },
+
+    {
+      "value": "532329",
+      "label": "武定县" },
+
+    {
+      "value": "532331",
+      "label": "禄丰县" }] },
+
+
+
+  {
+    "value": "532500",
+    "label": "红河哈尼族彝族自治州",
+    "children": [
+    {
+      "value": "532501",
+      "label": "个旧市" },
+
+    {
+      "value": "532502",
+      "label": "开远市" },
+
+    {
+      "value": "532503",
+      "label": "蒙自市" },
+
+    {
+      "value": "532504",
+      "label": "弥勒市" },
+
+    {
+      "value": "532523",
+      "label": "屏边苗族自治县" },
+
+    {
+      "value": "532524",
+      "label": "建水县" },
+
+    {
+      "value": "532525",
+      "label": "石屏县" },
+
+    {
+      "value": "532527",
+      "label": "泸西县" },
+
+    {
+      "value": "532528",
+      "label": "元阳县" },
+
+    {
+      "value": "532529",
+      "label": "红河县" },
+
+    {
+      "value": "532530",
+      "label": "金平苗族瑶族傣族自治县" },
+
+    {
+      "value": "532531",
+      "label": "绿春县" },
+
+    {
+      "value": "532532",
+      "label": "河口瑶族自治县" }] },
+
+
+
+  {
+    "value": "532600",
+    "label": "文山壮族苗族自治州",
+    "children": [
+    {
+      "value": "532621",
+      "label": "文山市" },
+
+    {
+      "value": "532622",
+      "label": "砚山县" },
+
+    {
+      "value": "532623",
+      "label": "西畴县" },
+
+    {
+      "value": "532624",
+      "label": "麻栗坡县" },
+
+    {
+      "value": "532625",
+      "label": "马关县" },
+
+    {
+      "value": "532626",
+      "label": "丘北县" },
+
+    {
+      "value": "532627",
+      "label": "广南县" },
+
+    {
+      "value": "532628",
+      "label": "富宁县" }] },
+
+
+
+  {
+    "value": "532800",
+    "label": "西双版纳傣族自治州",
+    "children": [
+    {
+      "value": "532801",
+      "label": "景洪市" },
+
+    {
+      "value": "532822",
+      "label": "勐海县" },
+
+    {
+      "value": "532823",
+      "label": "勐腊县" }] },
+
+
+
+  {
+    "value": "532900",
+    "label": "大理白族自治州",
+    "children": [
+    {
+      "value": "532901",
+      "label": "大理市" },
+
+    {
+      "value": "532922",
+      "label": "漾濞彝族自治县" },
+
+    {
+      "value": "532923",
+      "label": "祥云县" },
+
+    {
+      "value": "532924",
+      "label": "宾川县" },
+
+    {
+      "value": "532925",
+      "label": "弥渡县" },
+
+    {
+      "value": "532926",
+      "label": "南涧彝族自治县" },
+
+    {
+      "value": "532927",
+      "label": "巍山彝族回族自治县" },
+
+    {
+      "value": "532928",
+      "label": "永平县" },
+
+    {
+      "value": "532929",
+      "label": "云龙县" },
+
+    {
+      "value": "532930",
+      "label": "洱源县" },
+
+    {
+      "value": "532931",
+      "label": "剑川县" },
+
+    {
+      "value": "532932",
+      "label": "鹤庆县" }] },
+
+
+
+  {
+    "value": "533100",
+    "label": "德宏傣族景颇族自治州",
+    "children": [
+    {
+      "value": "533102",
+      "label": "瑞丽市" },
+
+    {
+      "value": "533103",
+      "label": "芒市" },
+
+    {
+      "value": "533122",
+      "label": "梁河县" },
+
+    {
+      "value": "533123",
+      "label": "盈江县" },
+
+    {
+      "value": "533124",
+      "label": "陇川县" }] },
+
+
+
+  {
+    "value": "533300",
+    "label": "怒江傈僳族自治州",
+    "children": [
+    {
+      "value": "533321",
+      "label": "泸水县" },
+
+    {
+      "value": "533323",
+      "label": "福贡县" },
+
+    {
+      "value": "533324",
+      "label": "贡山独龙族怒族自治县" },
+
+    {
+      "value": "533325",
+      "label": "兰坪白族普米族自治县" }] },
+
+
+
+  {
+    "value": "533400",
+    "label": "迪庆藏族自治州",
+    "children": [
+    {
+      "value": "533421",
+      "label": "香格里拉县" },
+
+    {
+      "value": "533422",
+      "label": "德钦县" },
+
+    {
+      "value": "533423",
+      "label": "维西傈僳族自治县" }] }] },
+
+
+
+
+
+{
+  "value": "540000",
+  "label": "西藏自治区",
+  "children": [
+  {
+    "value": "540100",
+    "label": "拉萨市",
+    "children": [
+    {
+      "value": "540102",
+      "label": "城关区" },
+
+    {
+      "value": "540121",
+      "label": "林周县" },
+
+    {
+      "value": "540122",
+      "label": "当雄县" },
+
+    {
+      "value": "540123",
+      "label": "尼木县" },
+
+    {
+      "value": "540124",
+      "label": "曲水县" },
+
+    {
+      "value": "540125",
+      "label": "堆龙德庆县" },
+
+    {
+      "value": "540126",
+      "label": "达孜县" },
+
+    {
+      "value": "540127",
+      "label": "墨竹工卡县" }] },
+
+
+
+  {
+    "value": "542100",
+    "label": "昌都市",
+    "children": [
+    {
+      "value": "542102",
+      "label": "卡若区" },
+
+    {
+      "value": "542122",
+      "label": "江达县" },
+
+    {
+      "value": "542123",
+      "label": "贡觉县" },
+
+    {
+      "value": "542124",
+      "label": "类乌齐县" },
+
+    {
+      "value": "542125",
+      "label": "丁青县" },
+
+    {
+      "value": "542126",
+      "label": "察雅县" },
+
+    {
+      "value": "542127",
+      "label": "八宿县" },
+
+    {
+      "value": "542128",
+      "label": "左贡县" },
+
+    {
+      "value": "542129",
+      "label": "芒康县" },
+
+    {
+      "value": "542132",
+      "label": "洛隆县" },
+
+    {
+      "value": "542133",
+      "label": "边坝县" }] },
+
+
+
+  {
+    "value": "542200",
+    "label": "山南地区",
+    "children": [
+    {
+      "value": "542221",
+      "label": "乃东县" },
+
+    {
+      "value": "542222",
+      "label": "扎囊县" },
+
+    {
+      "value": "542223",
+      "label": "贡嘎县" },
+
+    {
+      "value": "542224",
+      "label": "桑日县" },
+
+    {
+      "value": "542225",
+      "label": "琼结县" },
+
+    {
+      "value": "542226",
+      "label": "曲松县" },
+
+    {
+      "value": "542227",
+      "label": "措美县" },
+
+    {
+      "value": "542228",
+      "label": "洛扎县" },
+
+    {
+      "value": "542229",
+      "label": "加查县" },
+
+    {
+      "value": "542231",
+      "label": "隆子县" },
+
+    {
+      "value": "542232",
+      "label": "错那县" },
+
+    {
+      "value": "542233",
+      "label": "浪卡子县" }] },
+
+
+
+  {
+    "value": "542300",
+    "label": "日喀则市",
+    "children": [
+    {
+      "value": "542302",
+      "label": "桑珠孜区" },
+
+    {
+      "value": "542322",
+      "label": "南木林县" },
+
+    {
+      "value": "542323",
+      "label": "江孜县" },
+
+    {
+      "value": "542324",
+      "label": "定日县" },
+
+    {
+      "value": "542325",
+      "label": "萨迦县" },
+
+    {
+      "value": "542326",
+      "label": "拉孜县" },
+
+    {
+      "value": "542327",
+      "label": "昂仁县" },
+
+    {
+      "value": "542328",
+      "label": "谢通门县" },
+
+    {
+      "value": "542329",
+      "label": "白朗县" },
+
+    {
+      "value": "542330",
+      "label": "仁布县" },
+
+    {
+      "value": "542331",
+      "label": "康马县" },
+
+    {
+      "value": "542332",
+      "label": "定结县" },
+
+    {
+      "value": "542333",
+      "label": "仲巴县" },
+
+    {
+      "value": "542334",
+      "label": "亚东县" },
+
+    {
+      "value": "542335",
+      "label": "吉隆县" },
+
+    {
+      "value": "542336",
+      "label": "聂拉木县" },
+
+    {
+      "value": "542337",
+      "label": "萨嘎县" },
+
+    {
+      "value": "542338",
+      "label": "岗巴县" }] },
+
+
+
+  {
+    "value": "542400",
+    "label": "那曲地区",
+    "children": [
+    {
+      "value": "542421",
+      "label": "那曲县" },
+
+    {
+      "value": "542422",
+      "label": "嘉黎县" },
+
+    {
+      "value": "542423",
+      "label": "比如县" },
+
+    {
+      "value": "542424",
+      "label": "聂荣县" },
+
+    {
+      "value": "542425",
+      "label": "安多县" },
+
+    {
+      "value": "542426",
+      "label": "申扎县" },
+
+    {
+      "value": "542427",
+      "label": "索　县" },
+
+    {
+      "value": "542428",
+      "label": "班戈县" },
+
+    {
+      "value": "542429",
+      "label": "巴青县" },
+
+    {
+      "value": "542430",
+      "label": "尼玛县" },
+
+    {
+      "value": "542431",
+      "label": "双湖县" }] },
+
+
+
+  {
+    "value": "542500",
+    "label": "阿里地区",
+    "children": [
+    {
+      "value": "542521",
+      "label": "普兰县" },
+
+    {
+      "value": "542522",
+      "label": "札达县" },
+
+    {
+      "value": "542523",
+      "label": "噶尔县" },
+
+    {
+      "value": "542524",
+      "label": "日土县" },
+
+    {
+      "value": "542525",
+      "label": "革吉县" },
+
+    {
+      "value": "542526",
+      "label": "改则县" },
+
+    {
+      "value": "542527",
+      "label": "措勤县" }] },
+
+
+
+  {
+    "value": "542600",
+    "label": "林芝市",
+    "children": [
+    {
+      "value": "542602",
+      "label": "巴宜区" },
+
+    {
+      "value": "542622",
+      "label": "工布江达县" },
+
+    {
+      "value": "542623",
+      "label": "米林县" },
+
+    {
+      "value": "542624",
+      "label": "墨脱县" },
+
+    {
+      "value": "542625",
+      "label": "波密县" },
+
+    {
+      "value": "542626",
+      "label": "察隅县" },
+
+    {
+      "value": "542627",
+      "label": "朗　县" }] }] },
+
+
+
+
+
+{
+  "value": "610000",
+  "label": "陕西省",
+  "children": [
+  {
+    "value": "610100",
+    "label": "西安市",
+    "children": [
+    {
+      "value": "610102",
+      "label": "新城区" },
+
+    {
+      "value": "610103",
+      "label": "碑林区" },
+
+    {
+      "value": "610104",
+      "label": "莲湖区" },
+
+    {
+      "value": "610111",
+      "label": "灞桥区" },
+
+    {
+      "value": "610112",
+      "label": "未央区" },
+
+    {
+      "value": "610113",
+      "label": "雁塔区" },
+
+    {
+      "value": "610114",
+      "label": "阎良区" },
+
+    {
+      "value": "610115",
+      "label": "临潼区" },
+
+    {
+      "value": "610116",
+      "label": "长安区" },
+
+    {
+      "value": "610117",
+      "label": "高陵区" },
+
+    {
+      "value": "610122",
+      "label": "蓝田县" },
+
+    {
+      "value": "610124",
+      "label": "周至县" },
+
+    {
+      "value": "610125",
+      "label": "户　县" },
+
+    {
+      "value": "610126",
+      "label": "杨凌农业示范区" }] },
+
+
+
+  {
+    "value": "610200",
+    "label": "铜川市",
+    "children": [
+    {
+      "value": "610202",
+      "label": "王益区" },
+
+    {
+      "value": "610203",
+      "label": "印台区" },
+
+    {
+      "value": "610204",
+      "label": "耀州区" },
+
+    {
+      "value": "610222",
+      "label": "宜君县" }] },
+
+
+
+  {
+    "value": "610300",
+    "label": "宝鸡市",
+    "children": [
+    {
+      "value": "610302",
+      "label": "渭滨区" },
+
+    {
+      "value": "610303",
+      "label": "金台区" },
+
+    {
+      "value": "610304",
+      "label": "陈仓区" },
+
+    {
+      "value": "610322",
+      "label": "凤翔县" },
+
+    {
+      "value": "610323",
+      "label": "岐山县" },
+
+    {
+      "value": "610324",
+      "label": "扶风县" },
+
+    {
+      "value": "610326",
+      "label": "眉　县" },
+
+    {
+      "value": "610327",
+      "label": "陇　县" },
+
+    {
+      "value": "610328",
+      "label": "千阳县" },
+
+    {
+      "value": "610329",
+      "label": "麟游县" },
+
+    {
+      "value": "610330",
+      "label": "凤　县" },
+
+    {
+      "value": "610331",
+      "label": "太白县" }] },
+
+
+
+  {
+    "value": "610400",
+    "label": "咸阳市",
+    "children": [
+    {
+      "value": "610402",
+      "label": "秦都区" },
+
+    {
+      "value": "610403",
+      "label": "杨陵区" },
+
+    {
+      "value": "610404",
+      "label": "渭城区" },
+
+    {
+      "value": "610422",
+      "label": "三原县" },
+
+    {
+      "value": "610423",
+      "label": "泾阳县" },
+
+    {
+      "value": "610424",
+      "label": "乾　县" },
+
+    {
+      "value": "610425",
+      "label": "礼泉县" },
+
+    {
+      "value": "610426",
+      "label": "永寿县" },
+
+    {
+      "value": "610427",
+      "label": "彬　县" },
+
+    {
+      "value": "610428",
+      "label": "长武县" },
+
+    {
+      "value": "610429",
+      "label": "旬邑县" },
+
+    {
+      "value": "610430",
+      "label": "淳化县" },
+
+    {
+      "value": "610431",
+      "label": "武功县" },
+
+    {
+      "value": "610481",
+      "label": "兴平市" }] },
+
+
+
+  {
+    "value": "610500",
+    "label": "渭南市",
+    "children": [
+    {
+      "value": "610502",
+      "label": "临渭区" },
+
+    {
+      "value": "610521",
+      "label": "华　县" },
+
+    {
+      "value": "610522",
+      "label": "潼关县" },
+
+    {
+      "value": "610523",
+      "label": "大荔县" },
+
+    {
+      "value": "610524",
+      "label": "合阳县" },
+
+    {
+      "value": "610525",
+      "label": "澄城县" },
+
+    {
+      "value": "610526",
+      "label": "蒲城县" },
+
+    {
+      "value": "610527",
+      "label": "白水县" },
+
+    {
+      "value": "610528",
+      "label": "富平县" },
+
+    {
+      "value": "610581",
+      "label": "韩城市" },
+
+    {
+      "value": "610582",
+      "label": "华阴市" }] },
+
+
+
+  {
+    "value": "610600",
+    "label": "延安市",
+    "children": [
+    {
+      "value": "610602",
+      "label": "宝塔区" },
+
+    {
+      "value": "610621",
+      "label": "延长县" },
+
+    {
+      "value": "610622",
+      "label": "延川县" },
+
+    {
+      "value": "610623",
+      "label": "子长县" },
+
+    {
+      "value": "610624",
+      "label": "安塞县" },
+
+    {
+      "value": "610625",
+      "label": "志丹县" },
+
+    {
+      "value": "610626",
+      "label": "吴旗县" },
+
+    {
+      "value": "610627",
+      "label": "甘泉县" },
+
+    {
+      "value": "610628",
+      "label": "富　县" },
+
+    {
+      "value": "610629",
+      "label": "洛川县" },
+
+    {
+      "value": "610630",
+      "label": "宜川县" },
+
+    {
+      "value": "610631",
+      "label": "黄龙县" },
+
+    {
+      "value": "610632",
+      "label": "黄陵县" }] },
+
+
+
+  {
+    "value": "610700",
+    "label": "汉中市",
+    "children": [
+    {
+      "value": "610702",
+      "label": "汉台区" },
+
+    {
+      "value": "610721",
+      "label": "南郑县" },
+
+    {
+      "value": "610722",
+      "label": "城固县" },
+
+    {
+      "value": "610723",
+      "label": "洋　县" },
+
+    {
+      "value": "610724",
+      "label": "西乡县" },
+
+    {
+      "value": "610725",
+      "label": "勉　县" },
+
+    {
+      "value": "610726",
+      "label": "宁强县" },
+
+    {
+      "value": "610727",
+      "label": "略阳县" },
+
+    {
+      "value": "610728",
+      "label": "镇巴县" },
+
+    {
+      "value": "610729",
+      "label": "留坝县" },
+
+    {
+      "value": "610730",
+      "label": "佛坪县" }] },
+
+
+
+  {
+    "value": "610800",
+    "label": "榆林市",
+    "children": [
+    {
+      "value": "610802",
+      "label": "榆阳区" },
+
+    {
+      "value": "610821",
+      "label": "神木县" },
+
+    {
+      "value": "610822",
+      "label": "府谷县" },
+
+    {
+      "value": "610823",
+      "label": "横山县" },
+
+    {
+      "value": "610824",
+      "label": "靖边县" },
+
+    {
+      "value": "610825",
+      "label": "定边县" },
+
+    {
+      "value": "610826",
+      "label": "绥德县" },
+
+    {
+      "value": "610827",
+      "label": "米脂县" },
+
+    {
+      "value": "610828",
+      "label": "佳　县" },
+
+    {
+      "value": "610829",
+      "label": "吴堡县" },
+
+    {
+      "value": "610830",
+      "label": "清涧县" },
+
+    {
+      "value": "610831",
+      "label": "子洲县" }] },
+
+
+
+  {
+    "value": "610900",
+    "label": "安康市",
+    "children": [
+    {
+      "value": "610902",
+      "label": "汉滨区" },
+
+    {
+      "value": "610921",
+      "label": "汉阴县" },
+
+    {
+      "value": "610922",
+      "label": "石泉县" },
+
+    {
+      "value": "610923",
+      "label": "宁陕县" },
+
+    {
+      "value": "610924",
+      "label": "紫阳县" },
+
+    {
+      "value": "610925",
+      "label": "岚皋县" },
+
+    {
+      "value": "610926",
+      "label": "平利县" },
+
+    {
+      "value": "610927",
+      "label": "镇坪县" },
+
+    {
+      "value": "610928",
+      "label": "旬阳县" },
+
+    {
+      "value": "610929",
+      "label": "白河县" }] },
+
+
+
+  {
+    "value": "611000",
+    "label": "商洛市",
+    "children": [
+    {
+      "value": "611002",
+      "label": "商州区" },
+
+    {
+      "value": "611021",
+      "label": "洛南县" },
+
+    {
+      "value": "611022",
+      "label": "丹凤县" },
+
+    {
+      "value": "611023",
+      "label": "商南县" },
+
+    {
+      "value": "611024",
+      "label": "山阳县" },
+
+    {
+      "value": "611025",
+      "label": "镇安县" },
+
+    {
+      "value": "611026",
+      "label": "柞水县" }] }] },
+
+
+
+
+
+{
+  "value": "620000",
+  "label": "甘肃省",
+  "children": [
+  {
+    "value": "620100",
+    "label": "兰州市",
+    "children": [
+    {
+      "value": "620102",
+      "label": "城关区" },
+
+    {
+      "value": "620103",
+      "label": "七里河区" },
+
+    {
+      "value": "620104",
+      "label": "西固区" },
+
+    {
+      "value": "620105",
+      "label": "安宁区" },
+
+    {
+      "value": "620111",
+      "label": "红古区" },
+
+    {
+      "value": "620121",
+      "label": "永登县" },
+
+    {
+      "value": "620122",
+      "label": "皋兰县" },
+
+    {
+      "value": "620123",
+      "label": "榆中县" }] },
+
+
+
+  {
+    "value": "620200",
+    "label": "嘉峪关市",
+    "children": [
+    {
+      "value": "659059",
+      "label": "雄关区" },
+
+    {
+      "value": "659060",
+      "label": "长城区" },
+
+    {
+      "value": "659061",
+      "label": "镜铁区" }] },
+
+
+
+  {
+    "value": "620300",
+    "label": "金昌市",
+    "children": [
+    {
+      "value": "620302",
+      "label": "金川区" },
+
+    {
+      "value": "620321",
+      "label": "永昌县" }] },
+
+
+
+  {
+    "value": "620400",
+    "label": "白银市",
+    "children": [
+    {
+      "value": "620402",
+      "label": "白银区" },
+
+    {
+      "value": "620403",
+      "label": "平川区" },
+
+    {
+      "value": "620421",
+      "label": "靖远县" },
+
+    {
+      "value": "620422",
+      "label": "会宁县" },
+
+    {
+      "value": "620423",
+      "label": "景泰县" }] },
+
+
+
+  {
+    "value": "620500",
+    "label": "天水市",
+    "children": [
+    {
+      "value": "620502",
+      "label": "秦州区" },
+
+    {
+      "value": "620503",
+      "label": "麦积区" },
+
+    {
+      "value": "620521",
+      "label": "清水县" },
+
+    {
+      "value": "620522",
+      "label": "秦安县" },
+
+    {
+      "value": "620523",
+      "label": "甘谷县" },
+
+    {
+      "value": "620524",
+      "label": "武山县" },
+
+    {
+      "value": "620525",
+      "label": "张家川回族自治县" }] },
+
+
+
+  {
+    "value": "620600",
+    "label": "武威市",
+    "children": [
+    {
+      "value": "620602",
+      "label": "凉州区" },
+
+    {
+      "value": "620621",
+      "label": "民勤县" },
+
+    {
+      "value": "620622",
+      "label": "古浪县" },
+
+    {
+      "value": "620623",
+      "label": "天祝藏族自治县" }] },
+
+
+
+  {
+    "value": "620700",
+    "label": "张掖市",
+    "children": [
+    {
+      "value": "620702",
+      "label": "甘州区" },
+
+    {
+      "value": "620721",
+      "label": "肃南裕固族自治县" },
+
+    {
+      "value": "620722",
+      "label": "民乐县" },
+
+    {
+      "value": "620723",
+      "label": "临泽县" },
+
+    {
+      "value": "620724",
+      "label": "高台县" },
+
+    {
+      "value": "620725",
+      "label": "山丹县" }] },
+
+
+
+  {
+    "value": "620800",
+    "label": "平凉市",
+    "children": [
+    {
+      "value": "620802",
+      "label": "崆峒区" },
+
+    {
+      "value": "620821",
+      "label": "泾川县" },
+
+    {
+      "value": "620822",
+      "label": "灵台县" },
+
+    {
+      "value": "620823",
+      "label": "崇信县" },
+
+    {
+      "value": "620824",
+      "label": "华亭县" },
+
+    {
+      "value": "620825",
+      "label": "庄浪县" },
+
+    {
+      "value": "620826",
+      "label": "静宁县" }] },
+
+
+
+  {
+    "value": "620900",
+    "label": "酒泉市",
+    "children": [
+    {
+      "value": "620902",
+      "label": "肃州区" },
+
+    {
+      "value": "620921",
+      "label": "金塔县" },
+
+    {
+      "value": "620922",
+      "label": "瓜州县" },
+
+    {
+      "value": "620923",
+      "label": "肃北蒙古族自治县" },
+
+    {
+      "value": "620924",
+      "label": "阿克塞哈萨克族自治县" },
+
+    {
+      "value": "620981",
+      "label": "玉门市" },
+
+    {
+      "value": "620982",
+      "label": "敦煌市" }] },
+
+
+
+  {
+    "value": "621000",
+    "label": "庆阳市",
+    "children": [
+    {
+      "value": "621002",
+      "label": "西峰区" },
+
+    {
+      "value": "621021",
+      "label": "庆城县" },
+
+    {
+      "value": "621022",
+      "label": "环　县" },
+
+    {
+      "value": "621023",
+      "label": "华池县" },
+
+    {
+      "value": "621024",
+      "label": "合水县" },
+
+    {
+      "value": "621025",
+      "label": "正宁县" },
+
+    {
+      "value": "621026",
+      "label": "宁　县" },
+
+    {
+      "value": "621027",
+      "label": "镇原县" }] },
+
+
+
+  {
+    "value": "621100",
+    "label": "定西市",
+    "children": [
+    {
+      "value": "621102",
+      "label": "安定区" },
+
+    {
+      "value": "621121",
+      "label": "通渭县" },
+
+    {
+      "value": "621122",
+      "label": "陇西县" },
+
+    {
+      "value": "621123",
+      "label": "渭源县" },
+
+    {
+      "value": "621124",
+      "label": "临洮县" },
+
+    {
+      "value": "621125",
+      "label": "漳　县" },
+
+    {
+      "value": "621126",
+      "label": "岷　县" }] },
+
+
+
+  {
+    "value": "621200",
+    "label": "陇南市",
+    "children": [
+    {
+      "value": "621202",
+      "label": "武都区" },
+
+    {
+      "value": "621221",
+      "label": "成　县" },
+
+    {
+      "value": "621222",
+      "label": "文　县" },
+
+    {
+      "value": "621223",
+      "label": "宕昌县" },
+
+    {
+      "value": "621224",
+      "label": "康　县" },
+
+    {
+      "value": "621225",
+      "label": "西和县" },
+
+    {
+      "value": "621226",
+      "label": "礼　县" },
+
+    {
+      "value": "621227",
+      "label": "徽　县" },
+
+    {
+      "value": "621228",
+      "label": "两当县" }] },
+
+
+
+  {
+    "value": "622900",
+    "label": "临夏回族自治州",
+    "children": [
+    {
+      "value": "622901",
+      "label": "临夏市" },
+
+    {
+      "value": "622921",
+      "label": "临夏县" },
+
+    {
+      "value": "622922",
+      "label": "康乐县" },
+
+    {
+      "value": "622923",
+      "label": "永靖县" },
+
+    {
+      "value": "622924",
+      "label": "广河县" },
+
+    {
+      "value": "622925",
+      "label": "和政县" },
+
+    {
+      "value": "622926",
+      "label": "东乡族自治县" },
+
+    {
+      "value": "622927",
+      "label": "积石山保安族东乡族撒拉族自治县" }] },
+
+
+
+  {
+    "value": "623000",
+    "label": "甘南藏族自治州",
+    "children": [
+    {
+      "value": "623001",
+      "label": "合作市" },
+
+    {
+      "value": "623021",
+      "label": "临潭县" },
+
+    {
+      "value": "623022",
+      "label": "卓尼县" },
+
+    {
+      "value": "623023",
+      "label": "舟曲县" },
+
+    {
+      "value": "623024",
+      "label": "迭部县" },
+
+    {
+      "value": "623025",
+      "label": "玛曲县" },
+
+    {
+      "value": "623026",
+      "label": "碌曲县" },
+
+    {
+      "value": "623027",
+      "label": "夏河县" }] }] },
+
+
+
+
+
+{
+  "value": "630000",
+  "label": "青海省",
+  "children": [
+  {
+    "value": "630100",
+    "label": "西宁市",
+    "children": [
+    {
+      "value": "630102",
+      "label": "城东区" },
+
+    {
+      "value": "630103",
+      "label": "城中区" },
+
+    {
+      "value": "630104",
+      "label": "城西区" },
+
+    {
+      "value": "630105",
+      "label": "城北区" },
+
+    {
+      "value": "630121",
+      "label": "大通回族土族自治县" },
+
+    {
+      "value": "630122",
+      "label": "湟中县" },
+
+    {
+      "value": "630123",
+      "label": "湟源县" }] },
+
+
+
+  {
+    "value": "632100",
+    "label": "海东市",
+    "children": [
+    {
+      "value": "632002",
+      "label": "乐都区" },
+
+    {
+      "value": "632121",
+      "label": "平安县" },
+
+    {
+      "value": "632122",
+      "label": "民和回族土族自治县" },
+
+    {
+      "value": "632126",
+      "label": "互助土族自治县" },
+
+    {
+      "value": "632127",
+      "label": "化隆回族自治县" },
+
+    {
+      "value": "632128",
+      "label": "循化撒拉族自治县" }] },
+
+
+
+  {
+    "value": "632200",
+    "label": "海北藏族自治州",
+    "children": [
+    {
+      "value": "632221",
+      "label": "门源回族自治县" },
+
+    {
+      "value": "632222",
+      "label": "祁连县" },
+
+    {
+      "value": "632223",
+      "label": "海晏县" },
+
+    {
+      "value": "632224",
+      "label": "刚察县" }] },
+
+
+
+  {
+    "value": "632300",
+    "label": "黄南藏族自治州",
+    "children": [
+    {
+      "value": "632321",
+      "label": "同仁县" },
+
+    {
+      "value": "632322",
+      "label": "尖扎县" },
+
+    {
+      "value": "632323",
+      "label": "泽库县" },
+
+    {
+      "value": "632324",
+      "label": "河南蒙古族自治县" }] },
+
+
+
+  {
+    "value": "632500",
+    "label": "海南藏族自治州",
+    "children": [
+    {
+      "value": "632521",
+      "label": "共和县" },
+
+    {
+      "value": "632522",
+      "label": "同德县" },
+
+    {
+      "value": "632523",
+      "label": "贵德县" },
+
+    {
+      "value": "632524",
+      "label": "兴海县" },
+
+    {
+      "value": "632525",
+      "label": "贵南县" }] },
+
+
+
+  {
+    "value": "632600",
+    "label": "果洛藏族自治州",
+    "children": [
+    {
+      "value": "632621",
+      "label": "玛沁县" },
+
+    {
+      "value": "632622",
+      "label": "班玛县" },
+
+    {
+      "value": "632623",
+      "label": "甘德县" },
+
+    {
+      "value": "632624",
+      "label": "达日县" },
+
+    {
+      "value": "632625",
+      "label": "久治县" },
+
+    {
+      "value": "632626",
+      "label": "玛多县" }] },
+
+
+
+  {
+    "value": "632700",
+    "label": "玉树藏族自治州",
+    "children": [
+    {
+      "value": "632721",
+      "label": "玉树市" },
+
+    {
+      "value": "632722",
+      "label": "杂多县" },
+
+    {
+      "value": "632723",
+      "label": "称多县" },
+
+    {
+      "value": "632724",
+      "label": "治多县" },
+
+    {
+      "value": "632725",
+      "label": "囊谦县" },
+
+    {
+      "value": "632726",
+      "label": "曲麻莱县" }] },
+
+
+
+  {
+    "value": "632800",
+    "label": "海西蒙古族藏族自治州",
+    "children": [
+    {
+      "value": "632801",
+      "label": "格尔木市" },
+
+    {
+      "value": "632802",
+      "label": "德令哈市" },
+
+    {
+      "value": "632821",
+      "label": "乌兰县" },
+
+    {
+      "value": "632822",
+      "label": "都兰县" },
+
+    {
+      "value": "632823",
+      "label": "天峻县" }] }] },
+
+
+
+
+
+{
+  "value": "640000",
+  "label": "宁夏回族自治区",
+  "children": [
+  {
+    "value": "640100",
+    "label": "银川市",
+    "children": [
+    {
+      "value": "640104",
+      "label": "兴庆区" },
+
+    {
+      "value": "640105",
+      "label": "西夏区" },
+
+    {
+      "value": "640106",
+      "label": "金凤区" },
+
+    {
+      "value": "640121",
+      "label": "永宁县" },
+
+    {
+      "value": "640122",
+      "label": "贺兰县" },
+
+    {
+      "value": "640181",
+      "label": "灵武市" }] },
+
+
+
+  {
+    "value": "640200",
+    "label": "石嘴山市",
+    "children": [
+    {
+      "value": "640202",
+      "label": "大武口区" },
+
+    {
+      "value": "640205",
+      "label": "惠农区" },
+
+    {
+      "value": "640221",
+      "label": "平罗县" }] },
+
+
+
+  {
+    "value": "640300",
+    "label": "吴忠市",
+    "children": [
+    {
+      "value": "640302",
+      "label": "利通区" },
+
+    {
+      "value": "640303",
+      "label": "红寺堡区" },
+
+    {
+      "value": "640323",
+      "label": "盐池县" },
+
+    {
+      "value": "640324",
+      "label": "同心县" },
+
+    {
+      "value": "640381",
+      "label": "青铜峡市" }] },
+
+
+
+  {
+    "value": "640400",
+    "label": "固原市",
+    "children": [
+    {
+      "value": "640402",
+      "label": "原州区" },
+
+    {
+      "value": "640422",
+      "label": "西吉县" },
+
+    {
+      "value": "640423",
+      "label": "隆德县" },
+
+    {
+      "value": "640424",
+      "label": "泾源县" },
+
+    {
+      "value": "640425",
+      "label": "彭阳县" }] },
+
+
+
+  {
+    "value": "640500",
+    "label": "中卫市",
+    "children": [
+    {
+      "value": "640502",
+      "label": "沙坡头区" },
+
+    {
+      "value": "640521",
+      "label": "中宁县" },
+
+    {
+      "value": "640522",
+      "label": "海原县" }] }] },
+
+
+
+
+
+{
+  "value": "650000",
+  "label": "新疆维吾尔自治区",
+  "children": [
+  {
+    "value": "650100",
+    "label": "乌鲁木齐市",
+    "children": [
+    {
+      "value": "650102",
+      "label": "天山区" },
+
+    {
+      "value": "650103",
+      "label": "沙依巴克区" },
+
+    {
+      "value": "650104",
+      "label": "新市区" },
+
+    {
+      "value": "650105",
+      "label": "水磨沟区" },
+
+    {
+      "value": "650106",
+      "label": "头屯河区" },
+
+    {
+      "value": "650107",
+      "label": "达坂城区" },
+
+    {
+      "value": "650108",
+      "label": "米东区" },
+
+    {
+      "value": "650121",
+      "label": "乌鲁木齐县" }] },
+
+
+
+  {
+    "value": "650200",
+    "label": "克拉玛依市",
+    "children": [
+    {
+      "value": "650202",
+      "label": "独山子区" },
+
+    {
+      "value": "650203",
+      "label": "克拉玛依区" },
+
+    {
+      "value": "650204",
+      "label": "白碱滩区" },
+
+    {
+      "value": "650205",
+      "label": "乌尔禾区" }] },
+
+
+
+  {
+    "value": "652100",
+    "label": "吐鲁番市",
+    "children": [
+    {
+      "value": "652102",
+      "label": "高昌区" },
+
+    {
+      "value": "652122",
+      "label": "鄯善县" },
+
+    {
+      "value": "652123",
+      "label": "托克逊县" }] },
+
+
+
+  {
+    "value": "652200",
+    "label": "哈密地区",
+    "children": [
+    {
+      "value": "652201",
+      "label": "哈密市" },
+
+    {
+      "value": "652222",
+      "label": "巴里坤哈萨克自治县" },
+
+    {
+      "value": "652223",
+      "label": "伊吾县" }] },
+
+
+
+  {
+    "value": "652300",
+    "label": "昌吉回族自治州",
+    "children": [
+    {
+      "value": "652301",
+      "label": "昌吉市" },
+
+    {
+      "value": "652302",
+      "label": "阜康市" },
+
+    {
+      "value": "652303",
+      "label": "米泉市" },
+
+    {
+      "value": "652323",
+      "label": "呼图壁县" },
+
+    {
+      "value": "652324",
+      "label": "玛纳斯县" },
+
+    {
+      "value": "652325",
+      "label": "奇台县" },
+
+    {
+      "value": "652327",
+      "label": "吉木萨尔县" },
+
+    {
+      "value": "652328",
+      "label": "木垒哈萨克自治县" }] },
+
+
+
+  {
+    "value": "652700",
+    "label": "博尔塔拉蒙古自治州",
+    "children": [
+    {
+      "value": "652701",
+      "label": "博乐市" },
+
+    {
+      "value": "652702",
+      "label": "阿拉山口市" },
+
+    {
+      "value": "652722",
+      "label": "精河县" },
+
+    {
+      "value": "652723",
+      "label": "温泉县" }] },
+
+
+
+  {
+    "value": "652800",
+    "label": "巴音郭楞蒙古自治州",
+    "children": [
+    {
+      "value": "652801",
+      "label": "库尔勒市" },
+
+    {
+      "value": "652822",
+      "label": "轮台县" },
+
+    {
+      "value": "652823",
+      "label": "尉犁县" },
+
+    {
+      "value": "652824",
+      "label": "若羌县" },
+
+    {
+      "value": "652825",
+      "label": "且末县" },
+
+    {
+      "value": "652826",
+      "label": "焉耆回族自治县" },
+
+    {
+      "value": "652827",
+      "label": "和静县" },
+
+    {
+      "value": "652828",
+      "label": "和硕县" },
+
+    {
+      "value": "652829",
+      "label": "博湖县" }] },
+
+
+
+  {
+    "value": "652900",
+    "label": "阿克苏地区",
+    "children": [
+    {
+      "value": "652901",
+      "label": "阿克苏市" },
+
+    {
+      "value": "652922",
+      "label": "温宿县" },
+
+    {
+      "value": "652923",
+      "label": "库车县" },
+
+    {
+      "value": "652924",
+      "label": "沙雅县" },
+
+    {
+      "value": "652925",
+      "label": "新和县" },
+
+    {
+      "value": "652926",
+      "label": "拜城县" },
+
+    {
+      "value": "652927",
+      "label": "乌什县" },
+
+    {
+      "value": "652928",
+      "label": "阿瓦提县" },
+
+    {
+      "value": "652929",
+      "label": "柯坪县" }] },
+
+
+
+  {
+    "value": "653000",
+    "label": "克孜勒苏柯尔克孜自治州",
+    "children": [
+    {
+      "value": "653001",
+      "label": "阿图什市" },
+
+    {
+      "value": "653022",
+      "label": "阿克陶县" },
+
+    {
+      "value": "653023",
+      "label": "阿合奇县" },
+
+    {
+      "value": "653024",
+      "label": "乌恰县" }] },
+
+
+
+  {
+    "value": "653100",
+    "label": "喀什地区",
+    "children": [
+    {
+      "value": "653101",
+      "label": "喀什市" },
+
+    {
+      "value": "653121",
+      "label": "疏附县" },
+
+    {
+      "value": "653122",
+      "label": "疏勒县" },
+
+    {
+      "value": "653123",
+      "label": "英吉沙县" },
+
+    {
+      "value": "653124",
+      "label": "泽普县" },
+
+    {
+      "value": "653125",
+      "label": "莎车县" },
+
+    {
+      "value": "653126",
+      "label": "叶城县" },
+
+    {
+      "value": "653127",
+      "label": "麦盖提县" },
+
+    {
+      "value": "653128",
+      "label": "岳普湖县" },
+
+    {
+      "value": "653129",
+      "label": "伽师县" },
+
+    {
+      "value": "653130",
+      "label": "巴楚县" },
+
+    {
+      "value": "653131",
+      "label": "塔什库尔干塔吉克自治县" }] },
+
+
+
+  {
+    "value": "653200",
+    "label": "和田地区",
+    "children": [
+    {
+      "value": "653201",
+      "label": "和田市" },
+
+    {
+      "value": "653221",
+      "label": "和田县" },
+
+    {
+      "value": "653222",
+      "label": "墨玉县" },
+
+    {
+      "value": "653223",
+      "label": "皮山县" },
+
+    {
+      "value": "653224",
+      "label": "洛浦县" },
+
+    {
+      "value": "653225",
+      "label": "策勒县" },
+
+    {
+      "value": "653226",
+      "label": "于田县" },
+
+    {
+      "value": "653227",
+      "label": "民丰县" }] },
+
+
+
+  {
+    "value": "654000",
+    "label": "伊犁哈萨克自治州",
+    "children": [
+    {
+      "value": "654002",
+      "label": "伊宁市" },
+
+    {
+      "value": "654003",
+      "label": "奎屯市" },
+
+    {
+      "value": "654021",
+      "label": "伊宁县" },
+
+    {
+      "value": "654022",
+      "label": "察布查尔锡伯自治县" },
+
+    {
+      "value": "654023",
+      "label": "霍城县" },
+
+    {
+      "value": "654024",
+      "label": "巩留县" },
+
+    {
+      "value": "654025",
+      "label": "新源县" },
+
+    {
+      "value": "654026",
+      "label": "昭苏县" },
+
+    {
+      "value": "654027",
+      "label": "特克斯县" },
+
+    {
+      "value": "654028",
+      "label": "尼勒克县" }] },
+
+
+
+  {
+    "value": "654200",
+    "label": "塔城地区",
+    "children": [
+    {
+      "value": "654201",
+      "label": "塔城市" },
+
+    {
+      "value": "654202",
+      "label": "乌苏市" },
+
+    {
+      "value": "654221",
+      "label": "额敏县" },
+
+    {
+      "value": "654223",
+      "label": "沙湾县" },
+
+    {
+      "value": "654224",
+      "label": "托里县" },
+
+    {
+      "value": "654225",
+      "label": "裕民县" },
+
+    {
+      "value": "654226",
+      "label": "和布克赛尔蒙古自治县" }] },
+
+
+
+  {
+    "value": "654300",
+    "label": "阿勒泰地区",
+    "children": [
+    {
+      "value": "654301",
+      "label": "阿勒泰市" },
+
+    {
+      "value": "654321",
+      "label": "布尔津县" },
+
+    {
+      "value": "654322",
+      "label": "富蕴县" },
+
+    {
+      "value": "654323",
+      "label": "福海县" },
+
+    {
+      "value": "654324",
+      "label": "哈巴河县" },
+
+    {
+      "value": "654325",
+      "label": "青河县" },
+
+    {
+      "value": "654326",
+      "label": "吉木乃县" }] },
+
+
+
+  {
+    "value": "659000",
+    "label": "自治区直辖县级行政区划",
+    "children": [
+    {
+      "value": "659001",
+      "label": "石河子市" },
+
+    {
+      "value": "659002",
+      "label": "阿拉尔市" },
+
+    {
+      "value": "659003",
+      "label": "图木舒克市" },
+
+    {
+      "value": "659004",
+      "label": "五家渠市" }] }] },
+
+
+
+
+
+{
+  "value": "710000",
+  "label": "台湾省",
+  "children": [
+  {
+    "value": "710100",
+    "label": "台北市",
+    "children": [
+    {
+      "value": "710101",
+      "label": "中正区" },
+
+    {
+      "value": "710102",
+      "label": "大同区" },
+
+    {
+      "value": "710103",
+      "label": "中山区" },
+
+    {
+      "value": "710104",
+      "label": "松山区" },
+
+    {
+      "value": "710105",
+      "label": "大安区" },
+
+    {
+      "value": "710106",
+      "label": "万华区" },
+
+    {
+      "value": "710107",
+      "label": "信义区" },
+
+    {
+      "value": "710108",
+      "label": "士林区" },
+
+    {
+      "value": "710109",
+      "label": "北投区" },
+
+    {
+      "value": "710110",
+      "label": "内湖区" },
+
+    {
+      "value": "710111",
+      "label": "南港区" },
+
+    {
+      "value": "710112",
+      "label": "文山区" },
+
+    {
+      "value": "710113",
+      "label": "其它区" }] },
+
+
+
+  {
+    "value": "710200",
+    "label": "高雄市",
+    "children": [
+    {
+      "value": "710201",
+      "label": "新兴区" },
+
+    {
+      "value": "710202",
+      "label": "前金区" },
+
+    {
+      "value": "710203",
+      "label": "芩雅区" },
+
+    {
+      "value": "710204",
+      "label": "盐埕区" },
+
+    {
+      "value": "710205",
+      "label": "鼓山区" },
+
+    {
+      "value": "710206",
+      "label": "旗津区" },
+
+    {
+      "value": "710207",
+      "label": "前镇区" },
+
+    {
+      "value": "710208",
+      "label": "三民区" },
+
+    {
+      "value": "710209",
+      "label": "左营区" },
+
+    {
+      "value": "710210",
+      "label": "楠梓区" },
+
+    {
+      "value": "710211",
+      "label": "小港区" },
+
+    {
+      "value": "710212",
+      "label": "其它区" },
+
+    {
+      "value": "710241",
+      "label": "苓雅区" },
+
+    {
+      "value": "710242",
+      "label": "仁武区" },
+
+    {
+      "value": "710243",
+      "label": "大社区" },
+
+    {
+      "value": "710244",
+      "label": "冈山区" },
+
+    {
+      "value": "710245",
+      "label": "路竹区" },
+
+    {
+      "value": "710246",
+      "label": "阿莲区" },
+
+    {
+      "value": "710247",
+      "label": "田寮区" },
+
+    {
+      "value": "710248",
+      "label": "燕巢区" },
+
+    {
+      "value": "710249",
+      "label": "桥头区" },
+
+    {
+      "value": "710250",
+      "label": "梓官区" },
+
+    {
+      "value": "710251",
+      "label": "弥陀区" },
+
+    {
+      "value": "710252",
+      "label": "永安区" },
+
+    {
+      "value": "710253",
+      "label": "湖内区" },
+
+    {
+      "value": "710254",
+      "label": "凤山区" },
+
+    {
+      "value": "710255",
+      "label": "大寮区" },
+
+    {
+      "value": "710256",
+      "label": "林园区" },
+
+    {
+      "value": "710257",
+      "label": "鸟松区" },
+
+    {
+      "value": "710258",
+      "label": "大树区" },
+
+    {
+      "value": "710259",
+      "label": "旗山区" },
+
+    {
+      "value": "710260",
+      "label": "美浓区" },
+
+    {
+      "value": "710261",
+      "label": "六龟区" },
+
+    {
+      "value": "710262",
+      "label": "内门区" },
+
+    {
+      "value": "710263",
+      "label": "杉林区" },
+
+    {
+      "value": "710264",
+      "label": "甲仙区" },
+
+    {
+      "value": "710265",
+      "label": "桃源区" },
+
+    {
+      "value": "710266",
+      "label": "那玛夏区" },
+
+    {
+      "value": "710267",
+      "label": "茂林区" },
+
+    {
+      "value": "710268",
+      "label": "茄萣区" }] },
+
+
+
+  {
+    "value": "710300",
+    "label": "台南市",
+    "children": [
+    {
+      "value": "710301",
+      "label": "中西区" },
+
+    {
+      "value": "710302",
+      "label": "东区" },
+
+    {
+      "value": "710303",
+      "label": "南区" },
+
+    {
+      "value": "710304",
+      "label": "北区" },
+
+    {
+      "value": "710305",
+      "label": "安平区" },
+
+    {
+      "value": "710306",
+      "label": "安南区" },
+
+    {
+      "value": "710307",
+      "label": "其它区" },
+
+    {
+      "value": "710339",
+      "label": "永康区" },
+
+    {
+      "value": "710340",
+      "label": "归仁区" },
+
+    {
+      "value": "710341",
+      "label": "新化区" },
+
+    {
+      "value": "710342",
+      "label": "左镇区" },
+
+    {
+      "value": "710343",
+      "label": "玉井区" },
+
+    {
+      "value": "710344",
+      "label": "楠西区" },
+
+    {
+      "value": "710345",
+      "label": "南化区" },
+
+    {
+      "value": "710346",
+      "label": "仁德区" },
+
+    {
+      "value": "710347",
+      "label": "关庙区" },
+
+    {
+      "value": "710348",
+      "label": "龙崎区" },
+
+    {
+      "value": "710349",
+      "label": "官田区" },
+
+    {
+      "value": "710350",
+      "label": "麻豆区" },
+
+    {
+      "value": "710351",
+      "label": "佳里区" },
+
+    {
+      "value": "710352",
+      "label": "西港区" },
+
+    {
+      "value": "710353",
+      "label": "七股区" },
+
+    {
+      "value": "710354",
+      "label": "将军区" },
+
+    {
+      "value": "710355",
+      "label": "学甲区" },
+
+    {
+      "value": "710356",
+      "label": "北门区" },
+
+    {
+      "value": "710357",
+      "label": "新营区" },
+
+    {
+      "value": "710358",
+      "label": "后壁区" },
+
+    {
+      "value": "710359",
+      "label": "白河区" },
+
+    {
+      "value": "710360",
+      "label": "东山区" },
+
+    {
+      "value": "710361",
+      "label": "六甲区" },
+
+    {
+      "value": "710362",
+      "label": "下营区" },
+
+    {
+      "value": "710363",
+      "label": "柳营区" },
+
+    {
+      "value": "710364",
+      "label": "盐水区" },
+
+    {
+      "value": "710365",
+      "label": "善化区" },
+
+    {
+      "value": "710366",
+      "label": "大内区" },
+
+    {
+      "value": "710367",
+      "label": "山上区" },
+
+    {
+      "value": "710368",
+      "label": "新市区" },
+
+    {
+      "value": "710369",
+      "label": "安定区" }] },
+
+
+
+  {
+    "value": "710400",
+    "label": "台中市",
+    "children": [
+    {
+      "value": "710401",
+      "label": "中区" },
+
+    {
+      "value": "710402",
+      "label": "东区" },
+
+    {
+      "value": "710403",
+      "label": "南区" },
+
+    {
+      "value": "710404",
+      "label": "西区" },
+
+    {
+      "value": "710405",
+      "label": "北区" },
+
+    {
+      "value": "710406",
+      "label": "北屯区" },
+
+    {
+      "value": "710407",
+      "label": "西屯区" },
+
+    {
+      "value": "710408",
+      "label": "南屯区" },
+
+    {
+      "value": "710409",
+      "label": "其它区" },
+
+    {
+      "value": "710431",
+      "label": "太平区" },
+
+    {
+      "value": "710432",
+      "label": "大里区" },
+
+    {
+      "value": "710433",
+      "label": "雾峰区" },
+
+    {
+      "value": "710434",
+      "label": "乌日区" },
+
+    {
+      "value": "710435",
+      "label": "丰原区" },
+
+    {
+      "value": "710436",
+      "label": "后里区" },
+
+    {
+      "value": "710437",
+      "label": "石冈区" },
+
+    {
+      "value": "710438",
+      "label": "东势区" },
+
+    {
+      "value": "710439",
+      "label": "和平区" },
+
+    {
+      "value": "710440",
+      "label": "新社区" },
+
+    {
+      "value": "710441",
+      "label": "潭子区" },
+
+    {
+      "value": "710442",
+      "label": "大雅区" },
+
+    {
+      "value": "710443",
+      "label": "神冈区" },
+
+    {
+      "value": "710444",
+      "label": "大肚区" },
+
+    {
+      "value": "710445",
+      "label": "沙鹿区" },
+
+    {
+      "value": "710446",
+      "label": "龙井区" },
+
+    {
+      "value": "710447",
+      "label": "梧栖区" },
+
+    {
+      "value": "710448",
+      "label": "清水区" },
+
+    {
+      "value": "710449",
+      "label": "大甲区" },
+
+    {
+      "value": "710450",
+      "label": "外埔区" },
+
+    {
+      "value": "710451",
+      "label": "大安区" }] },
+
+
+
+  {
+    "value": "710500",
+    "label": "金门县",
+    "children": [
+    {
+      "value": "710507",
+      "label": "金沙镇" },
+
+    {
+      "value": "710508",
+      "label": "金湖镇" },
+
+    {
+      "value": "710509",
+      "label": "金宁乡" },
+
+    {
+      "value": "710510",
+      "label": "金城镇" },
+
+    {
+      "value": "710511",
+      "label": "烈屿乡" },
+
+    {
+      "value": "710512",
+      "label": "乌坵乡" }] },
+
+
+
+  {
+    "value": "710600",
+    "label": "南投县",
+    "children": [
+    {
+      "value": "710614",
+      "label": "南投市" },
+
+    {
+      "value": "710615",
+      "label": "中寮乡" },
+
+    {
+      "value": "710616",
+      "label": "草屯镇" },
+
+    {
+      "value": "710617",
+      "label": "国姓乡" },
+
+    {
+      "value": "710618",
+      "label": "埔里镇" },
+
+    {
+      "value": "710619",
+      "label": "仁爱乡" },
+
+    {
+      "value": "710620",
+      "label": "名间乡" },
+
+    {
+      "value": "710621",
+      "label": "集集镇" },
+
+    {
+      "value": "710622",
+      "label": "水里乡" },
+
+    {
+      "value": "710623",
+      "label": "鱼池乡" },
+
+    {
+      "value": "710624",
+      "label": "信义乡" },
+
+    {
+      "value": "710625",
+      "label": "竹山镇" },
+
+    {
+      "value": "710626",
+      "label": "鹿谷乡" }] },
+
+
+
+  {
+    "value": "710700",
+    "label": "基隆市",
+    "children": [
+    {
+      "value": "710701",
+      "label": "仁爱区" },
+
+    {
+      "value": "710702",
+      "label": "信义区" },
+
+    {
+      "value": "710703",
+      "label": "中正区" },
+
+    {
+      "value": "710704",
+      "label": "中山区" },
+
+    {
+      "value": "710705",
+      "label": "安乐区" },
+
+    {
+      "value": "710706",
+      "label": "暖暖区" },
+
+    {
+      "value": "710707",
+      "label": "七堵区" },
+
+    {
+      "value": "710708",
+      "label": "其它区" }] },
+
+
+
+  {
+    "value": "710800",
+    "label": "新竹市",
+    "children": [
+    {
+      "value": "710801",
+      "label": "东区" },
+
+    {
+      "value": "710802",
+      "label": "北区" },
+
+    {
+      "value": "710803",
+      "label": "香山区" },
+
+    {
+      "value": "710804",
+      "label": "其它区" }] },
+
+
+
+  {
+    "value": "710900",
+    "label": "嘉义市",
+    "children": [
+    {
+      "value": "710901",
+      "label": "东区" },
+
+    {
+      "value": "710902",
+      "label": "西区" },
+
+    {
+      "value": "710903",
+      "label": "其它区" }] },
+
+
+
+  {
+    "value": "711100",
+    "label": "新北市",
+    "children": [
+    {
+      "value": "711130",
+      "label": "万里区" },
+
+    {
+      "value": "711131",
+      "label": "金山区" },
+
+    {
+      "value": "711132",
+      "label": "板桥区" },
+
+    {
+      "value": "711133",
+      "label": "汐止区" },
+
+    {
+      "value": "711134",
+      "label": "深坑区" },
+
+    {
+      "value": "711135",
+      "label": "石碇区" },
+
+    {
+      "value": "711136",
+      "label": "瑞芳区" },
+
+    {
+      "value": "711137",
+      "label": "平溪区" },
+
+    {
+      "value": "711138",
+      "label": "双溪区" },
+
+    {
+      "value": "711139",
+      "label": "贡寮区" },
+
+    {
+      "value": "711140",
+      "label": "新店区" },
+
+    {
+      "value": "711141",
+      "label": "坪林区" },
+
+    {
+      "value": "711142",
+      "label": "乌来区" },
+
+    {
+      "value": "711143",
+      "label": "永和区" },
+
+    {
+      "value": "711144",
+      "label": "中和区" },
+
+    {
+      "value": "711145",
+      "label": "土城区" },
+
+    {
+      "value": "711146",
+      "label": "三峡区" },
+
+    {
+      "value": "711147",
+      "label": "树林区" },
+
+    {
+      "value": "711148",
+      "label": "莺歌区" },
+
+    {
+      "value": "711149",
+      "label": "三重区" },
+
+    {
+      "value": "711150",
+      "label": "新庄区" },
+
+    {
+      "value": "711151",
+      "label": "泰山区" },
+
+    {
+      "value": "711152",
+      "label": "林口区" },
+
+    {
+      "value": "711153",
+      "label": "芦洲区" },
+
+    {
+      "value": "711154",
+      "label": "五股区" },
+
+    {
+      "value": "711155",
+      "label": "八里区" },
+
+    {
+      "value": "711156",
+      "label": "淡水区" },
+
+    {
+      "value": "711157",
+      "label": "三芝区" },
+
+    {
+      "value": "711158",
+      "label": "石门区" }] },
+
+
+
+  {
+    "value": "711200",
+    "label": "宜兰县",
+    "children": [
+    {
+      "value": "711214",
+      "label": "宜兰市" },
+
+    {
+      "value": "711215",
+      "label": "头城镇" },
+
+    {
+      "value": "711216",
+      "label": "礁溪乡" },
+
+    {
+      "value": "711217",
+      "label": "壮围乡" },
+
+    {
+      "value": "711218",
+      "label": "员山乡" },
+
+    {
+      "value": "711219",
+      "label": "罗东镇" },
+
+    {
+      "value": "711220",
+      "label": "三星乡" },
+
+    {
+      "value": "711221",
+      "label": "大同乡" },
+
+    {
+      "value": "711222",
+      "label": "五结乡" },
+
+    {
+      "value": "711223",
+      "label": "冬山乡" },
+
+    {
+      "value": "711224",
+      "label": "苏澳镇" },
+
+    {
+      "value": "711225",
+      "label": "南澳乡" },
+
+    {
+      "value": "711226",
+      "label": "钓鱼台" }] },
+
+
+
+  {
+    "value": "711300",
+    "label": "新竹县",
+    "children": [
+    {
+      "value": "711314",
+      "label": "竹北市" },
+
+    {
+      "value": "711315",
+      "label": "湖口乡" },
+
+    {
+      "value": "711316",
+      "label": "新丰乡" },
+
+    {
+      "value": "711317",
+      "label": "新埔镇" },
+
+    {
+      "value": "711318",
+      "label": "关西镇" },
+
+    {
+      "value": "711319",
+      "label": "芎林乡" },
+
+    {
+      "value": "711320",
+      "label": "宝山乡" },
+
+    {
+      "value": "711321",
+      "label": "竹东镇" },
+
+    {
+      "value": "711322",
+      "label": "五峰乡" },
+
+    {
+      "value": "711323",
+      "label": "横山乡" },
+
+    {
+      "value": "711324",
+      "label": "尖石乡" },
+
+    {
+      "value": "711325",
+      "label": "北埔乡" },
+
+    {
+      "value": "711326",
+      "label": "峨眉乡" }] },
+
+
+
+  {
+    "value": "711400",
+    "label": "桃园县",
+    "children": [
+    {
+      "value": "711414",
+      "label": "中坜市" },
+
+    {
+      "value": "711415",
+      "label": "平镇市" },
+
+    {
+      "value": "711416",
+      "label": "龙潭乡" },
+
+    {
+      "value": "711417",
+      "label": "杨梅市" },
+
+    {
+      "value": "711418",
+      "label": "新屋乡" },
+
+    {
+      "value": "711419",
+      "label": "观音乡" },
+
+    {
+      "value": "711420",
+      "label": "桃园市" },
+
+    {
+      "value": "711421",
+      "label": "龟山乡" },
+
+    {
+      "value": "711422",
+      "label": "八德市" },
+
+    {
+      "value": "711423",
+      "label": "大溪镇" },
+
+    {
+      "value": "711424",
+      "label": "复兴乡" },
+
+    {
+      "value": "711425",
+      "label": "大园乡" },
+
+    {
+      "value": "711426",
+      "label": "芦竹乡" }] },
+
+
+
+  {
+    "value": "711500",
+    "label": "苗栗县",
+    "children": [
+    {
+      "value": "711519",
+      "label": "竹南镇" },
+
+    {
+      "value": "711520",
+      "label": "头份镇" },
+
+    {
+      "value": "711521",
+      "label": "三湾乡" },
+
+    {
+      "value": "711522",
+      "label": "南庄乡" },
+
+    {
+      "value": "711523",
+      "label": "狮潭乡" },
+
+    {
+      "value": "711524",
+      "label": "后龙镇" },
+
+    {
+      "value": "711525",
+      "label": "通霄镇" },
+
+    {
+      "value": "711526",
+      "label": "苑里镇" },
+
+    {
+      "value": "711527",
+      "label": "苗栗市" },
+
+    {
+      "value": "711528",
+      "label": "造桥乡" },
+
+    {
+      "value": "711529",
+      "label": "头屋乡" },
+
+    {
+      "value": "711530",
+      "label": "公馆乡" },
+
+    {
+      "value": "711531",
+      "label": "大湖乡" },
+
+    {
+      "value": "711532",
+      "label": "泰安乡" },
+
+    {
+      "value": "711533",
+      "label": "铜锣乡" },
+
+    {
+      "value": "711534",
+      "label": "三义乡" },
+
+    {
+      "value": "711535",
+      "label": "西湖乡" },
+
+    {
+      "value": "711536",
+      "label": "卓兰镇" }] },
+
+
+
+  {
+    "value": "711700",
+    "label": "彰化县",
+    "children": [
+    {
+      "value": "711727",
+      "label": "彰化市" },
+
+    {
+      "value": "711728",
+      "label": "芬园乡" },
+
+    {
+      "value": "711729",
+      "label": "花坛乡" },
+
+    {
+      "value": "711730",
+      "label": "秀水乡" },
+
+    {
+      "value": "711731",
+      "label": "鹿港镇" },
+
+    {
+      "value": "711732",
+      "label": "福兴乡" },
+
+    {
+      "value": "711733",
+      "label": "线西乡" },
+
+    {
+      "value": "711734",
+      "label": "和美镇" },
+
+    {
+      "value": "711735",
+      "label": "伸港乡" },
+
+    {
+      "value": "711736",
+      "label": "员林镇" },
+
+    {
+      "value": "711737",
+      "label": "社头乡" },
+
+    {
+      "value": "711738",
+      "label": "永靖乡" },
+
+    {
+      "value": "711739",
+      "label": "埔心乡" },
+
+    {
+      "value": "711740",
+      "label": "溪湖镇" },
+
+    {
+      "value": "711741",
+      "label": "大村乡" },
+
+    {
+      "value": "711742",
+      "label": "埔盐乡" },
+
+    {
+      "value": "711743",
+      "label": "田中镇" },
+
+    {
+      "value": "711744",
+      "label": "北斗镇" },
+
+    {
+      "value": "711745",
+      "label": "田尾乡" },
+
+    {
+      "value": "711746",
+      "label": "埤头乡" },
+
+    {
+      "value": "711747",
+      "label": "溪州乡" },
+
+    {
+      "value": "711748",
+      "label": "竹塘乡" },
+
+    {
+      "value": "711749",
+      "label": "二林镇" },
+
+    {
+      "value": "711750",
+      "label": "大城乡" },
+
+    {
+      "value": "711751",
+      "label": "芳苑乡" },
+
+    {
+      "value": "711752",
+      "label": "二水乡" }] },
+
+
+
+  {
+    "value": "711900",
+    "label": "嘉义县",
+    "children": [
+    {
+      "value": "711919",
+      "label": "番路乡" },
+
+    {
+      "value": "711920",
+      "label": "梅山乡" },
+
+    {
+      "value": "711921",
+      "label": "竹崎乡" },
+
+    {
+      "value": "711922",
+      "label": "阿里山乡" },
+
+    {
+      "value": "711923",
+      "label": "中埔乡" },
+
+    {
+      "value": "711924",
+      "label": "大埔乡" },
+
+    {
+      "value": "711925",
+      "label": "水上乡" },
+
+    {
+      "value": "711926",
+      "label": "鹿草乡" },
+
+    {
+      "value": "711927",
+      "label": "太保市" },
+
+    {
+      "value": "711928",
+      "label": "朴子市" },
+
+    {
+      "value": "711929",
+      "label": "东石乡" },
+
+    {
+      "value": "711930",
+      "label": "六脚乡" },
+
+    {
+      "value": "711931",
+      "label": "新港乡" },
+
+    {
+      "value": "711932",
+      "label": "民雄乡" },
+
+    {
+      "value": "711933",
+      "label": "大林镇" },
+
+    {
+      "value": "711934",
+      "label": "溪口乡" },
+
+    {
+      "value": "711935",
+      "label": "义竹乡" },
+
+    {
+      "value": "711936",
+      "label": "布袋镇" }] },
+
+
+
+  {
+    "value": "712100",
+    "label": "云林县",
+    "children": [
+    {
+      "value": "712121",
+      "label": "斗南镇" },
+
+    {
+      "value": "712122",
+      "label": "大埤乡" },
+
+    {
+      "value": "712123",
+      "label": "虎尾镇" },
+
+    {
+      "value": "712124",
+      "label": "土库镇" },
+
+    {
+      "value": "712125",
+      "label": "褒忠乡" },
+
+    {
+      "value": "712126",
+      "label": "东势乡" },
+
+    {
+      "value": "712127",
+      "label": "台西乡" },
+
+    {
+      "value": "712128",
+      "label": "仑背乡" },
+
+    {
+      "value": "712129",
+      "label": "麦寮乡" },
+
+    {
+      "value": "712130",
+      "label": "斗六市" },
+
+    {
+      "value": "712131",
+      "label": "林内乡" },
+
+    {
+      "value": "712132",
+      "label": "古坑乡" },
+
+    {
+      "value": "712133",
+      "label": "莿桐乡" },
+
+    {
+      "value": "712134",
+      "label": "西螺镇" },
+
+    {
+      "value": "712135",
+      "label": "二仑乡" },
+
+    {
+      "value": "712136",
+      "label": "北港镇" },
+
+    {
+      "value": "712137",
+      "label": "水林乡" },
+
+    {
+      "value": "712138",
+      "label": "口湖乡" },
+
+    {
+      "value": "712139",
+      "label": "四湖乡" },
+
+    {
+      "value": "712140",
+      "label": "元长乡" }] },
+
+
+
+  {
+    "value": "712400",
+    "label": "屏东县",
+    "children": [
+    {
+      "value": "712434",
+      "label": "屏东市" },
+
+    {
+      "value": "712435",
+      "label": "三地门乡" },
+
+    {
+      "value": "712436",
+      "label": "雾台乡" },
+
+    {
+      "value": "712437",
+      "label": "玛家乡" },
+
+    {
+      "value": "712438",
+      "label": "九如乡" },
+
+    {
+      "value": "712439",
+      "label": "里港乡" },
+
+    {
+      "value": "712440",
+      "label": "高树乡" },
+
+    {
+      "value": "712441",
+      "label": "盐埔乡" },
+
+    {
+      "value": "712442",
+      "label": "长治乡" },
+
+    {
+      "value": "712443",
+      "label": "麟洛乡" },
+
+    {
+      "value": "712444",
+      "label": "竹田乡" },
+
+    {
+      "value": "712445",
+      "label": "内埔乡" },
+
+    {
+      "value": "712446",
+      "label": "万丹乡" },
+
+    {
+      "value": "712447",
+      "label": "潮州镇" },
+
+    {
+      "value": "712448",
+      "label": "泰武乡" },
+
+    {
+      "value": "712449",
+      "label": "来义乡" },
+
+    {
+      "value": "712450",
+      "label": "万峦乡" },
+
+    {
+      "value": "712451",
+      "label": "崁顶乡" },
+
+    {
+      "value": "712452",
+      "label": "新埤乡" },
+
+    {
+      "value": "712453",
+      "label": "南州乡" },
+
+    {
+      "value": "712454",
+      "label": "林边乡" },
+
+    {
+      "value": "712455",
+      "label": "东港镇" },
+
+    {
+      "value": "712456",
+      "label": "琉球乡" },
+
+    {
+      "value": "712457",
+      "label": "佳冬乡" },
+
+    {
+      "value": "712458",
+      "label": "新园乡" },
+
+    {
+      "value": "712459",
+      "label": "枋寮乡" },
+
+    {
+      "value": "712460",
+      "label": "枋山乡" },
+
+    {
+      "value": "712461",
+      "label": "春日乡" },
+
+    {
+      "value": "712462",
+      "label": "狮子乡" },
+
+    {
+      "value": "712463",
+      "label": "车城乡" },
+
+    {
+      "value": "712464",
+      "label": "牡丹乡" },
+
+    {
+      "value": "712465",
+      "label": "恒春镇" },
+
+    {
+      "value": "712466",
+      "label": "满州乡" }] },
+
+
+
+  {
+    "value": "712500",
+    "label": "台东县",
+    "children": [
+    {
+      "value": "712517",
+      "label": "台东市" },
+
+    {
+      "value": "712518",
+      "label": "绿岛乡" },
+
+    {
+      "value": "712519",
+      "label": "兰屿乡" },
+
+    {
+      "value": "712520",
+      "label": "延平乡" },
+
+    {
+      "value": "712521",
+      "label": "卑南乡" },
+
+    {
+      "value": "712522",
+      "label": "鹿野乡" },
+
+    {
+      "value": "712523",
+      "label": "关山镇" },
+
+    {
+      "value": "712524",
+      "label": "海端乡" },
+
+    {
+      "value": "712525",
+      "label": "池上乡" },
+
+    {
+      "value": "712526",
+      "label": "东河乡" },
+
+    {
+      "value": "712527",
+      "label": "成功镇" },
+
+    {
+      "value": "712528",
+      "label": "长滨乡" },
+
+    {
+      "value": "712529",
+      "label": "金峰乡" },
+
+    {
+      "value": "712530",
+      "label": "大武乡" },
+
+    {
+      "value": "712531",
+      "label": "达仁乡" },
+
+    {
+      "value": "712532",
+      "label": "太麻里乡" }] },
+
+
+
+  {
+    "value": "712600",
+    "label": "花莲县",
+    "children": [
+    {
+      "value": "712615",
+      "label": "花莲市" },
+
+    {
+      "value": "712616",
+      "label": "新城乡" },
+
+    {
+      "value": "712617",
+      "label": "太鲁阁" },
+
+    {
+      "value": "712618",
+      "label": "秀林乡" },
+
+    {
+      "value": "712619",
+      "label": "吉安乡" },
+
+    {
+      "value": "712620",
+      "label": "寿丰乡" },
+
+    {
+      "value": "712621",
+      "label": "凤林镇" },
+
+    {
+      "value": "712622",
+      "label": "光复乡" },
+
+    {
+      "value": "712623",
+      "label": "丰滨乡" },
+
+    {
+      "value": "712624",
+      "label": "瑞穗乡" },
+
+    {
+      "value": "712625",
+      "label": "万荣乡" },
+
+    {
+      "value": "712626",
+      "label": "玉里镇" },
+
+    {
+      "value": "712627",
+      "label": "卓溪乡" },
+
+    {
+      "value": "712628",
+      "label": "富里乡" }] },
+
+
+
+  {
+    "value": "712700",
+    "label": "澎湖县",
+    "children": [
+    {
+      "value": "712707",
+      "label": "马公市" },
+
+    {
+      "value": "712708",
+      "label": "西屿乡" },
+
+    {
+      "value": "712709",
+      "label": "望安乡" },
+
+    {
+      "value": "712710",
+      "label": "七美乡" },
+
+    {
+      "value": "712711",
+      "label": "白沙乡" },
+
+    {
+      "value": "712712",
+      "label": "湖西乡" }] },
+
+
+
+  {
+    "value": "712800",
+    "label": "连江县",
+    "children": [
+    {
+      "value": "712805",
+      "label": "南竿乡" },
+
+    {
+      "value": "712806",
+      "label": "北竿乡" },
+
+    {
+      "value": "712807",
+      "label": "莒光乡" },
+
+    {
+      "value": "712808",
+      "label": "东引乡" }] }] },
+
+
+
+
+
+{
+  "value": "810000",
+  "label": "香港特别行政区",
+  "children": [
+  {
+    "value": "810100",
+    "label": "香港",
+    "children": [
+    {
+      "value": "810101",
+      "label": "中西区" },
+
+    {
+      "value": "810102",
+      "label": "湾仔区" },
+
+    {
+      "value": "810103",
+      "label": "东区" },
+
+    {
+      "value": "810104",
+      "label": "南区" },
+
+    {
+      "value": "810105",
+      "label": "油尖旺区" },
+
+    {
+      "value": "810106",
+      "label": "深水埗区" },
+
+    {
+      "value": "810107",
+      "label": "九龙城区" },
+
+    {
+      "value": "810108",
+      "label": "黄大仙区" },
+
+    {
+      "value": "810109",
+      "label": "观塘区" },
+
+    {
+      "value": "810110",
+      "label": "荃湾区" },
+
+    {
+      "value": "810111",
+      "label": "屯门区" },
+
+    {
+      "value": "810112",
+      "label": "元朗区" },
+
+    {
+      "value": "810113",
+      "label": "北区" },
+
+    {
+      "value": "810114",
+      "label": "大埔区" },
+
+    {
+      "value": "810115",
+      "label": "西贡区" },
+
+    {
+      "value": "810116",
+      "label": "沙田区" },
+
+    {
+      "value": "810117",
+      "label": "葵青区" },
+
+    {
+      "value": "810118",
+      "label": "离岛区" }] }] },
+
+
+
+
+
+{
+  "value": "820000",
+  "label": "澳门特别行政区",
+  "children": [
+  {
+    "value": "820100",
+    "label": "澳门",
+    "children": [
+    {
+      "value": "820101",
+      "label": "花地玛堂区" },
+
+    {
+      "value": "820102",
+      "label": "花王堂区" },
+
+    {
+      "value": "820103",
+      "label": "望德堂区" },
+
+    {
+      "value": "820104",
+      "label": "大堂区" },
+
+    {
+      "value": "820105",
+      "label": "风顺堂区" },
+
+    {
+      "value": "820106",
+      "label": "嘉模堂区" },
+
+    {
+      "value": "820107",
+      "label": "路凼填海区" },
+
+    {
+      "value": "820108",
+      "label": "圣方济各堂区" }] }] }];exports.address = address;
+
+/***/ }),
 /* 195 */,
 /* 196 */,
 /* 197 */,
@@ -18024,7 +33616,26 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 200 */,
 /* 201 */,
 /* 202 */,
-/* 203 */,
+/* 203 */
+/*!********************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/address.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.getAddress = getAddress;var request = __webpack_require__(/*! ./request.js */ 142);
+
+
+// 获取地址
+function getAddress() {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/user/address",
+    method: 'get' });
+
+}
+
+/***/ }),
 /* 204 */,
 /* 205 */,
 /* 206 */,
@@ -18033,7 +33644,136 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 209 */,
 /* 210 */,
 /* 211 */,
-/* 212 */,
+/* 212 */
+/*!******************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/login.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 142);
+
+// 自动登录 (用来获取token)
+function
+autologin(_x) {return _autologin.apply(this, arguments);}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 第一次登录 (录入用户基本信息)
+function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 10;break;}return _context2.abrupt("return");case 10:if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
+              // success(e){
+              // console.log(e.authSetting.scope.userInfo)
+              // if(!e.authSetting.scope.userInfo){
+              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return newlogin(res);case 2:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
+                              // wx.setStorageSync("userInfo",_this.userInfo)
+                            }case 5:case "end":return _context.stop();}}}, _callee);}))();} }); // }
+              // }
+              // })
+              // 		
+            }case 11:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
+}
+
+// 用户手机号
+
+function phoneNumber(code, token) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
+    method: 'POST',
+    header: {
+      Authorization: token },
+
+    data: { code: code } });
+
+
+
+}
+
+
+
+
+// h5
+
+// 获取图形验证码
+function captcha() {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
+    method: 'get' });
+
+
+}
+// 校验图形验证码
+function checkImgYzm(tell, captchaId, verifyCode) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
+    method: 'post',
+    data: {
+      tell: tell,
+      captchaId: captchaId,
+      verifyCode: verifyCode } });
+
+
+
+}
+// 登录
+function h5login(tell, code) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login",
+    method: 'post',
+    data: { tell: tell, code: code } });
+
+
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 213 */,
 /* 214 */,
 /* 215 */,
@@ -18050,17 +33790,14 @@ exports.fetchSearch = function (page, size, keyWord) {
 /* 226 */,
 /* 227 */,
 /* 228 */,
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */
+/* 229 */
 /*!*******************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/api/detail.js ***!
   \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var request = __webpack_require__(/*! ./request.js */ 13);
+var request = __webpack_require__(/*! ./request.js */ 142);
 
 // 获取详情数据
 exports.fetchDetailData = function (id) {
@@ -18115,6 +33852,9 @@ exports.fetchCancelCollect = function (token, id) {
 };
 
 /***/ }),
+/* 230 */,
+/* 231 */,
+/* 232 */,
 /* 233 */,
 /* 234 */,
 /* 235 */,
@@ -18122,7 +33862,36 @@ exports.fetchCancelCollect = function (token, id) {
 /* 237 */,
 /* 238 */,
 /* 239 */,
-/* 240 */
+/* 240 */,
+/* 241 */,
+/* 242 */,
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */,
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */,
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \*******************************************************************************************/
@@ -18170,14 +33939,14 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */
 /*!*******************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-search/props.js ***!
   \*******************************************************************************************/
@@ -18299,35 +34068,35 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */,
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
-/* 277 */
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */
 /*!********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-divider/props.js ***!
   \********************************************************************************************/
@@ -18379,35 +34148,6 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 278 */,
-/* 279 */,
-/* 280 */,
-/* 281 */,
-/* 282 */,
-/* 283 */,
-/* 284 */,
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */,
-/* 289 */,
-/* 290 */,
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
 /* 307 */,
 /* 308 */,
 /* 309 */,
@@ -18415,7 +34155,95 @@ exports.fetchCancelCollect = function (token, id) {
 /* 311 */,
 /* 312 */,
 /* 313 */,
-/* 314 */,
+/* 314 */
+/*!***************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-checkbox-group/props.js ***!
+  \***************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 标识符
+    name: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.name },
+
+    // 绑定的值
+    value: {
+      type: Array,
+      default: uni.$u.props.checkboxGroup.value },
+
+    // 形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.shape },
+
+    // 是否禁用全部checkbox
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.disabled },
+
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.inactiveColor },
+
+
+    // 整个组件的尺寸，默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.size },
+
+    // 布局方式，row-横向，column-纵向
+    placement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.placement },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.labelSize },
+
+    // label的字体颜色
+    labelColor: {
+      type: [String],
+      default: uni.$u.props.checkboxGroup.labelColor },
+
+    // 是否禁止点击文本操作
+    labelDisabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.labelDisabled },
+
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.iconSize },
+
+    // 勾选图标的对齐方式，left-左边，right-右边
+    iconPlacement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconPlacement },
+
+    // 竖向配列时，是否显示下划线
+    borderBottom: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.borderBottom } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 315 */,
 /* 316 */,
 /* 317 */,
@@ -18423,7 +34251,83 @@ exports.fetchCancelCollect = function (token, id) {
 /* 319 */,
 /* 320 */,
 /* 321 */,
-/* 322 */,
+/* 322 */
+/*!*********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-checkbox/props.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // checkbox的名称
+    name: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.checkbox.name },
+
+    // 形状，square为方形，circle为圆型
+    shape: {
+      type: String,
+      default: uni.$u.props.checkbox.shape },
+
+    // 整体的大小
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.size },
+
+    // 是否默认选中
+    checked: {
+      type: Boolean,
+      default: uni.$u.props.checkbox.checked },
+
+    // 是否禁用
+    disabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.disabled },
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkbox.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkbox.inactiveColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.iconSize },
+
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkbox.iconColor },
+
+    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.label },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.labelSize },
+
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.checkbox.labelColor },
+
+    // 是否禁止点击提示语选中复选框
+    labelDisabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.labelDisabled } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 323 */,
 /* 324 */,
 /* 325 */,
@@ -18431,7 +34335,123 @@ exports.fetchCancelCollect = function (token, id) {
 /* 327 */,
 /* 328 */,
 /* 329 */,
-/* 330 */,
+/* 330 */
+/*!***********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-number-box/props.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 步进器标识符，在change回调返回
+    name: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.name },
+
+    // 用于双向绑定的值，初始化时设置设为默认min值(最小值)
+    value: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.value },
+
+    // 最小值
+    min: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.min },
+
+    // 最大值
+    max: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.max },
+
+    // 加减的步长，可为小数
+    step: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.step },
+
+    // 是否只允许输入整数
+    integer: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.integer },
+
+    // 是否禁用，包括输入框，加减按钮
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disabled },
+
+    // 是否禁用输入框
+    disabledInput: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disabledInput },
+
+    // 是否开启异步变更，开启后需要手动控制输入值
+    asyncChange: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.asyncChange },
+
+    // 输入框宽度，单位为px
+    inputWidth: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.inputWidth },
+
+    // 是否显示减少按钮
+    showMinus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.showMinus },
+
+    // 是否显示增加按钮
+    showPlus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.showPlus },
+
+    // 显示的小数位数
+    decimalLength: {
+      type: [String, Number, null],
+      default: uni.$u.props.numberBox.decimalLength },
+
+    // 是否开启长按加减手势
+    longPress: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.longPress },
+
+    // 输入框文字和加减按钮图标的颜色
+    color: {
+      type: String,
+      default: uni.$u.props.numberBox.color },
+
+    // 按钮大小，宽高等于此值，单位px，输入框高度和此值保持一致
+    buttonSize: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.buttonSize },
+
+    // 输入框和按钮的背景颜色
+    bgColor: {
+      type: String,
+      default: uni.$u.props.numberBox.bgColor },
+
+    // 指定光标于键盘的距离，避免键盘遮挡输入框，单位px
+    cursorSpacing: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.cursorSpacing },
+
+    // 是否禁用增加按钮
+    disablePlus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disablePlus },
+
+    // 是否禁用减少按钮
+    disableMinus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disableMinus },
+
+    // 加减按钮图标的样式
+    iconStyle: {
+      type: [Object, String],
+      default: uni.$u.props.numberBox.iconStyle } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 331 */,
 /* 332 */,
 /* 333 */,
@@ -18439,16 +34459,265 @@ exports.fetchCancelCollect = function (token, id) {
 /* 335 */,
 /* 336 */,
 /* 337 */,
-/* 338 */,
-/* 339 */,
-/* 340 */,
+/* 338 */
+/*!***********************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/button.js ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    lang: String,
+    sessionFrom: String,
+    sendMessageTitle: String,
+    sendMessagePath: String,
+    sendMessageImg: String,
+    showMessageCard: Boolean,
+    appParameter: String,
+    formType: String,
+    openType: String } };exports.default = _default;
+
+/***/ }),
+/* 339 */
+/*!*************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/libs/mixin/openType.js ***!
+  \*************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    openType: String },
+
+  methods: {
+    onGetUserInfo: function onGetUserInfo(event) {
+      this.$emit('getuserinfo', event.detail);
+    },
+    onContact: function onContact(event) {
+      this.$emit('contact', event.detail);
+    },
+    onGetPhoneNumber: function onGetPhoneNumber(event) {
+      this.$emit('getphonenumber', event.detail);
+    },
+    onError: function onError(event) {
+      this.$emit('error', event.detail);
+    },
+    onLaunchApp: function onLaunchApp(event) {
+      this.$emit('launchapp', event.detail);
+    },
+    onOpenSetting: function onOpenSetting(event) {
+      this.$emit('opensetting', event.detail);
+    } } };exports.default = _default;
+
+/***/ }),
+/* 340 */
+/*!*******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-button/props.js ***!
+  \*******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /*
+                                                                                                      * @Author       : LQ
+                                                                                                      * @Description  :
+                                                                                                      * @version      : 1.0
+                                                                                                      * @Date         : 2021-08-16 10:04:04
+                                                                                                      * @LastAuthor   : LQ
+                                                                                                      * @lastTime     : 2021-08-16 10:04:24
+                                                                                                      * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
+                                                                                                      */var _default =
+{
+  props: {
+    // 是否细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.button.hairline },
+
+    // 按钮的预置样式，info，primary，error，warning，success
+    type: {
+      type: String,
+      default: uni.$u.props.button.type },
+
+    // 按钮尺寸，large，normal，small，mini
+    size: {
+      type: String,
+      default: uni.$u.props.button.size },
+
+    // 按钮形状，circle（两边为半圆），square（带圆角）
+    shape: {
+      type: String,
+      default: uni.$u.props.button.shape },
+
+    // 按钮是否镂空
+    plain: {
+      type: Boolean,
+      default: uni.$u.props.button.plain },
+
+    // 是否禁止状态
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.button.disabled },
+
+    // 是否加载中
+    loading: {
+      type: Boolean,
+      default: uni.$u.props.button.loading },
+
+    // 加载中提示文字
+    loadingText: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingText },
+
+    // 加载状态图标类型
+    loadingMode: {
+      type: String,
+      default: uni.$u.props.button.loadingMode },
+
+    // 加载图标大小
+    loadingSize: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingSize },
+
+    // 开放能力，具体请看uniapp稳定关于button组件部分说明
+    // https://uniapp.dcloud.io/component/button
+    openType: {
+      type: String,
+      default: uni.$u.props.button.openType },
+
+    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
+    // 取值为submit（提交表单），reset（重置表单）
+    formType: {
+      type: String,
+      default: uni.$u.props.button.formType },
+
+    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+    // 只微信小程序、QQ小程序有效
+    appParameter: {
+      type: String,
+      default: uni.$u.props.button.appParameter },
+
+    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
+    hoverStopPropagation: {
+      type: Boolean,
+      default: uni.$u.props.button.hoverStopPropagation },
+
+    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
+    lang: {
+      type: String,
+      default: uni.$u.props.button.lang },
+
+    // 会话来源，open-type="contact"时有效。只微信小程序有效
+    sessionFrom: {
+      type: String,
+      default: uni.$u.props.button.sessionFrom },
+
+    // 会话内消息卡片标题，open-type="contact"时有效
+    // 默认当前标题，只微信小程序有效
+    sendMessageTitle: {
+      type: String,
+      default: uni.$u.props.button.sendMessageTitle },
+
+    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+    // 默认当前分享路径，只微信小程序有效
+    sendMessagePath: {
+      type: String,
+      default: uni.$u.props.button.sendMessagePath },
+
+    // 会话内消息卡片图片，open-type="contact"时有效
+    // 默认当前页面截图，只微信小程序有效
+    sendMessageImg: {
+      type: String,
+      default: uni.$u.props.button.sendMessageImg },
+
+    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
+    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
+    showMessageCard: {
+      type: Boolean,
+      default: uni.$u.props.button.showMessageCard },
+
+    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
+    dataName: {
+      type: String,
+      default: uni.$u.props.button.dataName },
+
+    // 节流，一定时间内只能触发一次
+    throttleTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.throttleTime },
+
+    // 按住后多久出现点击态，单位毫秒
+    hoverStartTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStartTime },
+
+    // 手指松开后点击态保留时间，单位毫秒
+    hoverStayTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStayTime },
+
+    // 按钮文字，之所以通过props传入，是因为slot传入的话
+    // nvue中无法控制文字的样式
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.button.text },
+
+    // 按钮图标
+    icon: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮图标
+    iconColor: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮颜色，支持传入linear-gradient渐变色
+    color: {
+      type: String,
+      default: uni.$u.props.button.color } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
 /* 341 */,
 /* 342 */,
 /* 343 */,
 /* 344 */,
 /* 345 */,
 /* 346 */,
-/* 347 */
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */
 /*!*********************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \*********************************************************************************************/
@@ -19624,35 +35893,6 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
-/* 348 */,
-/* 349 */,
-/* 350 */,
-/* 351 */,
-/* 352 */,
-/* 353 */,
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */,
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */,
-/* 371 */,
-/* 372 */,
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
 /* 377 */,
 /* 378 */,
 /* 379 */,
@@ -19677,7 +35917,540 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* 398 */,
 /* 399 */,
 /* 400 */,
-/* 401 */
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */,
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */
+/*!*****************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-tabs/props.js ***!
+  \*****************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 滑块的移动过渡时间，单位ms
+    duration: {
+      type: Number,
+      default: uni.$u.props.tabs.duration },
+
+    // tabs标签数组
+    list: {
+      type: Array,
+      default: uni.$u.props.tabs.list },
+
+    // 滑块颜色
+    lineColor: {
+      type: String,
+      default: uni.$u.props.tabs.lineColor },
+
+    // 菜单选择中时的样式
+    activeStyle: {
+      type: [String, Object],
+      default: uni.$u.props.tabs.activeStyle },
+
+    // 菜单非选中时的样式
+    inactiveStyle: {
+      type: [String, Object],
+      default: uni.$u.props.tabs.inactiveStyle },
+
+    // 滑块长度
+    lineWidth: {
+      type: [String, Number],
+      default: uni.$u.props.tabs.lineWidth },
+
+    // 滑块高度
+    lineHeight: {
+      type: [String, Number],
+      default: uni.$u.props.tabs.lineHeight },
+
+    // 菜单item的样式
+    itemStyle: {
+      type: [String, Object],
+      default: uni.$u.props.tabs.itemStyle },
+
+    // 菜单是否可滚动
+    scrollable: {
+      type: Boolean,
+      default: uni.$u.props.tabs.scrollable },
+
+    // 当前选中标签的索引
+    current: {
+      type: [Number, String],
+      default: uni.$u.props.tabs.current },
+
+    // 默认读取的键名
+    keyName: {
+      type: String,
+      default: uni.$u.props.tabs.keyName } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */
+/*!*********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-back-top/props.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 返回顶部的形状，circle-圆形，square-方形
+    mode: {
+      type: String,
+      default: uni.$u.props.backtop.mode },
+
+    // 自定义图标
+    icon: {
+      type: String,
+      default: uni.$u.props.backtop.icon },
+
+    // 提示文字
+    text: {
+      type: String,
+      default: uni.$u.props.backtop.text },
+
+    // 返回顶部滚动时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.duration },
+
+    // 滚动距离
+    scrollTop: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.scrollTop },
+
+    // 距离顶部多少距离显示，单位px
+    top: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.top },
+
+    // 返回顶部按钮到底部的距离，单位px
+    bottom: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.bottom },
+
+    // 返回顶部按钮到右边的距离，单位px
+    right: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.right },
+
+    // 层级
+    zIndex: {
+      type: [String, Number],
+      default: uni.$u.props.backtop.zIndex },
+
+    // 图标的样式，对象形式
+    iconStyle: {
+      type: Object,
+      default: uni.$u.props.backtop.iconStyle } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 428 */,
+/* 429 */,
+/* 430 */,
+/* 431 */,
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */
+/*!******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-modal/props.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否展示modal
+    show: {
+      type: Boolean,
+      default: uni.$u.props.modal.show },
+
+    // 标题
+    title: {
+      type: [String],
+      default: uni.$u.props.modal.title },
+
+    // 弹窗内容
+    content: {
+      type: String,
+      default: uni.$u.props.modal.content },
+
+    // 确认文案
+    confirmText: {
+      type: String,
+      default: uni.$u.props.modal.confirmText },
+
+    // 取消文案
+    cancelText: {
+      type: String,
+      default: uni.$u.props.modal.cancelText },
+
+    // 是否显示确认按钮
+    showConfirmButton: {
+      type: Boolean,
+      default: uni.$u.props.modal.showConfirmButton },
+
+    // 是否显示取消按钮
+    showCancelButton: {
+      type: Boolean,
+      default: uni.$u.props.modal.showCancelButton },
+
+    // 确认按钮颜色
+    confirmColor: {
+      type: String,
+      default: uni.$u.props.modal.confirmColor },
+
+    // 取消文字颜色
+    cancelColor: {
+      type: String,
+      default: uni.$u.props.modal.cancelColor },
+
+    // 对调确认和取消的位置
+    buttonReverse: {
+      type: Boolean,
+      default: uni.$u.props.modal.buttonReverse },
+
+    // 是否开启缩放效果
+    zoom: {
+      type: Boolean,
+      default: uni.$u.props.modal.zoom },
+
+    // 是否异步关闭，只对确定按钮有效
+    asyncClose: {
+      type: Boolean,
+      default: uni.$u.props.modal.asyncClose },
+
+    // 是否允许点击遮罩关闭modal
+    closeOnClickOverlay: {
+      type: Boolean,
+      default: uni.$u.props.modal.closeOnClickOverlay },
+
+    // 给一个负的margin-top，往上偏移，避免和键盘重合的情况
+    negativeTop: {
+      type: [String, Number],
+      default: uni.$u.props.modal.negativeTop },
+
+    // modal宽度，不支持百分比，可以数值，px，rpx单位
+    width: {
+      type: [String, Number],
+      default: uni.$u.props.modal.width },
+
+    // 确认按钮的样式，circle-圆形，square-方形，如设置，将不会显示取消按钮
+    confirmButtonShape: {
+      type: String,
+      default: uni.$u.props.modal.confirmButtonShape } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 436 */,
+/* 437 */,
+/* 438 */,
+/* 439 */,
+/* 440 */,
+/* 441 */,
+/* 442 */,
+/* 443 */
+/*!******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-popup/props.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否展示弹窗
+    show: {
+      type: Boolean,
+      default: uni.$u.props.popup.show },
+
+    // 是否显示遮罩
+    overlay: {
+      type: Boolean,
+      default: uni.$u.props.popup.overlay },
+
+    // 弹出的方向，可选值为 top bottom right left center
+    mode: {
+      type: String,
+      default: uni.$u.props.popup.mode },
+
+    // 动画时长，单位ms
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.popup.duration },
+
+    // 是否显示关闭图标
+    closeable: {
+      type: Boolean,
+      default: uni.$u.props.popup.closeable },
+
+    // 自定义遮罩的样式
+    overlayStyle: {
+      type: [Object, String],
+      default: uni.$u.props.popup.overlayStyle },
+
+    // 点击遮罩是否关闭弹窗
+    closeOnClickOverlay: {
+      type: Boolean,
+      default: uni.$u.props.popup.closeOnClickOverlay },
+
+    // 层级
+    zIndex: {
+      type: [String, Number],
+      default: uni.$u.props.popup.zIndex },
+
+    // 是否为iPhoneX留出底部安全距离
+    safeAreaInsetBottom: {
+      type: Boolean,
+      default: uni.$u.props.popup.safeAreaInsetBottom },
+
+    // 是否留出顶部安全距离（状态栏高度）
+    safeAreaInsetTop: {
+      type: Boolean,
+      default: uni.$u.props.popup.safeAreaInsetTop },
+
+    // 自定义关闭图标位置，top-left为左上角，top-right为右上角，bottom-left为左下角，bottom-right为右下角
+    closeIconPos: {
+      type: String,
+      default: uni.$u.props.popup.closeIconPos },
+
+    // 是否显示圆角
+    round: {
+      type: [Boolean, String, Number],
+      default: uni.$u.props.popup.round },
+
+    // mode=center，也即中部弹出时，是否使用缩放模式
+    zoom: {
+      type: Boolean,
+      default: uni.$u.props.popup.zoom },
+
+    // 弹窗背景色，设置为transparent可去除白色背景
+    bgColor: {
+      type: String,
+      default: uni.$u.props.popup.bgColor },
+
+    // 遮罩的透明度，0-1之间
+    overlayOpacity: {
+      type: [Number, String],
+      default: uni.$u.props.popup.overlayOpacity } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 444 */,
+/* 445 */,
+/* 446 */,
+/* 447 */,
+/* 448 */,
+/* 449 */,
+/* 450 */,
+/* 451 */
+/*!************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-radio-group/props.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 绑定的值
+    value: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.radioGroup.value },
+
+
+    // 是否禁用全部radio
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.radioGroup.disabled },
+
+    // 形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.radioGroup.shape },
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.radioGroup.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.radioGroup.inactiveColor },
+
+    // 标识符
+    name: {
+      type: String,
+      default: uni.$u.props.radioGroup.name },
+
+    // 整个组件的尺寸，默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.radioGroup.size },
+
+    // 布局方式，row-横向，column-纵向
+    placement: {
+      type: String,
+      default: uni.$u.props.radioGroup.placement },
+
+    // label的文本
+    label: {
+      type: [String],
+      default: uni.$u.props.radioGroup.label },
+
+    // label的颜色 （默认 '#303133' ）
+    labelColor: {
+      type: [String],
+      default: uni.$u.props.radioGroup.labelColor },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.radioGroup.labelSize },
+
+    // 是否禁止点击文本操作checkbox(默认 false )
+    labelDisabled: {
+      type: Boolean,
+      default: uni.$u.props.radioGroup.labelDisabled },
+
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.radioGroup.iconColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.radioGroup.iconSize },
+
+    // 竖向配列时，是否显示下划线
+    borderBottom: {
+      type: Boolean,
+      default: uni.$u.props.radioGroup.borderBottom },
+
+    // 图标与文字的对齐方式
+    iconPlacement: {
+      type: String,
+      default: uni.$u.props.radio.iconPlacement } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 452 */,
+/* 453 */,
+/* 454 */,
+/* 455 */,
+/* 456 */,
+/* 457 */,
+/* 458 */,
+/* 459 */
+/*!******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-radio/props.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // radio的名称
+    name: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.radio.name },
+
+    // 形状，square为方形，circle为圆型
+    shape: {
+      type: String,
+      default: uni.$u.props.radio.shape },
+
+    // 是否禁用
+    disabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.radio.disabled },
+
+    // 是否禁止点击提示语选中单选框
+    labelDisabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.radio.labelDisabled },
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.radio.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.radio.inactiveColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.radio.iconSize },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.radio.labelSize },
+
+    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.radio.label },
+
+    // 整体的大小
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.radio.size },
+
+    // 图标颜色
+    color: {
+      type: String,
+      default: uni.$u.props.radio.color },
+
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.radio.labelColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */,
+/* 464 */,
+/* 465 */,
+/* 466 */,
+/* 467 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \*****************************************************************************************/
@@ -19900,7 +36673,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 402 */
+/* 468 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-icon/props.js ***!
   \*****************************************************************************************/
@@ -19997,14 +36770,209 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 403 */,
-/* 404 */,
-/* 405 */,
-/* 406 */,
-/* 407 */,
-/* 408 */,
-/* 409 */,
-/* 410 */
+/* 469 */,
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */,
+/* 474 */,
+/* 475 */,
+/* 476 */
+/*!******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-input/props.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 输入的值
+    value: {
+      type: [String, Number],
+      default: uni.$u.props.input.value },
+
+    // 输入框类型
+    // number-数字输入键盘，app-vue下可以输入浮点数，app-nvue和小程序平台下只能输入整数
+    // idcard-身份证输入键盘，微信、支付宝、百度、QQ小程序
+    // digit-带小数点的数字键盘，App的nvue页面、微信、支付宝、百度、头条、QQ小程序
+    // text-文本输入键盘
+    type: {
+      type: String,
+      default: uni.$u.props.input.type },
+
+    // 如果 textarea 是在一个 position:fixed 的区域，需要显示指定属性 fixed 为 true，
+    // 兼容性：微信小程序、百度小程序、字节跳动小程序、QQ小程序
+    fixed: {
+      type: Boolean,
+      default: uni.$u.props.input.fixed },
+
+    // 是否禁用输入框
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.input.disabled },
+
+    // 禁用状态时的背景色
+    disabledColor: {
+      type: String,
+      default: uni.$u.props.input.disabledColor },
+
+    // 是否显示清除控件
+    clearable: {
+      type: Boolean,
+      default: uni.$u.props.input.clearable },
+
+    // 是否密码类型
+    password: {
+      type: Boolean,
+      default: uni.$u.props.input.password },
+
+    // 最大输入长度，设置为 -1 的时候不限制最大长度
+    maxlength: {
+      type: [String, Number],
+      default: uni.$u.props.input.maxlength },
+
+    // 	输入框为空时的占位符
+    placeholder: {
+      type: String,
+      default: uni.$u.props.input.placeholder },
+
+    // 指定placeholder的样式类，注意页面或组件的style中写了scoped时，需要在类名前写/deep/
+    placeholderClass: {
+      type: String,
+      default: uni.$u.props.input.placeholderClass },
+
+    // 指定placeholder的样式
+    placeholderStyle: {
+      type: [String, Object],
+      default: uni.$u.props.input.placeholderStyle },
+
+    // 是否显示输入字数统计，只在 type ="text"或type ="textarea"时有效
+    showWordLimit: {
+      type: Boolean,
+      default: uni.$u.props.input.showWordLimit },
+
+    // 设置右下角按钮的文字，有效值：send|search|next|go|done，兼容性详见uni-app文档
+    // https://uniapp.dcloud.io/component/input
+    // https://uniapp.dcloud.io/component/textarea
+    confirmType: {
+      type: String,
+      default: uni.$u.props.input.confirmType },
+
+    // 点击键盘右下角按钮时是否保持键盘不收起，H5无效
+    confirmHold: {
+      type: Boolean,
+      default: uni.$u.props.input.confirmHold },
+
+    // focus时，点击页面的时候不收起键盘，微信小程序有效
+    holdKeyboard: {
+      type: Boolean,
+      default: uni.$u.props.input.holdKeyboard },
+
+    // 自动获取焦点
+    // 在 H5 平台能否聚焦以及软键盘是否跟随弹出，取决于当前浏览器本身的实现。nvue 页面不支持，需使用组件的 focus()、blur() 方法控制焦点
+    focus: {
+      type: Boolean,
+      default: uni.$u.props.input.focus },
+
+    // 键盘收起时，是否自动失去焦点，目前仅App3.0.0+有效
+    autoBlur: {
+      type: Boolean,
+      default: uni.$u.props.input.autoBlur },
+
+    // 是否去掉 iOS 下的默认内边距，仅微信小程序，且type=textarea时有效
+    disableDefaultPadding: {
+      type: Boolean,
+      default: uni.$u.props.input.disableDefaultPadding },
+
+    // 指定focus时光标的位置
+    cursor: {
+      type: [String, Number],
+      default: uni.$u.props.input.cursor },
+
+    // 输入框聚焦时底部与键盘的距离
+    cursorSpacing: {
+      type: [String, Number],
+      default: uni.$u.props.input.cursorSpacing },
+
+    // 光标起始位置，自动聚集时有效，需与selection-end搭配使用
+    selectionStart: {
+      type: [String, Number],
+      default: uni.$u.props.input.selectionStart },
+
+    // 光标结束位置，自动聚集时有效，需与selection-start搭配使用
+    selectionEnd: {
+      type: [String, Number],
+      default: uni.$u.props.input.selectionEnd },
+
+    // 键盘弹起时，是否自动上推页面
+    adjustPosition: {
+      type: Boolean,
+      default: uni.$u.props.input.adjustPosition },
+
+    // 输入框内容对齐方式，可选值为：left|center|right
+    inputAlign: {
+      type: String,
+      default: uni.$u.props.input.inputAlign },
+
+    // 输入框字体的大小
+    fontSize: {
+      type: [String, Number],
+      default: uni.$u.props.input.fontSize },
+
+    // 输入框字体颜色
+    color: {
+      type: String,
+      default: uni.$u.props.input.color },
+
+    // 输入框前置图标
+    prefixIcon: {
+      type: String,
+      default: uni.$u.props.input.prefixIcon },
+
+    // 前置图标样式，对象或字符串
+    prefixIconStyle: {
+      type: [String, Object],
+      default: uni.$u.props.input.prefixIconStyle },
+
+    // 输入框后置图标
+    suffixIcon: {
+      type: String,
+      default: uni.$u.props.input.suffixIcon },
+
+    // 后置图标样式，对象或字符串
+    suffixIconStyle: {
+      type: [String, Object],
+      default: uni.$u.props.input.suffixIconStyle },
+
+    // 边框类型，surround-四周边框，bottom-底部边框，none-无边框
+    border: {
+      type: String,
+      default: uni.$u.props.input.border },
+
+    // 是否只读，与disabled不同之处在于disabled会置灰组件，而readonly则不会
+    readonly: {
+      type: Boolean,
+      default: uni.$u.props.input.readonly },
+
+    // 输入框形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.input.shape },
+
+    // 用于处理或者过滤输入框内容的方法
+    formatter: {
+      type: [Function, null],
+      default: uni.$u.props.input.formatter } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 477 */,
+/* 478 */,
+/* 479 */,
+/* 480 */,
+/* 481 */,
+/* 482 */
 /*!*****************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-line/props.js ***!
   \*****************************************************************************************/
@@ -20045,40 +37013,95 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */,
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */,
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */,
-/* 431 */,
-/* 432 */,
-/* 433 */,
-/* 434 */,
-/* 435 */,
-/* 436 */,
-/* 437 */,
-/* 438 */,
-/* 439 */,
-/* 440 */,
-/* 441 */,
-/* 442 */,
-/* 443 */,
-/* 444 */
+/* 483 */,
+/* 484 */,
+/* 485 */,
+/* 486 */,
+/* 487 */,
+/* 488 */,
+/* 489 */,
+/* 490 */
+/*!*************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.show },
+
+    // 颜色
+    color: {
+      type: String,
+      default: uni.$u.props.loadingIcon.color },
+
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.textColor },
+
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.vertical },
+
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: uni.$u.props.loadingIcon.mode },
+
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.size },
+
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.textSize },
+
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.text },
+
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.loadingIcon.timingFunction },
+
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.duration },
+
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.inactiveColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 491 */,
+/* 492 */,
+/* 493 */,
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */,
+/* 498 */,
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */,
+/* 505 */
 /*!*****************************************************************************************************************!*\
   !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \*****************************************************************************************************************/
@@ -20215,6 +37238,457 @@ function createAnimation(option, _this) {
   return new MPAnimation(option, _this);
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 506 */,
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */,
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */
+/*!******************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-badge/props.js ***!
+  \******************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否显示圆点
+    isDot: {
+      type: Boolean,
+      default: uni.$u.props.badge.isDot },
+
+    // 显示的内容
+    value: {
+      type: [Number, String],
+      default: uni.$u.props.badge.value },
+
+    // 是否显示
+    show: {
+      type: Boolean,
+      default: uni.$u.props.badge.show },
+
+    // 最大值，超过最大值会显示 '{max}+'
+    max: {
+      type: [Number, String],
+      default: uni.$u.props.badge.max },
+
+    // 主题类型，error|warning|success|primary
+    type: {
+      type: String,
+      default: uni.$u.props.badge.type },
+
+    // 当数值为 0 时，是否展示 Badge
+    showZero: {
+      type: Boolean,
+      default: uni.$u.props.badge.showZero },
+
+    // 背景颜色，优先级比type高，如设置，type参数会失效
+    bgColor: {
+      type: [String, null],
+      default: uni.$u.props.badge.bgColor },
+
+    // 字体颜色
+    color: {
+      type: [String, null],
+      default: uni.$u.props.badge.color },
+
+    // 徽标形状，circle-四角均为圆角，horn-左下角为直角
+    shape: {
+      type: String,
+      default: uni.$u.props.badge.shape },
+
+    // 设置数字的显示方式，overflow|ellipsis|limit
+    // overflow会根据max字段判断，超出显示`${max}+`
+    // ellipsis会根据max判断，超出显示`${max}...`
+    // limit会依据1000作为判断条件，超出1000，显示`${value/1000}K`，比如2.2k、3.34w，最多保留2位小数
+    numberType: {
+      type: String,
+      default: uni.$u.props.badge.numberType },
+
+    // 设置badge的位置偏移，格式为 [x, y]，也即设置的为top和right的值，absolute为true时有效
+    offset: {
+      type: Array,
+      default: uni.$u.props.badge.offset },
+
+    // 是否反转背景和字体颜色
+    inverted: {
+      type: Boolean,
+      default: uni.$u.props.badge.inverted },
+
+    // 是否绝对定位
+    absolute: {
+      type: Boolean,
+      default: uni.$u.props.badge.absolute } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 519 */,
+/* 520 */,
+/* 521 */,
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */
+/*!***********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-transition/props.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否展示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.transition.show },
+
+    // 使用的动画模式
+    mode: {
+      type: String,
+      default: uni.$u.props.transition.mode },
+
+    // 动画的执行时间，单位ms
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.transition.duration },
+
+    // 使用的动画过渡函数
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.transition.timingFunction } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 527 */
+/*!****************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-transition/transition.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));
+
+
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 528));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
+var nextTick = function nextTick() {return new Promise(function (resolve) {return setTimeout(resolve, 1000 / 50);});}; // nvue动画模块实现细节抽离在外部文件
+
+// 定义类名，通过给元素动态切换类名，赋予元素一定的css动画样式
+var getClassNames = function getClassNames(name) {return {
+    enter: "u-".concat(name, "-enter u-").concat(name, "-enter-active"),
+    'enter-to': "u-".concat(name, "-enter-to u-").concat(name, "-enter-active"),
+    leave: "u-".concat(name, "-leave u-").concat(name, "-leave-active"),
+    'leave-to': "u-".concat(name, "-leave-to u-").concat(name, "-leave-active") };};var _default =
+
+
+
+
+
+
+
+
+
+
+{
+  methods: {
+    // 组件被点击发出事件
+    clickHandler: function clickHandler() {
+      this.$emit('click');
+    },
+
+    // vue版本的组件进场处理
+    vueEnter: function vueEnter() {var _this = this;
+      // 动画进入时的类名
+      var classNames = getClassNames(this.mode);
+      // 定义状态和发出动画进入前事件
+      this.status = 'enter';
+      this.$emit('beforeEnter');
+      this.inited = true;
+      this.display = true;
+      this.classes = classNames.enter;
+      this.$nextTick( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
+
+
+
+                // 组件动画进入后触发的事件
+                _this.$emit('afterEnter');
+                // 标识动画尚未结束
+                _this.transitionEnded = false;
+                // 赋予组件enter-to类名
+                _this.classes = classNames['enter-to'];case 3:case "end":return _context.stop();}}}, _callee);})));
+
+    },
+    // 动画离场处理
+    vueLeave: function vueLeave() {var _this2 = this;
+      // 如果不是展示状态，无需执行逻辑
+      if (!this.display) return;
+      var classNames = getClassNames(this.mode);
+      // 标记离开状态和发出事件
+      this.status = 'leave';
+      this.$emit('beforeLeave');
+      // 获得类名
+      this.classes = classNames.leave;
+
+      this.$nextTick(function () {
+        // 标记动画已经结束了
+        _this2.transitionEnded = false;
+        // 组件执行动画，到了执行的执行时间后，执行一些额外处理
+        setTimeout(_this2.onTransitionEnd, _this2.duration);
+        _this2.classes = classNames['leave-to'];
+      });
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 完成过渡后触发
+    onTransitionEnd: function onTransitionEnd() {
+      // 如果已经是结束的状态，无需再处理
+      if (this.transitionEnded) return;
+      this.transitionEnded = true;
+      // 发出组件动画执行后的事件
+      this.$emit(this.status === 'leave' ? 'afterLeave' : 'afterEnter');
+      if (!this.show && this.display) {
+        this.display = false;
+        this.inited = false;
+      }
+    } } };exports.default = _default;
+
+/***/ }),
+/* 528 */
+/*!******************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  fade: {
+    enter: { opacity: 0 },
+    'enter-to': { opacity: 1 },
+    leave: { opacity: 1 },
+    'leave-to': { opacity: 0 } },
+
+  'fade-up': {
+    enter: { opacity: 0, transform: 'translateY(100%)' },
+    'enter-to': { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 1, transform: 'translateY(0)' },
+    'leave-to': { opacity: 0, transform: 'translateY(100%)' } },
+
+  'fade-down': {
+    enter: { opacity: 0, transform: 'translateY(-100%)' },
+    'enter-to': { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 1, transform: 'translateY(0)' },
+    'leave-to': { opacity: 0, transform: 'translateY(-100%)' } },
+
+  'fade-left': {
+    enter: { opacity: 0, transform: 'translateX(-100%)' },
+    'enter-to': { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 1, transform: 'translateY(0)' },
+    'leave-to': { opacity: 0, transform: 'translateX(-100%)' } },
+
+  'fade-right': {
+    enter: { opacity: 0, transform: 'translateX(100%)' },
+    'enter-to': { opacity: 1, transform: 'translateY(0)' },
+    leave: { opacity: 1, transform: 'translateY(0)' },
+    'leave-to': { opacity: 0, transform: 'translateX(100%)' } },
+
+  'slide-up': {
+    enter: { transform: 'translateY(100%)' },
+    'enter-to': { transform: 'translateY(0)' },
+    leave: { transform: 'translateY(0)' },
+    'leave-to': { transform: 'translateY(100%)' } },
+
+  'slide-down': {
+    enter: { transform: 'translateY(-100%)' },
+    'enter-to': { transform: 'translateY(0)' },
+    leave: { transform: 'translateY(0)' },
+    'leave-to': { transform: 'translateY(-100%)' } },
+
+  'slide-left': {
+    enter: { transform: 'translateX(-100%)' },
+    'enter-to': { transform: 'translateY(0)' },
+    leave: { transform: 'translateY(0)' },
+    'leave-to': { transform: 'translateX(-100%)' } },
+
+  'slide-right': {
+    enter: { transform: 'translateX(100%)' },
+    'enter-to': { transform: 'translateY(0)' },
+    leave: { transform: 'translateY(0)' },
+    'leave-to': { transform: 'translateX(100%)' } },
+
+  zoom: {
+    enter: { transform: 'scale(0.95)' },
+    'enter-to': { transform: 'scale(1)' },
+    leave: { transform: 'scale(1)' },
+    'leave-to': { transform: 'scale(0.95)' } },
+
+  'fade-zoom': {
+    enter: { opacity: 0, transform: 'scale(0.95)' },
+    'enter-to': { opacity: 1, transform: 'scale(1)' },
+    leave: { opacity: 1, transform: 'scale(1)' },
+    'leave-to': { opacity: 0, transform: 'scale(0.95)' } } };exports.default = _default;
+
+/***/ }),
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */
+/*!********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-overlay/props.js ***!
+  \********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否显示遮罩
+    show: {
+      type: Boolean,
+      default: uni.$u.props.overlay.show },
+
+    // 层级z-index
+    zIndex: {
+      type: [String, Number],
+      default: uni.$u.props.overlay.zIndex },
+
+    // 遮罩的过渡时间，单位为ms
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.overlay.duration },
+
+    // 不透明度值，当做rgba的第四个参数
+    opacity: {
+      type: [String, Number],
+      default: uni.$u.props.overlay.opacity } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */
+/*!***********************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-status-bar/props.js ***!
+  \***********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    bgColor: {
+      type: String,
+      default: uni.$u.props.statusBar.bgColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 545 */,
+/* 546 */,
+/* 547 */,
+/* 548 */,
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */
+/*!************************************************************************************************!*\
+  !*** D:/uniapp/美妆项目/meizhuan/mdmeimall/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {} };exports.default = _default;
 
 /***/ })
 ]]);

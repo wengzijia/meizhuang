@@ -1,6 +1,4 @@
 <template>
-<<<<<<< HEAD
-
 	<view class="quqnju">
 
 		<view class="content">
@@ -68,14 +66,11 @@
 		</view>
 
 	</view>
-=======
-	
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
+
 </template>
 
 <script>
 	export default {
-<<<<<<< HEAD
 		data() {
 			return {
 				cartGoodslist: [], // 商品列表
@@ -113,27 +108,10 @@
 
 		},
 
-		computed: {
-			
-=======
-		onLoad() {
-			let token = uni.getStorageSync('token')
-			if(!token){
-				uni.redirectTo({
-					// #ifdef  H5
-					url:'../login/h5login',
-					// #endif
-					// #ifdef MP-WEIXIN
-					url:'../login/login',
-					// #endif
-				})
-			}
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
-		}
 	}
 </script>
 <style>
-<<<<<<< HEAD
+
 	/* @import "cl-uni/index.scss"; */
 	.Stepper {
 		background-color: #f498b2;
@@ -355,6 +333,5 @@
 		text-align: center;
 		margin: 0 2px;
 	}
-=======
->>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
+
 </style>
