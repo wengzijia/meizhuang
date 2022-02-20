@@ -2,7 +2,6 @@ const request = require('./request.js');
 
 // 获取详情数据
 exports.fetchDetailData = function(id){
-	console.log('id',id)
 	let url = `http://zlwh.jinghuanqiu.com/goodsdatail?id=${id}`;
 	return request({
 		url

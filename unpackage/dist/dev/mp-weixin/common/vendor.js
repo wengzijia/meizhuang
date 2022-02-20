@@ -17689,202 +17689,7 @@ platform = 'mp';var _default =
 platform;exports.default = _default;
 
 /***/ }),
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */
-/*!**********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/home.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 142);
-
-exports.fetchindexData = function () {
-  return request({
-    url: "http://zlwh.jinghuanqiu.com/index" });
-
-};
-
-/***/ }),
-/* 142 */
-/*!*************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/request.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
-  return new Promise(function (reslove, reject) {
-    uni.showLoading({
-      title: 'loading...' });
-
-    var httpRequest = _objectSpread(_objectSpread({},
-    options), {}, {
-      success: function success(res) {
-        reslove(res.data);
-      },
-      fail: function fail(err) {
-        reject(err);
-      },
-      complete: function complete(res) {
-        uni.hideLoading();var _res$data =
-
-
-
-        res.data,code = _res$data.code,message = _res$data.message;
-        if (code === 10004 || code === 10005) {
-          uni.showToast({
-            title: message });
-
-          uni.redirectTo({
-
-            url: '../../pages/login/login' });
-
-
-
-
-
-        }
-      } });
-
-    var reg = /\/user\//;
-    var result = reg.test(options.url);
-    // 需要权限
-    if (result) {
-      var token = uni.getStorageSync('token');
-      if (token === '') {
-        uni.redirectTo({
-
-          url: '../../pages/login/login' });
-
-
-
-
-
-        return;
-      }
-      httpRequest.header = {
-        Authorization: token };
-
-      uni.request(httpRequest);
-    } else {
-      uni.request(httpRequest);
-    }
-
-  });
-};
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 143 */,
-/* 144 */,
-/* 145 */,
-/* 146 */,
-/* 147 */,
-/* 148 */,
-/* 149 */,
-/* 150 */,
-/* 151 */
-/*!**********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/sort.js ***!
-  \**********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 142);
-
-function fetch_sortData() {
-  return request({
-    url: 'https://zlwh.jinghuanqiu.com/category' });
-
-}
-
-/***/ }),
-/* 152 */
-/*!*************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/util/window.js ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.getWindowHeight = getWindowHeight;function getWindowHeight() {
-  var height = 0;
-  uni.getSystemInfo({
-    success: function success(res) {
-      height = res.windowHeight;
-    } });
-
-  return height;
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 153 */,
-/* 154 */,
-/* 155 */,
-/* 156 */,
-/* 157 */,
-/* 158 */,
-/* 159 */,
-/* 160 */,
-/* 161 */,
-/* 162 */,
-/* 163 */,
-/* 164 */,
-/* 165 */,
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */,
-/* 171 */,
-/* 172 */,
-/* 173 */,
-/* 174 */,
-/* 175 */
-/*!************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/search.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 142);
-
-exports.fetchSearch = function (page, size, keyWord) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/goodslist/page",
-    method: 'POST',
-    data: {
-      page: page, size: size, keyWord: keyWord } });
-
-
-};
-
-/***/ }),
-/* 176 */,
-/* 177 */,
-/* 178 */,
-/* 179 */,
-/* 180 */,
-/* 181 */,
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */,
-/* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */
+/* 135 */
 /*!***************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/index.js ***!
   \***************************************************************************************/
@@ -17892,11 +17697,11 @@ exports.fetchSearch = function (page, size, keyWord) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });Object.defineProperty(exports, "Storage", { enumerable: true, get: function get() {return _storage.default;} });Object.defineProperty(exports, "Emitter", { enumerable: true, get: function get() {return _emitter.default;} });exports.default = void 0;var _storage = _interopRequireDefault(__webpack_require__(/*! ./utils/storage */ 193));
-var _emitter = _interopRequireDefault(__webpack_require__(/*! ./mixins/emitter */ 194));
-var _utils = __webpack_require__(/*! ./utils */ 277);
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });Object.defineProperty(exports, "Storage", { enumerable: true, get: function get() {return _storage.default;} });Object.defineProperty(exports, "Emitter", { enumerable: true, get: function get() {return _emitter.default;} });exports.default = void 0;var _storage = _interopRequireDefault(__webpack_require__(/*! ./utils/storage */ 136));
+var _emitter = _interopRequireDefault(__webpack_require__(/*! ./mixins/emitter */ 137));
+var _utils = __webpack_require__(/*! ./utils */ 138);
 
-__webpack_require__(/*! ./common */ 278);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
+__webpack_require__(/*! ./common */ 139);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}
 
 var install = function install(Vue) {var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   // 默认配置数据
@@ -17922,7 +17727,7 @@ var install = function install(Vue) {var options = arguments.length > 1 && argum
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 193 */
+/* 136 */
 /*!***********************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/utils/storage.js ***!
   \***********************************************************************************************/
@@ -17988,7 +17793,7 @@ var install = function install(Vue) {var options = arguments.length > 1 && argum
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 194 */
+/* 137 */
 /*!************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/mixins/emitter.js ***!
   \************************************************************************************************/
@@ -18030,321 +17835,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     } } };exports.default = _default;
 
 /***/ }),
-/* 195 */,
-/* 196 */,
-/* 197 */,
-/* 198 */,
-/* 199 */,
-/* 200 */,
-/* 201 */,
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */,
-/* 210 */,
-/* 211 */
-/*!***********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/login.js ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 142);
-
-// 自动登录 (用来获取token)
-function
-autologin(_x) {return _autologin.apply(this, arguments);}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// 第一次登录 (录入用户基本信息)
-function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 10;break;}return _context2.abrupt("return");case 10:if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
-              // success(e){
-              // console.log(e.authSetting.scope.userInfo)
-              // if(!e.authSetting.scope.userInfo){
-              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return newlogin(res);case 2:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
-                              // wx.setStorageSync("userInfo",_this.userInfo)
-                            }case 5:case "end":return _context.stop();}}}, _callee);}))();} }); // }
-              // }
-              // })
-              // 		
-            }case 11:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
-}
-
-// 用户手机号
-
-function phoneNumber(code, token) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
-    method: 'POST',
-    header: {
-      Authorization: token },
-
-    data: { code: code } });
-
-
-
-}
-
-
-
-
-// h5
-
-// 获取图形验证码
-function captcha() {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
-    method: 'get' });
-
-
-}
-// 校验图形验证码
-function checkImgYzm(tell, captchaId, verifyCode) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
-    method: 'post',
-    data: {
-      tell: tell,
-      captchaId: captchaId,
-      verifyCode: verifyCode } });
-
-
-
-}
-// 登录
-function h5login(tell, code) {
-  return request({
-    url: "https://zlwh.jinghuanqiu.com/h5login",
-    method: 'post',
-    data: { tell: tell, code: code } });
-
-
-}
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 212 */,
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */,
-/* 221 */,
-/* 222 */,
-/* 223 */,
-/* 224 */,
-/* 225 */,
-/* 226 */,
-/* 227 */,
-/* 228 */
-/*!************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/detail.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var request = __webpack_require__(/*! ./request.js */ 142);
-
-// 获取详情数据
-exports.fetchDetailData = function (id) {
-  console.log('id', id);
-  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=".concat(id);
-  return request({
-    url: url });
-
-};
-// 加入购物车
-exports.fetchAddCart = function (token, _id, number) {
-  return request({
-    method: "POST",
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/addshopcar",
-    data: {
-      _id: _id, number: number } });
-
-
-};
-// 获取购物车
-exports.fetchGetCart = function (token) {
-  return request({
-    method: "POST",
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
-
-};
-
-// 收藏
-exports.fetchJionCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/add/collection?goods_id=".concat(id) });
-
-};
-
-// 取消收藏
-exports.fetchCancelCollect = function (token, id) {
-  return request({
-    header: {
-      Authorization: token },
-
-    url: "https://zlwh.jinghuanqiu.com/user/delete/collection?goods_id=".concat(id) });
-
-};
-
-/***/ }),
-/* 229 */,
-/* 230 */,
-/* 231 */,
-/* 232 */,
-/* 233 */,
-/* 234 */,
-/* 235 */,
-/* 236 */,
-/* 237 */,
-/* 238 */,
-/* 239 */,
-/* 240 */,
-/* 241 */,
-/* 242 */,
-/* 243 */,
-/* 244 */,
-/* 245 */,
-/* 246 */,
-/* 247 */,
-/* 248 */,
-/* 249 */,
-/* 250 */,
-/* 251 */,
-/* 252 */,
-/* 253 */,
-/* 254 */,
-/* 255 */,
-/* 256 */,
-/* 257 */,
-/* 258 */,
-/* 259 */,
-/* 260 */,
-/* 261 */
-/*!***********************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/order.js ***!
-  \***********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var request = __webpack_require__(/*! ./request.js */ 142);
-
-// 创建订单
-exports.fetchcreateOrder = function (createOrderData) {
-  return request({
-    method: "POST",
-    url: "https://zlwh.jinghuanqiu.com/user/creatbaseOrder",
-    data: _objectSpread({},
-    createOrderData) });
-
-
-};
-
-// 提交订单
-exports.fetchSubmitOrder = function (submitOrderData) {
-  return request({
-    method: "POST",
-    url: "https://zlwh.jinghuanqiu.com/user/commitOrder",
-    data: _objectSpread({},
-    submitOrderData) });
-
-
-};
-
-// 订单详情
-exports.fetchOrderDetail = function (orderSn) {
-  return request({
-    method: "POST",
-    url: "https://zlwh.jinghuanqiu.com/user/get/getexpress",
-    data: {
-      orderSn: orderSn } });
-
-
-};
-
-/***/ }),
-/* 262 */,
-/* 263 */,
-/* 264 */,
-/* 265 */,
-/* 266 */,
-/* 267 */,
-/* 268 */,
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */,
-/* 277 */
+/* 138 */
 /*!*********************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/utils/index.js ***!
   \*********************************************************************************************/
@@ -18583,7 +18074,7 @@ function orderBy(list, key) {
 }
 
 /***/ }),
-/* 278 */
+/* 139 */
 /*!****************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/common.js ***!
   \****************************************************************************************/
@@ -18603,9 +18094,212 @@ Promise.prototype.done = function (cb) {
 };
 
 /***/ }),
-/* 279 */,
-/* 280 */,
-/* 281 */
+/* 140 */,
+/* 141 */,
+/* 142 */,
+/* 143 */,
+/* 144 */,
+/* 145 */,
+/* 146 */
+/*!**********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/home.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var request = __webpack_require__(/*! ./request.js */ 147);
+
+exports.fetchindexData = function () {
+  return request({
+    url: "http://zlwh.jinghuanqiu.com/index" });
+
+};
+
+/***/ }),
+/* 147 */
+/*!*************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/request.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(uni) {function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}module.exports = function (options) {
+  return new Promise(function (reslove, reject) {
+    uni.showLoading({
+      title: 'loading...' });
+
+    var httpRequest = _objectSpread(_objectSpread({},
+    options), {}, {
+      success: function success(res) {
+        reslove(res.data);
+      },
+      fail: function fail(err) {
+        reject(err);
+      },
+      complete: function complete(res) {
+        uni.hideLoading();var _res$data =
+
+
+
+        res.data,code = _res$data.code,message = _res$data.message;
+        if (code === 10004 || code === 10005) {
+          uni.showToast({
+            title: message });
+
+          uni.redirectTo({
+
+            url: '../../pages/login/login' });
+
+
+
+
+
+        }
+      } });
+
+    var reg = /\/user\//;
+    var result = reg.test(options.url);
+    // 需要权限
+    if (result) {
+      var token = uni.getStorageSync('token');
+      if (token === '') {
+        uni.redirectTo({
+
+          url: '../../pages/login/login' });
+
+
+
+
+
+        return;
+      }
+      httpRequest.header = {
+        Authorization: token };
+
+      uni.request(httpRequest);
+    } else {
+      uni.request(httpRequest);
+    }
+
+  });
+};
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 148 */,
+/* 149 */,
+/* 150 */,
+/* 151 */,
+/* 152 */,
+/* 153 */,
+/* 154 */,
+/* 155 */,
+/* 156 */,
+/* 157 */,
+/* 158 */,
+/* 159 */,
+/* 160 */,
+/* 161 */,
+/* 162 */,
+/* 163 */,
+/* 164 */
+/*!**********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/sort.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.fetch_sortData = fetch_sortData;var request = __webpack_require__(/*! ./request.js */ 147);
+
+function fetch_sortData() {
+  return request({
+    url: 'https://zlwh.jinghuanqiu.com/category' });
+
+}
+
+/***/ }),
+/* 165 */
+/*!*************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/util/window.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.getWindowHeight = getWindowHeight;function getWindowHeight() {
+  var height = 0;
+  uni.getSystemInfo({
+    success: function success(res) {
+      height = res.windowHeight;
+    } });
+
+  return height;
+}
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 166 */,
+/* 167 */,
+/* 168 */,
+/* 169 */,
+/* 170 */,
+/* 171 */,
+/* 172 */,
+/* 173 */,
+/* 174 */,
+/* 175 */,
+/* 176 */,
+/* 177 */,
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
+/* 182 */,
+/* 183 */,
+/* 184 */,
+/* 185 */,
+/* 186 */,
+/* 187 */,
+/* 188 */,
+/* 189 */,
+/* 190 */
+/*!************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/search.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var request = __webpack_require__(/*! ./request.js */ 147);
+
+exports.fetchSearch = function (page, size, keyWord) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/goodslist/page",
+    method: 'POST',
+    data: {
+      page: page, size: size, keyWord: keyWord } });
+
+
+};
+
+/***/ }),
+/* 191 */,
+/* 192 */,
+/* 193 */,
+/* 194 */,
+/* 195 */,
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */,
+/* 202 */,
+/* 203 */,
+/* 204 */,
+/* 205 */,
+/* 206 */,
+/* 207 */
 /*!****************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/static/address.js ***!
   \****************************************************************************/
@@ -34327,7 +34021,15 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.address = 
       "label": "圣方济各堂区" }] }] }];exports.address = address;
 
 /***/ }),
-/* 282 */
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */,
+/* 214 */,
+/* 215 */,
+/* 216 */
 /*!*************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/address.js ***!
   \*************************************************************************/
@@ -34335,7 +34037,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.address = 
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.getAddress = getAddress;var request = __webpack_require__(/*! ./request.js */ 142);
+Object.defineProperty(exports, "__esModule", { value: true });exports.getAddress = getAddress;var request = __webpack_require__(/*! ./request.js */ 147);
 
 
 // 获取地址
@@ -34347,435 +34049,315 @@ function getAddress() {
 }
 
 /***/ }),
-/* 283 */,
-/* 284 */,
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */
-/*!********************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-checkbox-group/props.js ***!
-  \********************************************************************************************************************/
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */
+/*!***********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/login.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 标识符
-    name: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.name },
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.autologin = autologin;exports.newlogin = newlogin;exports.phoneNumber = phoneNumber;exports.captcha = captcha;exports.checkImgYzm = checkImgYzm;exports.h5login = h5login;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var request = __webpack_require__(/*! ./request.js */ 147);
 
-    // 绑定的值
-    value: {
-      type: Array,
-      default: uni.$u.props.checkboxGroup.value },
-
-    // 形状，circle-圆形，square-方形
-    shape: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.shape },
-
-    // 是否禁用全部checkbox
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.disabled },
+// 自动登录 (用来获取token)
+function
+autologin(_x) {return _autologin.apply(this, arguments);}
 
 
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.activeColor },
-
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.inactiveColor },
 
 
-    // 整个组件的尺寸，默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.size },
 
-    // 布局方式，row-横向，column-纵向
-    placement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.placement },
 
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.labelSize },
 
-    // label的字体颜色
-    labelColor: {
-      type: [String],
-      default: uni.$u.props.checkboxGroup.labelColor },
 
-    // 是否禁止点击文本操作
-    labelDisabled: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.labelDisabled },
 
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconColor },
 
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkboxGroup.iconSize },
 
-    // 勾选图标的对齐方式，left-左边，right-右边
-    iconPlacement: {
-      type: String,
-      default: uni.$u.props.checkboxGroup.iconPlacement },
 
-    // 竖向配列时，是否显示下划线
-    borderBottom: {
-      type: Boolean,
-      default: uni.$u.props.checkboxGroup.borderBottom } } };exports.default = _default;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 第一次登录 (录入用户基本信息)
+function _autologin() {_autologin = _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee2(wxCode) {var auto,_yield$request,result,_args2 = arguments;return _regenerator.default.wrap(function _callee2$(_context2) {while (1) {switch (_context2.prev = _context2.next) {case 0:auto = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : false;_context2.next = 3;return request({ url: "https://zlwh.jinghuanqiu.com/wxlogin", method: 'POST', data: wxCode });case 3:_yield$request = _context2.sent;result = _yield$request.result;wx.setStorageSync('token', result.token);uni.setStorageSync('token', result.token);wx.setStorageSync("userInfo", JSON.stringify(result.userInfo));if (!auto) {_context2.next = 10;break;}return _context2.abrupt("return");case 10:if (!result.userInfo.nickname) {console.log("第一次登录"); // wx.getSetting({
+              // success(e){
+              // console.log(e.authSetting.scope.userInfo)
+              // if(!e.authSetting.scope.userInfo){
+              wx.getUserProfile({ desc: "获取昵称等基本信息", success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$newlogin, code;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return newlogin(res);case 2:_yield$newlogin = _context.sent;code = _yield$newlogin.code;if (code == 20000) {// wx.setStorageSync("token",_this.token)
+                              // wx.setStorageSync("userInfo",_this.userInfo)
+                            }case 5:case "end":return _context.stop();}}}, _callee);}))();} }); // }
+              // }
+              // })
+              // 		
+            }case 11:case "end":return _context2.stop();}}}, _callee2);}));return _autologin.apply(this, arguments);}function newlogin(res, token) {return request({ url: "https://zlwh.jinghuanqiu.com/user/fixuserinfo", method: 'POST', header: { Authorization: token }, data: res });
+}
+
+// 用户手机号
+
+function phoneNumber(code, token) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/user/fixusertell",
+    method: 'POST',
+    header: {
+      Authorization: token },
+
+    data: { code: code } });
+
+
+
+}
+
+
+
+
+// h5
+
+// 获取图形验证码
+function captcha() {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/captcha?height=36&width=110",
+    method: 'get' });
+
+
+}
+// 校验图形验证码
+function checkImgYzm(tell, captchaId, verifyCode) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login/sentcapcha",
+    method: 'post',
+    data: {
+      tell: tell,
+      captchaId: captchaId,
+      verifyCode: verifyCode } });
+
+
+
+}
+// 登录
+function h5login(tell, code) {
+  return request({
+    url: "https://zlwh.jinghuanqiu.com/h5login",
+    method: 'post',
+    data: { tell: tell, code: code } });
+
+
+}
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 289 */,
-/* 290 */,
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */
-/*!**************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-checkbox/props.js ***!
-  \**************************************************************************************************************/
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */
+/*!************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/detail.js ***!
+  \************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // checkbox的名称
-    name: {
-      type: [String, Number, Boolean],
-      default: uni.$u.props.checkbox.name },
+var request = __webpack_require__(/*! ./request.js */ 147);
 
-    // 形状，square为方形，circle为圆型
-    shape: {
-      type: String,
-      default: uni.$u.props.checkbox.shape },
+// 获取详情数据
+exports.fetchDetailData = function (id) {
+  var url = "http://zlwh.jinghuanqiu.com/goodsdatail?id=".concat(id);
+  return request({
+    url: url });
 
-    // 整体的大小
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.size },
+};
+// 加入购物车
+exports.fetchAddCart = function (token, _id, number) {
+  return request({
+    method: "POST",
+    header: {
+      Authorization: token },
 
-    // 是否默认选中
-    checked: {
-      type: Boolean,
-      default: uni.$u.props.checkbox.checked },
+    url: "https://zlwh.jinghuanqiu.com/user/addshopcar",
+    data: {
+      _id: _id, number: number } });
 
-    // 是否禁用
-    disabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.disabled },
 
-    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
-    activeColor: {
-      type: String,
-      default: uni.$u.props.checkbox.activeColor },
+};
+// 获取购物车
+exports.fetchGetCart = function (token) {
+  return request({
+    method: "POST",
+    header: {
+      Authorization: token },
 
-    // 未选中的颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.checkbox.inactiveColor },
+    url: "https://zlwh.jinghuanqiu.com/user/getshopcar" });
 
-    // 图标的大小，单位px
-    iconSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.iconSize },
+};
 
-    // 图标颜色
-    iconColor: {
-      type: String,
-      default: uni.$u.props.checkbox.iconColor },
+// 收藏
+exports.fetchJionCollect = function (token, id) {
+  return request({
+    header: {
+      Authorization: token },
 
-    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
-    label: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.label },
+    url: "https://zlwh.jinghuanqiu.com/user/add/collection?goods_id=".concat(id) });
 
-    // label的字体大小，px单位
-    labelSize: {
-      type: [String, Number],
-      default: uni.$u.props.checkbox.labelSize },
+};
 
-    // label的颜色
-    labelColor: {
-      type: String,
-      default: uni.$u.props.checkbox.labelColor },
+// 取消收藏
+exports.fetchCancelCollect = function (token, id) {
+  return request({
+    header: {
+      Authorization: token },
 
-    // 是否禁止点击提示语选中复选框
-    labelDisabled: {
-      type: [String, Boolean],
-      default: uni.$u.props.checkbox.labelDisabled } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+    url: "https://zlwh.jinghuanqiu.com/user/delete/collection?goods_id=".concat(id) });
+
+};
 
 /***/ }),
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */
-/*!****************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-number-box/props.js ***!
-  \****************************************************************************************************************/
+/* 243 */,
+/* 244 */,
+/* 245 */,
+/* 246 */,
+/* 247 */,
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */,
+/* 255 */,
+/* 256 */,
+/* 257 */,
+/* 258 */,
+/* 259 */,
+/* 260 */,
+/* 261 */,
+/* 262 */,
+/* 263 */,
+/* 264 */,
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */
+/*!***********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/order.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 步进器标识符，在change回调返回
-    name: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.name },
+function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var request = __webpack_require__(/*! ./request.js */ 147);
 
-    // 用于双向绑定的值，初始化时设置设为默认min值(最小值)
-    value: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.value },
+// 创建订单
+exports.fetchcreateOrder = function (createOrderData) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/creatbaseOrder",
+    data: _objectSpread({},
+    createOrderData) });
 
-    // 最小值
-    min: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.min },
 
-    // 最大值
-    max: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.max },
+};
 
-    // 加减的步长，可为小数
-    step: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.step },
+// 提交订单
+exports.fetchSubmitOrder = function (submitOrderData) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/commitOrder",
+    data: _objectSpread({},
+    submitOrderData) });
 
-    // 是否只允许输入整数
-    integer: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.integer },
 
-    // 是否禁用，包括输入框，加减按钮
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disabled },
+};
 
-    // 是否禁用输入框
-    disabledInput: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disabledInput },
+// 订单详情
+exports.fetchOrderDetail = function (orderSn) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/get/getexpress",
+    data: {
+      orderSn: orderSn } });
 
-    // 是否开启异步变更，开启后需要手动控制输入值
-    asyncChange: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.asyncChange },
 
-    // 输入框宽度，单位为px
-    inputWidth: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.inputWidth },
+};
 
-    // 是否显示减少按钮
-    showMinus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.showMinus },
+// 获取地址
+exports.fetchAddress = function (token) {
+  return request({
+    header: {
+      Authorization: token },
 
-    // 是否显示增加按钮
-    showPlus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.showPlus },
+    url: "https://zlwh.jinghuanqiu.com/user/address" });
 
-    // 显示的小数位数
-    decimalLength: {
-      type: [String, Number, null],
-      default: uni.$u.props.numberBox.decimalLength },
 
-    // 是否开启长按加减手势
-    longPress: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.longPress },
-
-    // 输入框文字和加减按钮图标的颜色
-    color: {
-      type: String,
-      default: uni.$u.props.numberBox.color },
-
-    // 按钮大小，宽高等于此值，单位px，输入框高度和此值保持一致
-    buttonSize: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.buttonSize },
-
-    // 输入框和按钮的背景颜色
-    bgColor: {
-      type: String,
-      default: uni.$u.props.numberBox.bgColor },
-
-    // 指定光标于键盘的距离，避免键盘遮挡输入框，单位px
-    cursorSpacing: {
-      type: [String, Number],
-      default: uni.$u.props.numberBox.cursorSpacing },
-
-    // 是否禁用增加按钮
-    disablePlus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disablePlus },
-
-    // 是否禁用减少按钮
-    disableMinus: {
-      type: Boolean,
-      default: uni.$u.props.numberBox.disableMinus },
-
-    // 加减按钮图标的样式
-    iconStyle: {
-      type: [Object, String],
-      default: uni.$u.props.numberBox.iconStyle } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+};
 
 /***/ }),
-/* 305 */,
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */,
-/* 328 */,
-/* 329 */,
-/* 330 */,
-/* 331 */,
-/* 332 */,
-/* 333 */,
-/* 334 */,
-/* 335 */,
-/* 336 */,
-/* 337 */,
-/* 338 */,
-/* 339 */,
-/* 340 */,
-/* 341 */,
-/* 342 */,
-/* 343 */,
-/* 344 */,
-/* 345 */,
-/* 346 */,
-/* 347 */,
-/* 348 */,
-/* 349 */,
-/* 350 */,
-/* 351 */,
-/* 352 */,
-/* 353 */,
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */,
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */,
-/* 371 */,
-/* 372 */,
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */,
-/* 380 */,
-/* 381 */,
-/* 382 */,
-/* 383 */,
-/* 384 */,
-/* 385 */,
-/* 386 */,
-/* 387 */,
-/* 388 */,
-/* 389 */,
-/* 390 */,
-/* 391 */,
-/* 392 */,
-/* 393 */,
-/* 394 */,
-/* 395 */,
-/* 396 */,
-/* 397 */,
-/* 398 */,
-/* 399 */,
-/* 400 */,
-/* 401 */,
-/* 402 */,
-/* 403 */,
-/* 404 */,
-/* 405 */,
-/* 406 */,
-/* 407 */,
-/* 408 */,
-/* 409 */,
-/* 410 */,
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */,
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */,
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */,
-/* 431 */
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \************************************************************************************************************/
@@ -34823,14 +34405,14 @@ function getAddress() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 432 */,
-/* 433 */,
-/* 434 */,
-/* 435 */,
-/* 436 */,
-/* 437 */,
-/* 438 */,
-/* 439 */
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-search/props.js ***!
   \************************************************************************************************************/
@@ -34952,35 +34534,35 @@ function getAddress() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 440 */,
-/* 441 */,
-/* 442 */,
-/* 443 */,
-/* 444 */,
-/* 445 */,
-/* 446 */,
-/* 447 */,
-/* 448 */,
-/* 449 */,
-/* 450 */,
-/* 451 */,
-/* 452 */,
-/* 453 */,
-/* 454 */,
-/* 455 */,
-/* 456 */,
-/* 457 */,
-/* 458 */,
-/* 459 */,
-/* 460 */,
-/* 461 */,
-/* 462 */,
-/* 463 */,
-/* 464 */,
-/* 465 */,
-/* 466 */,
-/* 467 */,
-/* 468 */
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-divider/props.js ***!
   \*************************************************************************************************************/
@@ -35032,42 +34614,576 @@ function getAddress() {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 469 */,
-/* 470 */,
-/* 471 */,
-/* 472 */,
-/* 473 */,
-/* 474 */,
-/* 475 */,
-/* 476 */,
-/* 477 */,
-/* 478 */,
-/* 479 */,
-/* 480 */,
-/* 481 */,
-/* 482 */,
-/* 483 */,
-/* 484 */,
-/* 485 */,
-/* 486 */,
-/* 487 */,
-/* 488 */,
-/* 489 */,
-/* 490 */,
-/* 491 */,
-/* 492 */,
-/* 493 */,
-/* 494 */,
-/* 495 */,
-/* 496 */,
-/* 497 */,
-/* 498 */,
-/* 499 */,
-/* 500 */,
-/* 501 */,
-/* 502 */,
-/* 503 */,
-/* 504 */
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */
+/*!********************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-checkbox-group/props.js ***!
+  \********************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 标识符
+    name: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.name },
+
+    // 绑定的值
+    value: {
+      type: Array,
+      default: uni.$u.props.checkboxGroup.value },
+
+    // 形状，circle-圆形，square-方形
+    shape: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.shape },
+
+    // 是否禁用全部checkbox
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.disabled },
+
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.inactiveColor },
+
+
+    // 整个组件的尺寸，默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.size },
+
+    // 布局方式，row-横向，column-纵向
+    placement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.placement },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.labelSize },
+
+    // label的字体颜色
+    labelColor: {
+      type: [String],
+      default: uni.$u.props.checkboxGroup.labelColor },
+
+    // 是否禁止点击文本操作
+    labelDisabled: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.labelDisabled },
+
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkboxGroup.iconSize },
+
+    // 勾选图标的对齐方式，left-左边，right-右边
+    iconPlacement: {
+      type: String,
+      default: uni.$u.props.checkboxGroup.iconPlacement },
+
+    // 竖向配列时，是否显示下划线
+    borderBottom: {
+      type: Boolean,
+      default: uni.$u.props.checkboxGroup.borderBottom } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 329 */,
+/* 330 */,
+/* 331 */,
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */
+/*!**************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-checkbox/props.js ***!
+  \**************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // checkbox的名称
+    name: {
+      type: [String, Number, Boolean],
+      default: uni.$u.props.checkbox.name },
+
+    // 形状，square为方形，circle为圆型
+    shape: {
+      type: String,
+      default: uni.$u.props.checkbox.shape },
+
+    // 整体的大小
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.size },
+
+    // 是否默认选中
+    checked: {
+      type: Boolean,
+      default: uni.$u.props.checkbox.checked },
+
+    // 是否禁用
+    disabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.disabled },
+
+    // 选中状态下的颜色，如设置此值，将会覆盖parent的activeColor值
+    activeColor: {
+      type: String,
+      default: uni.$u.props.checkbox.activeColor },
+
+    // 未选中的颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.checkbox.inactiveColor },
+
+    // 图标的大小，单位px
+    iconSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.iconSize },
+
+    // 图标颜色
+    iconColor: {
+      type: String,
+      default: uni.$u.props.checkbox.iconColor },
+
+    // label提示文字，因为nvue下，直接slot进来的文字，由于特殊的结构，无法修改样式
+    label: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.label },
+
+    // label的字体大小，px单位
+    labelSize: {
+      type: [String, Number],
+      default: uni.$u.props.checkbox.labelSize },
+
+    // label的颜色
+    labelColor: {
+      type: String,
+      default: uni.$u.props.checkbox.labelColor },
+
+    // 是否禁止点击提示语选中复选框
+    labelDisabled: {
+      type: [String, Boolean],
+      default: uni.$u.props.checkbox.labelDisabled } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 337 */,
+/* 338 */,
+/* 339 */,
+/* 340 */,
+/* 341 */,
+/* 342 */,
+/* 343 */,
+/* 344 */
+/*!****************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-number-box/props.js ***!
+  \****************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 步进器标识符，在change回调返回
+    name: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.name },
+
+    // 用于双向绑定的值，初始化时设置设为默认min值(最小值)
+    value: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.value },
+
+    // 最小值
+    min: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.min },
+
+    // 最大值
+    max: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.max },
+
+    // 加减的步长，可为小数
+    step: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.step },
+
+    // 是否只允许输入整数
+    integer: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.integer },
+
+    // 是否禁用，包括输入框，加减按钮
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disabled },
+
+    // 是否禁用输入框
+    disabledInput: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disabledInput },
+
+    // 是否开启异步变更，开启后需要手动控制输入值
+    asyncChange: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.asyncChange },
+
+    // 输入框宽度，单位为px
+    inputWidth: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.inputWidth },
+
+    // 是否显示减少按钮
+    showMinus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.showMinus },
+
+    // 是否显示增加按钮
+    showPlus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.showPlus },
+
+    // 显示的小数位数
+    decimalLength: {
+      type: [String, Number, null],
+      default: uni.$u.props.numberBox.decimalLength },
+
+    // 是否开启长按加减手势
+    longPress: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.longPress },
+
+    // 输入框文字和加减按钮图标的颜色
+    color: {
+      type: String,
+      default: uni.$u.props.numberBox.color },
+
+    // 按钮大小，宽高等于此值，单位px，输入框高度和此值保持一致
+    buttonSize: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.buttonSize },
+
+    // 输入框和按钮的背景颜色
+    bgColor: {
+      type: String,
+      default: uni.$u.props.numberBox.bgColor },
+
+    // 指定光标于键盘的距离，避免键盘遮挡输入框，单位px
+    cursorSpacing: {
+      type: [String, Number],
+      default: uni.$u.props.numberBox.cursorSpacing },
+
+    // 是否禁用增加按钮
+    disablePlus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disablePlus },
+
+    // 是否禁用减少按钮
+    disableMinus: {
+      type: Boolean,
+      default: uni.$u.props.numberBox.disableMinus },
+
+    // 加减按钮图标的样式
+    iconStyle: {
+      type: [Object, String],
+      default: uni.$u.props.numberBox.iconStyle } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */
+/*!****************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/button.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    lang: String,
+    sessionFrom: String,
+    sendMessageTitle: String,
+    sendMessagePath: String,
+    sendMessageImg: String,
+    showMessageCard: Boolean,
+    appParameter: String,
+    formType: String,
+    openType: String } };exports.default = _default;
+
+/***/ }),
+/* 353 */
+/*!******************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/openType.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    openType: String },
+
+  methods: {
+    onGetUserInfo: function onGetUserInfo(event) {
+      this.$emit('getuserinfo', event.detail);
+    },
+    onContact: function onContact(event) {
+      this.$emit('contact', event.detail);
+    },
+    onGetPhoneNumber: function onGetPhoneNumber(event) {
+      this.$emit('getphonenumber', event.detail);
+    },
+    onError: function onError(event) {
+      this.$emit('error', event.detail);
+    },
+    onLaunchApp: function onLaunchApp(event) {
+      this.$emit('launchapp', event.detail);
+    },
+    onOpenSetting: function onOpenSetting(event) {
+      this.$emit('opensetting', event.detail);
+    } } };exports.default = _default;
+
+/***/ }),
+/* 354 */
+/*!************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-button/props.js ***!
+  \************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /*
+                                                                                                      * @Author       : LQ
+                                                                                                      * @Description  :
+                                                                                                      * @version      : 1.0
+                                                                                                      * @Date         : 2021-08-16 10:04:04
+                                                                                                      * @LastAuthor   : LQ
+                                                                                                      * @lastTime     : 2021-08-16 10:04:24
+                                                                                                      * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
+                                                                                                      */var _default =
+{
+  props: {
+    // 是否细边框
+    hairline: {
+      type: Boolean,
+      default: uni.$u.props.button.hairline },
+
+    // 按钮的预置样式，info，primary，error，warning，success
+    type: {
+      type: String,
+      default: uni.$u.props.button.type },
+
+    // 按钮尺寸，large，normal，small，mini
+    size: {
+      type: String,
+      default: uni.$u.props.button.size },
+
+    // 按钮形状，circle（两边为半圆），square（带圆角）
+    shape: {
+      type: String,
+      default: uni.$u.props.button.shape },
+
+    // 按钮是否镂空
+    plain: {
+      type: Boolean,
+      default: uni.$u.props.button.plain },
+
+    // 是否禁止状态
+    disabled: {
+      type: Boolean,
+      default: uni.$u.props.button.disabled },
+
+    // 是否加载中
+    loading: {
+      type: Boolean,
+      default: uni.$u.props.button.loading },
+
+    // 加载中提示文字
+    loadingText: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingText },
+
+    // 加载状态图标类型
+    loadingMode: {
+      type: String,
+      default: uni.$u.props.button.loadingMode },
+
+    // 加载图标大小
+    loadingSize: {
+      type: [String, Number],
+      default: uni.$u.props.button.loadingSize },
+
+    // 开放能力，具体请看uniapp稳定关于button组件部分说明
+    // https://uniapp.dcloud.io/component/button
+    openType: {
+      type: String,
+      default: uni.$u.props.button.openType },
+
+    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
+    // 取值为submit（提交表单），reset（重置表单）
+    formType: {
+      type: String,
+      default: uni.$u.props.button.formType },
+
+    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
+    // 只微信小程序、QQ小程序有效
+    appParameter: {
+      type: String,
+      default: uni.$u.props.button.appParameter },
+
+    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
+    hoverStopPropagation: {
+      type: Boolean,
+      default: uni.$u.props.button.hoverStopPropagation },
+
+    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
+    lang: {
+      type: String,
+      default: uni.$u.props.button.lang },
+
+    // 会话来源，open-type="contact"时有效。只微信小程序有效
+    sessionFrom: {
+      type: String,
+      default: uni.$u.props.button.sessionFrom },
+
+    // 会话内消息卡片标题，open-type="contact"时有效
+    // 默认当前标题，只微信小程序有效
+    sendMessageTitle: {
+      type: String,
+      default: uni.$u.props.button.sendMessageTitle },
+
+    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
+    // 默认当前分享路径，只微信小程序有效
+    sendMessagePath: {
+      type: String,
+      default: uni.$u.props.button.sendMessagePath },
+
+    // 会话内消息卡片图片，open-type="contact"时有效
+    // 默认当前页面截图，只微信小程序有效
+    sendMessageImg: {
+      type: String,
+      default: uni.$u.props.button.sendMessageImg },
+
+    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
+    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
+    showMessageCard: {
+      type: Boolean,
+      default: uni.$u.props.button.showMessageCard },
+
+    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
+    dataName: {
+      type: String,
+      default: uni.$u.props.button.dataName },
+
+    // 节流，一定时间内只能触发一次
+    throttleTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.throttleTime },
+
+    // 按住后多久出现点击态，单位毫秒
+    hoverStartTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStartTime },
+
+    // 手指松开后点击态保留时间，单位毫秒
+    hoverStayTime: {
+      type: [String, Number],
+      default: uni.$u.props.button.hoverStayTime },
+
+    // 按钮文字，之所以通过props传入，是因为slot传入的话
+    // nvue中无法控制文字的样式
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.button.text },
+
+    // 按钮图标
+    icon: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮图标
+    iconColor: {
+      type: String,
+      default: uni.$u.props.button.icon },
+
+    // 按钮颜色，支持传入linear-gradient渐变色
+    color: {
+      type: String,
+      default: uni.$u.props.button.color } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */
 /*!**************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************************************/
@@ -36243,49 +36359,92 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
-/* 505 */,
-/* 506 */,
-/* 507 */,
-/* 508 */,
-/* 509 */,
-/* 510 */,
-/* 511 */,
-/* 512 */,
-/* 513 */,
-/* 514 */,
-/* 515 */,
-/* 516 */,
-/* 517 */,
-/* 518 */,
-/* 519 */,
-/* 520 */,
-/* 521 */,
-/* 522 */,
-/* 523 */,
-/* 524 */,
-/* 525 */,
-/* 526 */,
-/* 527 */,
-/* 528 */,
-/* 529 */,
-/* 530 */,
-/* 531 */,
-/* 532 */,
-/* 533 */,
-/* 534 */,
-/* 535 */,
-/* 536 */,
-/* 537 */,
-/* 538 */,
-/* 539 */,
-/* 540 */,
-/* 541 */,
-/* 542 */,
-/* 543 */,
-/* 544 */,
-/* 545 */,
-/* 546 */,
-/* 547 */
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */,
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */
+/*!*********************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/node_modules/cl-uni/mixins/form.js ***!
+  \*********************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _utils = __webpack_require__(/*! ../utils */ 138);var _default =
+
+{
+  computed: {
+    $form: function $form() {
+      return _utils.getParent.call(this, "ClForm", [
+      "labelWidth",
+      "labelPosition",
+      "showMessage",
+      "model",
+      "validateOnValueChange",
+      "disabled"]);
+
+    },
+
+    isDisabled: function isDisabled() {
+      return this.$form ? this.$form.disabled || this.disabled : this.disabled;
+    } } };exports.default = _default;
+
+/***/ }),
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */,
+/* 428 */,
+/* 429 */,
+/* 430 */,
+/* 431 */,
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */,
+/* 437 */,
+/* 438 */,
+/* 439 */,
+/* 440 */,
+/* 441 */,
+/* 442 */,
+/* 443 */,
+/* 444 */,
+/* 445 */,
+/* 446 */,
+/* 447 */,
+/* 448 */,
+/* 449 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-tabs/props.js ***!
   \**********************************************************************************************************/
@@ -36352,244 +36511,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 548 */,
-/* 549 */,
-/* 550 */,
-/* 551 */,
-/* 552 */,
-/* 553 */,
-/* 554 */,
-/* 555 */
-/*!****************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/button.js ***!
-  \****************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    lang: String,
-    sessionFrom: String,
-    sendMessageTitle: String,
-    sendMessagePath: String,
-    sendMessageImg: String,
-    showMessageCard: Boolean,
-    appParameter: String,
-    formType: String,
-    openType: String } };exports.default = _default;
-
-/***/ }),
-/* 556 */
-/*!******************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/openType.js ***!
-  \******************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    openType: String },
-
-  methods: {
-    onGetUserInfo: function onGetUserInfo(event) {
-      this.$emit('getuserinfo', event.detail);
-    },
-    onContact: function onContact(event) {
-      this.$emit('contact', event.detail);
-    },
-    onGetPhoneNumber: function onGetPhoneNumber(event) {
-      this.$emit('getphonenumber', event.detail);
-    },
-    onError: function onError(event) {
-      this.$emit('error', event.detail);
-    },
-    onLaunchApp: function onLaunchApp(event) {
-      this.$emit('launchapp', event.detail);
-    },
-    onOpenSetting: function onOpenSetting(event) {
-      this.$emit('opensetting', event.detail);
-    } } };exports.default = _default;
-
-/***/ }),
-/* 557 */
-/*!************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-button/props.js ***!
-  \************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; /*
-                                                                                                      * @Author       : LQ
-                                                                                                      * @Description  :
-                                                                                                      * @version      : 1.0
-                                                                                                      * @Date         : 2021-08-16 10:04:04
-                                                                                                      * @LastAuthor   : LQ
-                                                                                                      * @lastTime     : 2021-08-16 10:04:24
-                                                                                                      * @FilePath     : /u-view2.0/uview-ui/components/u-button/props.js
-                                                                                                      */var _default =
-{
-  props: {
-    // 是否细边框
-    hairline: {
-      type: Boolean,
-      default: uni.$u.props.button.hairline },
-
-    // 按钮的预置样式，info，primary，error，warning，success
-    type: {
-      type: String,
-      default: uni.$u.props.button.type },
-
-    // 按钮尺寸，large，normal，small，mini
-    size: {
-      type: String,
-      default: uni.$u.props.button.size },
-
-    // 按钮形状，circle（两边为半圆），square（带圆角）
-    shape: {
-      type: String,
-      default: uni.$u.props.button.shape },
-
-    // 按钮是否镂空
-    plain: {
-      type: Boolean,
-      default: uni.$u.props.button.plain },
-
-    // 是否禁止状态
-    disabled: {
-      type: Boolean,
-      default: uni.$u.props.button.disabled },
-
-    // 是否加载中
-    loading: {
-      type: Boolean,
-      default: uni.$u.props.button.loading },
-
-    // 加载中提示文字
-    loadingText: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingText },
-
-    // 加载状态图标类型
-    loadingMode: {
-      type: String,
-      default: uni.$u.props.button.loadingMode },
-
-    // 加载图标大小
-    loadingSize: {
-      type: [String, Number],
-      default: uni.$u.props.button.loadingSize },
-
-    // 开放能力，具体请看uniapp稳定关于button组件部分说明
-    // https://uniapp.dcloud.io/component/button
-    openType: {
-      type: String,
-      default: uni.$u.props.button.openType },
-
-    // 用于 <form> 组件，点击分别会触发 <form> 组件的 submit/reset 事件
-    // 取值为submit（提交表单），reset（重置表单）
-    formType: {
-      type: String,
-      default: uni.$u.props.button.formType },
-
-    // 打开 APP 时，向 APP 传递的参数，open-type=launchApp时有效
-    // 只微信小程序、QQ小程序有效
-    appParameter: {
-      type: String,
-      default: uni.$u.props.button.appParameter },
-
-    // 指定是否阻止本节点的祖先节点出现点击态，微信小程序有效
-    hoverStopPropagation: {
-      type: Boolean,
-      default: uni.$u.props.button.hoverStopPropagation },
-
-    // 指定返回用户信息的语言，zh_CN 简体中文，zh_TW 繁体中文，en 英文。只微信小程序有效
-    lang: {
-      type: String,
-      default: uni.$u.props.button.lang },
-
-    // 会话来源，open-type="contact"时有效。只微信小程序有效
-    sessionFrom: {
-      type: String,
-      default: uni.$u.props.button.sessionFrom },
-
-    // 会话内消息卡片标题，open-type="contact"时有效
-    // 默认当前标题，只微信小程序有效
-    sendMessageTitle: {
-      type: String,
-      default: uni.$u.props.button.sendMessageTitle },
-
-    // 会话内消息卡片点击跳转小程序路径，open-type="contact"时有效
-    // 默认当前分享路径，只微信小程序有效
-    sendMessagePath: {
-      type: String,
-      default: uni.$u.props.button.sendMessagePath },
-
-    // 会话内消息卡片图片，open-type="contact"时有效
-    // 默认当前页面截图，只微信小程序有效
-    sendMessageImg: {
-      type: String,
-      default: uni.$u.props.button.sendMessageImg },
-
-    // 是否显示会话内消息卡片，设置此参数为 true，用户进入客服会话会在右下角显示"可能要发送的小程序"提示，
-    // 用户点击后可以快速发送小程序消息，open-type="contact"时有效
-    showMessageCard: {
-      type: Boolean,
-      default: uni.$u.props.button.showMessageCard },
-
-    // 额外传参参数，用于小程序的data-xxx属性，通过target.dataset.name获取
-    dataName: {
-      type: String,
-      default: uni.$u.props.button.dataName },
-
-    // 节流，一定时间内只能触发一次
-    throttleTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.throttleTime },
-
-    // 按住后多久出现点击态，单位毫秒
-    hoverStartTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.hoverStartTime },
-
-    // 手指松开后点击态保留时间，单位毫秒
-    hoverStayTime: {
-      type: [String, Number],
-      default: uni.$u.props.button.hoverStayTime },
-
-    // 按钮文字，之所以通过props传入，是因为slot传入的话
-    // nvue中无法控制文字的样式
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.button.text },
-
-    // 按钮图标
-    icon: {
-      type: String,
-      default: uni.$u.props.button.icon },
-
-    // 按钮图标
-    iconColor: {
-      type: String,
-      default: uni.$u.props.button.icon },
-
-    // 按钮颜色，支持传入linear-gradient渐变色
-    color: {
-      type: String,
-      default: uni.$u.props.button.color } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 558 */,
-/* 559 */,
-/* 560 */,
-/* 561 */,
-/* 562 */,
-/* 563 */,
-/* 564 */,
-/* 565 */
+/* 450 */,
+/* 451 */,
+/* 452 */,
+/* 453 */,
+/* 454 */,
+/* 455 */,
+/* 456 */,
+/* 457 */
 /*!**************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-back-top/props.js ***!
   \**************************************************************************************************************/
@@ -36651,14 +36580,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 566 */,
-/* 567 */,
-/* 568 */,
-/* 569 */,
-/* 570 */,
-/* 571 */,
-/* 572 */,
-/* 573 */
+/* 458 */,
+/* 459 */,
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */,
+/* 464 */,
+/* 465 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-modal/props.js ***!
   \***********************************************************************************************************/
@@ -36750,14 +36679,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 574 */,
-/* 575 */,
-/* 576 */,
-/* 577 */,
-/* 578 */,
-/* 579 */,
-/* 580 */,
-/* 581 */
+/* 466 */,
+/* 467 */,
+/* 468 */,
+/* 469 */,
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-popup/props.js ***!
   \***********************************************************************************************************/
@@ -36844,14 +36773,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 582 */,
-/* 583 */,
-/* 584 */,
-/* 585 */,
-/* 586 */,
-/* 587 */,
-/* 588 */,
-/* 589 */
+/* 474 */,
+/* 475 */,
+/* 476 */,
+/* 477 */,
+/* 478 */,
+/* 479 */,
+/* 480 */,
+/* 481 */
 /*!*****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-radio-group/props.js ***!
   \*****************************************************************************************************************/
@@ -36944,14 +36873,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 590 */,
-/* 591 */,
-/* 592 */,
-/* 593 */,
-/* 594 */,
-/* 595 */,
-/* 596 */,
-/* 597 */
+/* 482 */,
+/* 483 */,
+/* 484 */,
+/* 485 */,
+/* 486 */,
+/* 487 */,
+/* 488 */,
+/* 489 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-radio/props.js ***!
   \***********************************************************************************************************/
@@ -37023,14 +36952,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 598 */,
-/* 599 */,
-/* 600 */,
-/* 601 */,
-/* 602 */,
-/* 603 */,
-/* 604 */,
-/* 605 */
+/* 490 */,
+/* 491 */,
+/* 492 */,
+/* 493 */,
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \**********************************************************************************************************/
@@ -37253,7 +37182,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 606 */
+/* 498 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/props.js ***!
   \**********************************************************************************************************/
@@ -37350,14 +37279,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 607 */,
-/* 608 */,
-/* 609 */,
-/* 610 */,
-/* 611 */,
-/* 612 */,
-/* 613 */,
-/* 614 */
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */,
+/* 505 */,
+/* 506 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-input/props.js ***!
   \***********************************************************************************************************/
@@ -37547,12 +37476,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 615 */,
-/* 616 */,
-/* 617 */,
-/* 618 */,
-/* 619 */,
-/* 620 */
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-line/props.js ***!
   \**********************************************************************************************************/
@@ -37593,21 +37522,105 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 621 */,
-/* 622 */,
-/* 623 */,
-/* 624 */,
-/* 625 */,
-/* 626 */,
-/* 627 */,
-/* 628 */,
-/* 629 */,
-/* 630 */,
-/* 631 */,
-/* 632 */,
-/* 633 */,
-/* 634 */,
-/* 635 */
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */,
+/* 519 */,
+/* 520 */
+/*!******************************************************************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
+  \******************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
+  props: {
+    // 是否显示组件
+    show: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.show },
+
+    // 颜色
+    color: {
+      type: String,
+      default: uni.$u.props.loadingIcon.color },
+
+    // 提示文字颜色
+    textColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.textColor },
+
+    // 文字和图标是否垂直排列
+    vertical: {
+      type: Boolean,
+      default: uni.$u.props.loadingIcon.vertical },
+
+    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
+    mode: {
+      type: String,
+      default: uni.$u.props.loadingIcon.mode },
+
+    // 图标大小，单位默认px
+    size: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.size },
+
+    // 文字大小
+    textSize: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.textSize },
+
+    // 文字内容
+    text: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.text },
+
+    // 动画模式
+    timingFunction: {
+      type: String,
+      default: uni.$u.props.loadingIcon.timingFunction },
+
+    // 动画执行周期时间
+    duration: {
+      type: [String, Number],
+      default: uni.$u.props.loadingIcon.duration },
+
+    // mode=circle时的暗边颜色
+    inactiveColor: {
+      type: String,
+      default: uni.$u.props.loadingIcon.inactiveColor } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
+
+/***/ }),
+/* 521 */,
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */,
+/* 527 */,
+/* 528 */,
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */,
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */,
+/* 545 */
 /*!**********************************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \**********************************************************************************************************************************/
@@ -37746,19 +37759,19 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 636 */,
-/* 637 */,
-/* 638 */,
-/* 639 */,
-/* 640 */,
-/* 641 */,
-/* 642 */,
-/* 643 */,
-/* 644 */,
-/* 645 */,
-/* 646 */,
-/* 647 */,
-/* 648 */
+/* 546 */,
+/* 547 */,
+/* 548 */,
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */,
+/* 553 */,
+/* 554 */,
+/* 555 */,
+/* 556 */,
+/* 557 */,
+/* 558 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-badge/props.js ***!
   \***********************************************************************************************************/
@@ -37838,88 +37851,14 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 649 */,
-/* 650 */,
-/* 651 */,
-/* 652 */,
-/* 653 */,
-/* 654 */,
-/* 655 */,
-/* 656 */
-/*!******************************************************************************************************************!*\
-  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
-  \******************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = {
-  props: {
-    // 是否显示组件
-    show: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.show },
-
-    // 颜色
-    color: {
-      type: String,
-      default: uni.$u.props.loadingIcon.color },
-
-    // 提示文字颜色
-    textColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.textColor },
-
-    // 文字和图标是否垂直排列
-    vertical: {
-      type: Boolean,
-      default: uni.$u.props.loadingIcon.vertical },
-
-    // 模式选择，circle-圆形，spinner-花朵形，semicircle-半圆形
-    mode: {
-      type: String,
-      default: uni.$u.props.loadingIcon.mode },
-
-    // 图标大小，单位默认px
-    size: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.size },
-
-    // 文字大小
-    textSize: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.textSize },
-
-    // 文字内容
-    text: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.text },
-
-    // 动画模式
-    timingFunction: {
-      type: String,
-      default: uni.$u.props.loadingIcon.timingFunction },
-
-    // 动画执行周期时间
-    duration: {
-      type: [String, Number],
-      default: uni.$u.props.loadingIcon.duration },
-
-    // mode=circle时的暗边颜色
-    inactiveColor: {
-      type: String,
-      default: uni.$u.props.loadingIcon.inactiveColor } } };exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 657 */,
-/* 658 */,
-/* 659 */,
-/* 660 */,
-/* 661 */,
-/* 662 */,
-/* 663 */,
-/* 664 */
+/* 559 */,
+/* 560 */,
+/* 561 */,
+/* 562 */,
+/* 563 */,
+/* 564 */,
+/* 565 */,
+/* 566 */
 /*!****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/props.js ***!
   \****************************************************************************************************************/
@@ -37951,7 +37890,7 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 665 */
+/* 567 */
 /*!*********************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/transition.js ***!
   \*********************************************************************************************************************/
@@ -37962,7 +37901,7 @@ function createAnimation(option, _this) {
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));
 
 
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 666));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 568));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {return new Promise(function (resolve) {return setTimeout(resolve, 1000 / 50);});}; // nvue动画模块实现细节抽离在外部文件
 
 // 定义类名，通过给元素动态切换类名，赋予元素一定的css动画样式
@@ -38114,7 +38053,7 @@ var getClassNames = function getClassNames(name) {return {
     } } };exports.default = _default;
 
 /***/ }),
-/* 666 */
+/* 568 */
 /*!***********************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
   \***********************************************************************************************************************/
@@ -38190,14 +38129,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     'leave-to': { opacity: 0, transform: 'scale(0.95)' } } };exports.default = _default;
 
 /***/ }),
-/* 667 */,
-/* 668 */,
-/* 669 */,
-/* 670 */,
-/* 671 */,
-/* 672 */,
-/* 673 */,
-/* 674 */
+/* 569 */,
+/* 570 */,
+/* 571 */,
+/* 572 */,
+/* 573 */,
+/* 574 */,
+/* 575 */,
+/* 576 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-overlay/props.js ***!
   \*************************************************************************************************************/
@@ -38229,14 +38168,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 675 */,
-/* 676 */,
-/* 677 */,
-/* 678 */,
-/* 679 */,
-/* 680 */,
-/* 681 */,
-/* 682 */
+/* 577 */,
+/* 578 */,
+/* 579 */,
+/* 580 */,
+/* 581 */,
+/* 582 */,
+/* 583 */,
+/* 584 */
 /*!****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-status-bar/props.js ***!
   \****************************************************************************************************************/
@@ -38252,14 +38191,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 683 */,
-/* 684 */,
-/* 685 */,
-/* 686 */,
-/* 687 */,
-/* 688 */,
-/* 689 */,
-/* 690 */
+/* 585 */,
+/* 586 */,
+/* 587 */,
+/* 588 */,
+/* 589 */,
+/* 590 */,
+/* 591 */,
+/* 592 */
 /*!*****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
   \*****************************************************************************************************************/

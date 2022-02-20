@@ -32,3 +32,14 @@ exports.fetchOrderDetail = function(orderSn){
 		}
 	})
 }
+
+// 获取地址
+exports.fetchAddress = function(token){
+	return request({
+		header:{
+			Authorization:token
+		},
+		url:`https://zlwh.jinghuanqiu.com/user/address`
+		
+	})
+}

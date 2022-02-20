@@ -76,7 +76,7 @@
 </template>
 
 <script>
-const { fetchcreateOrder,fetchSubmitOrder } = require("../../api/order.js")
+const { fetchcreateOrder,fetchSubmitOrder,fetchAddress } = require("../../api/order.js")
 export default {
 	data() {
 		return {
@@ -110,7 +110,8 @@ export default {
 				}
 			],
 			// u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
-			radiovalue1: '价格有点贵'
+			radiovalue1: '价格有点贵',
+			token:""  // 用户凭证
 		}
 	},
 	methods: {
@@ -128,12 +129,21 @@ export default {
 			// console.log('radioChange', n);
 		},
 	    async submitOrder(){
+			// #ifdef H5
 			this.submitOrderData = {
 				...this.reqData,
 				message:this.message,
 				trade_type:"MWEB"
 			}
+			// #endif
+			// #ifdef MP-WEIXIN
+			this.submitOrderData = {
+				...this.reqData,
+				message:this.message
+			}
+			// #endif
 			let {code,data} = await fetchSubmitOrder(this.submitOrderData)
+			console.log(data)
 			// if(code === 1000){
 			// 	uni.navigateTo({
 			// 		url:"../orderDetails/orderDetails"
@@ -143,7 +153,10 @@ export default {
 				console.log('2234', data.xml)
 				
 				let {timeStamp,nonce_str,mypackage,paySign,sign_type,trade_type,mweb_url}  = data.xml
+				// #ifdef H5
 				window.location.href = mweb_url[0]
+				console.log(mweb_url)
+				// #endif
 				// #ifdef MP-WEIXIN
 				uni.requestPayment({
 					nonceStr:nonce_str,
@@ -170,8 +183,19 @@ export default {
 		}
 	},
 	async onLoad(option) {
+		this.token = uni.getStorageSync('token');
+		let {code,data} = await fetchAddress(this.token);
+		let id = data[0].id;
+		// console.log(option)
+		
+		
 		this.reqData = JSON.parse(decodeURIComponent(option.createOrderData)); // 请求数据
-		let {order,orderItemlist} = await fetchcreateOrder(this.reqData);
+		this.reqData = {
+			...this.reqData,
+			address_id:id
+		}
+		
+		let {orderItemlist,order} = await fetchcreateOrder(this.reqData);
 		orderItemlist.forEach(item=>{
 			this.totalPrice = item.totalPrice
 		})

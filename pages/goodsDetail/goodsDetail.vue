@@ -368,8 +368,8 @@
 						_id:selectShop._id,
 						quantity:selectShop.buy_num
 						}
-					],
-					address_id:0
+					]
+					// address_id:0
 				}
 				createOrderData = JSON.stringify(createOrderData)
 				uni.navigateTo({
