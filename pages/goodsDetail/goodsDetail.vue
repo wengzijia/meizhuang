@@ -198,7 +198,7 @@
 				id: "", // 商品id
 				token: "", // 用户凭证
 				switch: true, // 开关变量
-				test: true
+				createOrderData:"" // 创建订单数据
 			}
 		},
 		methods: {
@@ -358,15 +358,24 @@
 				// });
 			},
 			// 立即购买
-			buyNow(selectShop) {
+			async buyNow(selectShop) {
 				console.log("监听 - 立即购买");
-				// that.addCartFn({
-				// 	selectShop: selectShop,
-				// 	success: function(res) {
-				// 		// 实际业务时,请替换自己的立即购买逻辑
-				// 		that.toast("立即购买");
-				// 	}
-				// });
+				console.log(selectShop);
+				let createOrderData = {
+					coupon_id:6,
+					sku_list:[
+						{
+						_id:selectShop._id,
+						quantity:selectShop.buy_num
+						}
+					],
+					address_id:0
+				}
+				createOrderData = JSON.stringify(createOrderData)
+				uni.navigateTo({
+					url:'../confirmorder/confirmorder?createOrderData='+encodeURIComponent(createOrderData),
+				})
+				
 			},
 			toast(msg) {
 				uni.showToast({

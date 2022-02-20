@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/home/home",
+    "components/coupon/coupon",
     "pages/sort/sort",
     "pages/shopCar/car",
     "pages/user/user",
@@ -11,8 +12,8 @@
     "pages/login/h5login",
     "pages/login/login",
     "pages/goodsDetail/goodsDetail",
-    "pages/orderpage/orderpage",
-    "pages/ordedetli/ordedetli",
+    "pages/orderList/orderList",
+    "pages/orderDetails/orderDetails",
     "pages/payresult/payresult",
     "pages/confirmorder/confirmorder"
   ],
@@ -51,6 +52,5 @@
     "van-area": "wxcomponents/vant/area/index",
     "van-toast": "wxcomponents/vant/toast/index",
     "van-field": "wxcomponents/vant/field/index"
-  },
-  "sitemapLocation": "sitemap.json"
+  }
 }

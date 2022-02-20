@@ -96,13 +96,13 @@ var components
 try {
   components = {
     uniPopup: function() {
-      return __webpack_require__.e(/*! import() | uni_modules/uni-popup/components/uni-popup/uni-popup */ "uni_modules/uni-popup/components/uni-popup/uni-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-popup/components/uni-popup/uni-popup.vue */ 358))
+      return __webpack_require__.e(/*! import() | uni_modules/uni-popup/components/uni-popup/uni-popup */ "uni_modules/uni-popup/components/uni-popup/uni-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-popup/components/uni-popup/uni-popup.vue */ 521))
     },
     uniRate: function() {
-      return __webpack_require__.e(/*! import() | uni_modules/uni-rate/components/uni-rate/uni-rate */ "uni_modules/uni-rate/components/uni-rate/uni-rate").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-rate/components/uni-rate/uni-rate.vue */ 365))
+      return __webpack_require__.e(/*! import() | uni_modules/uni-rate/components/uni-rate/uni-rate */ "uni_modules/uni-rate/components/uni-rate/uni-rate").then(__webpack_require__.bind(null, /*! @/uni_modules/uni-rate/components/uni-rate/uni-rate.vue */ 528))
     },
     vkDataGoodsSkuPopup: function() {
-      return __webpack_require__.e(/*! import() | uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup */ "uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.vue */ 372))
+      return __webpack_require__.e(/*! import() | uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup */ "uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup").then(__webpack_require__.bind(null, /*! @/uni_modules/vk-data-goods-sku-popup/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup.vue */ 535))
     }
   }
 } catch (e) {
@@ -359,8 +359,8 @@ var that;var _default =
       id: "", // 商品id
       token: "", // 用户凭证
       switch: true, // 开关变量
-      test: true };
-
+      createOrderData: "" // 创建订单数据
+    };
   },
   methods: {
     back: function back() {
@@ -519,15 +519,24 @@ var that;var _default =
                 // });
               case 16:case "end":return _context2.stop();}}}, _callee2);}))();},
     // 立即购买
-    buyNow: function buyNow(selectShop) {
-      console.log("监听 - 立即购买");
-      // that.addCartFn({
-      // 	selectShop: selectShop,
-      // 	success: function(res) {
-      // 		// 实际业务时,请替换自己的立即购买逻辑
-      // 		that.toast("立即购买");
-      // 	}
-      // });
+    buyNow: function buyNow(selectShop) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var createOrderData;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:
+                console.log("监听 - 立即购买");
+                console.log(selectShop);
+                createOrderData = {
+                  coupon_id: 6,
+                  sku_list: [
+                  {
+                    _id: selectShop._id,
+                    quantity: selectShop.buy_num }],
+
+
+                  address_id: 0 };
+
+                createOrderData = JSON.stringify(createOrderData);
+                uni.navigateTo({
+                  url: '../confirmorder/confirmorder?createOrderData=' + encodeURIComponent(createOrderData) });case 5:case "end":return _context3.stop();}}}, _callee3);}))();
+
+
     },
     toast: function toast(msg) {
       uni.showToast({
@@ -536,11 +545,11 @@ var that;var _default =
 
     },
     // 收藏
-    collect: function collect() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee3() {var _yield$fetchJionColle, code, _yield$fetchCancelCol, _code;return _regenerator.default.wrap(function _callee3$(_context3) {while (1) {switch (_context3.prev = _context3.next) {case 0:if (!
-                _this3.switch) {_context3.next = 8;break;}_context3.next = 3;return (
+    collect: function collect() {var _this3 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var _yield$fetchJionColle, code, _yield$fetchCancelCol, _code;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:if (!
+                _this3.switch) {_context4.next = 8;break;}_context4.next = 3;return (
 
 
-                  fetchJionCollect(_this3.token, _this3.id));case 3:_yield$fetchJionColle = _context3.sent;code = _yield$fetchJionColle.code;
+                  fetchJionCollect(_this3.token, _this3.id));case 3:_yield$fetchJionColle = _context4.sent;code = _yield$fetchJionColle.code;
                 if (code === 1000) {
                   _this3.isCollect = true;
                   uni.setStorageSync('isCollect', true);
@@ -548,24 +557,24 @@ var that;var _default =
                   uni.showToast({
                     title: "收藏成功" });
 
-                }_context3.next = 16;break;case 8:
+                }_context4.next = 16;break;case 8:
 
                 _this3.isCollect = false;
                 uni.setStorageSync('isCollect', false);
-                _this3.switch = true;_context3.next = 13;return (
+                _this3.switch = true;_context4.next = 13;return (
 
 
-                  fetchCancelCollect(_this3.token, _this3.id));case 13:_yield$fetchCancelCol = _context3.sent;_code = _yield$fetchCancelCol.code;
+                  fetchCancelCollect(_this3.token, _this3.id));case 13:_yield$fetchCancelCol = _context4.sent;_code = _yield$fetchCancelCol.code;
                 if (_code === 1000) {
                   uni.showToast({
                     title: "取消收藏成功" });
 
-                }case 16:case "end":return _context3.stop();}}}, _callee3);}))();
+                }case 16:case "end":return _context4.stop();}}}, _callee4);}))();
 
     } },
 
   // 监听 - 页面每次【加载时】执行(如：前进)
-  onLoad: function onLoad(options) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee4() {var userInfo, _yield$fetchDetailDat2, result, _result$goods$2, brokerageType, brokeragePrice, userLevel;return _regenerator.default.wrap(function _callee4$(_context4) {while (1) {switch (_context4.prev = _context4.next) {case 0:
+  onLoad: function onLoad(options) {var _this4 = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee5() {var userInfo, _yield$fetchDetailDat2, result, _result$goods$2, brokerageType, brokeragePrice, userLevel;return _regenerator.default.wrap(function _callee5$(_context5) {while (1) {switch (_context5.prev = _context5.next) {case 0:
               _this4.id = options.id;
               if (_this4.isCollect) {
                 _this4.isCollect = uni.getStorageSync('isCollect');
@@ -576,8 +585,8 @@ var that;var _default =
               that.init(options);
               _this4.detailData();
               _this4.token = uni.getStorageSync("token");
-              userInfo = uni.getStorageSync("userInfo");_context4.next = 9;return (
-                fetchDetailData(_this4.id));case 9:_yield$fetchDetailDat2 = _context4.sent;result = _yield$fetchDetailDat2.result;_result$goods$2 =
+              userInfo = uni.getStorageSync("userInfo");_context5.next = 9;return (
+                fetchDetailData(_this4.id));case 9:_yield$fetchDetailDat2 = _context5.sent;result = _yield$fetchDetailDat2.result;_result$goods$2 =
 
 
 
@@ -603,7 +612,7 @@ var that;var _default =
                 if (_this4.brokerageType === 1 && userLevel === 2) {
                   _this4.isShowMoney = true;
                 }
-              }case 16:case "end":return _context4.stop();}}}, _callee4);}))();
+              }case 16:case "end":return _context5.stop();}}}, _callee5);}))();
   } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
