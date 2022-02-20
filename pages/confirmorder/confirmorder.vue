@@ -1,23 +1,25 @@
 <template>
 	<view>
+		<navigator open-type="navigate" url="../address/addressList">
 		<view class="header">
 			<view class="ordde">
-				<view class="sit">蒋雪峰 152****8227</view>
-				<view class="site"><view class="default">默认</view>  北京市 北京市 东城区 110</view>
+				<view class="sit">{{order.consignee}} {{order.mobile}}</view>
+				<view class="site"><view class="default">默认</view>  {{order.address}}</view>
 			</view>
 			<view class="jiantou">
 				<u-icon name="arrow-right"></u-icon>
 			</view>
 		</view>
-		<view class="ani">
+		</navigator>
+		<view class="ani" v-for="item in orderItemlist" :key="item._id">
 			<view class="check">
-				<view class="Img"><image src="http://test.w0824.com/xmnote2.png" style="width: 200rpx; height: 200rpx;" mode=""></image></view>
+				<view class="Img"><image :src="item.image" style="width: 200rpx; height: 200rpx;" mode=""></image></view>
 				<view class="SBle">
-					<view class="SBleft">你好呀</view>
-					<text class="colors">天空蓝</text>
+					<view class="SBleft">{{item.title}}</view>
+					<text class="colors">{{item.sku_name_arr[0]}}</text>
 					<view class="pay">
-						<text>￥2.00</text>
-						<text>x1</text>
+						<text>￥{{item.price}}</text>
+						<text>x{{item.quantity}}</text>
 					</view>
 				</view>
 			</view>
@@ -31,12 +33,12 @@
 					 <u--input
                      placeholder="请输入内容"
                      border="surround"
-                     v-model="value">
+                     v-model="message">
 					 </u--input>
 					</view>
 			<view class="shiwu time-hide-second">
 				<text>实付款：</text>
-				<text style="color: red;">￥2.00</text>
+				<text style="color: red;">￥{{order.actualPrice}}</text>
 			</view>
 		</view>
 
@@ -44,9 +46,9 @@
 		<view class="dingdansm">
 			<view class="heji">
 				合计：
-				<text style="color: red;">￥2.00</text>
+				<text style="color: red;">￥{{totalPrice}}</text>
 			</view>
-			<view class="butto">
+			<view class="butto" @click="submitOrder">
 				<u-button  size="primary" type="info" text="提交订单"color="#2b2e3d"></u-button>
 			</view>
 		</view>
@@ -59,15 +61,14 @@
 				<u-icon name="arrow-right"></u-icon>
 				</view>
 			</view>
+			<navigator open-type="navigate" url="../../components/coupon/coupon">
 			<view class="dingdans">
 				<view>优惠券</view>
-				
 					<view class="time-hide-second" >
-						未使用
 					<u-icon name="arrow-right"></u-icon>				
 					</view>
-					
 			</view>
+			</navigator>
 		</view>
 			</view>
 		</u-popup>
@@ -75,11 +76,17 @@
 </template>
 
 <script>
+const { fetchcreateOrder,fetchSubmitOrder } = require("../../api/order.js")
 export default {
 	data() {
 		return {
-			value:'选填,请先和商家协商一致',
+			message:'选填,请先和商家协商一致', // 备注信息
 			show: false,
+			order:"",  // 地址 以及优惠后的价格
+			orderItemlist:"",   // sku数据
+			totalPrice:"", // 总价格
+			reqData:"",  // 请求数据 
+			submitOrderData:"",  //  提交订单数据
 			radiolist1: [
 				{
 					name: '价格有点贵',
@@ -119,7 +126,59 @@ export default {
 		},
 		radioChange(n) {
 			// console.log('radioChange', n);
+		},
+	    async submitOrder(){
+			this.submitOrderData = {
+				...this.reqData,
+				message:this.message,
+				trade_type:"MWEB"
+			}
+			let {code,data} = await fetchSubmitOrder(this.submitOrderData)
+			// if(code === 1000){
+			// 	uni.navigateTo({
+			// 		url:"../orderDetails/orderDetails"
+			// 	})
+			// }
+			if(code === 1000){
+				console.log('2234', data.xml)
+				
+				let {timeStamp,nonce_str,mypackage,paySign,sign_type,trade_type,mweb_url}  = data.xml
+				window.location.href = mweb_url[0]
+				// #ifdef MP-WEIXIN
+				uni.requestPayment({
+					nonceStr:nonce_str,
+					package:mypackage,
+					signType:sign_type,
+					paySign:paySign,
+					timeStamp:timeStamp,
+					// 成功触发
+					success(res){
+						console.log(res)
+					},
+					// 失败触发
+					fail(res){
+						
+					},
+					// 成功 失败都会触发
+					complete(res){
+						
+					}
+				})
+				// #endif
+			}
+			
 		}
+	},
+	async onLoad(option) {
+		this.reqData = JSON.parse(decodeURIComponent(option.createOrderData)); // 请求数据
+		let {order,orderItemlist} = await fetchcreateOrder(this.reqData);
+		orderItemlist.forEach(item=>{
+			this.totalPrice = item.totalPrice
+		})
+		this.order= order;
+		this.orderItemlist = orderItemlist;
+		
+		console.log(order,orderItemlist)
 	}
 };
 </script>

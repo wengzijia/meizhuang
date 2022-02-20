@@ -22154,14 +22154,219 @@ exports.fetchCancelCollect = function (token, id) {
 /* 258 */,
 /* 259 */,
 /* 260 */,
-/* 261 */,
+/* 261 */
+/*!***********************************************************************!*\
+  !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/api/order.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}var request = __webpack_require__(/*! ./request.js */ 142);
+
+// 创建订单
+exports.fetchcreateOrder = function (createOrderData) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/creatbaseOrder",
+    data: _objectSpread({},
+    createOrderData) });
+
+
+};
+
+// 提交订单
+exports.fetchSubmitOrder = function (submitOrderData) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/commitOrder",
+    data: _objectSpread({},
+    submitOrderData) });
+
+
+};
+
+// 订单详情
+exports.fetchOrderDetail = function (orderSn) {
+  return request({
+    method: "POST",
+    url: "https://zlwh.jinghuanqiu.com/user/get/getexpress",
+    data: {
+      orderSn: orderSn } });
+
+
+};
+
+/***/ }),
 /* 262 */,
 /* 263 */,
 /* 264 */,
 /* 265 */,
 /* 266 */,
 /* 267 */,
-/* 268 */
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */,
+/* 294 */,
+/* 295 */,
+/* 296 */,
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */,
+/* 305 */,
+/* 306 */,
+/* 307 */,
+/* 308 */,
+/* 309 */,
+/* 310 */,
+/* 311 */,
+/* 312 */,
+/* 313 */,
+/* 314 */,
+/* 315 */,
+/* 316 */,
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */,
+/* 331 */,
+/* 332 */,
+/* 333 */,
+/* 334 */,
+/* 335 */,
+/* 336 */,
+/* 337 */,
+/* 338 */,
+/* 339 */,
+/* 340 */,
+/* 341 */,
+/* 342 */,
+/* 343 */,
+/* 344 */,
+/* 345 */,
+/* 346 */,
+/* 347 */,
+/* 348 */,
+/* 349 */,
+/* 350 */,
+/* 351 */,
+/* 352 */,
+/* 353 */,
+/* 354 */,
+/* 355 */,
+/* 356 */,
+/* 357 */,
+/* 358 */,
+/* 359 */,
+/* 360 */,
+/* 361 */,
+/* 362 */,
+/* 363 */,
+/* 364 */,
+/* 365 */,
+/* 366 */,
+/* 367 */,
+/* 368 */,
+/* 369 */,
+/* 370 */,
+/* 371 */,
+/* 372 */,
+/* 373 */,
+/* 374 */,
+/* 375 */,
+/* 376 */,
+/* 377 */,
+/* 378 */,
+/* 379 */,
+/* 380 */,
+/* 381 */,
+/* 382 */,
+/* 383 */,
+/* 384 */,
+/* 385 */,
+/* 386 */,
+/* 387 */,
+/* 388 */,
+/* 389 */,
+/* 390 */,
+/* 391 */,
+/* 392 */,
+/* 393 */,
+/* 394 */,
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */,
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */,
+/* 428 */,
+/* 429 */,
+/* 430 */,
+/* 431 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-sticky/props.js ***!
   \************************************************************************************************************/
@@ -22209,14 +22414,14 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 269 */,
-/* 270 */,
-/* 271 */,
-/* 272 */,
-/* 273 */,
-/* 274 */,
-/* 275 */,
-/* 276 */
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */,
+/* 437 */,
+/* 438 */,
+/* 439 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-search/props.js ***!
   \************************************************************************************************************/
@@ -22338,35 +22543,35 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 277 */,
-/* 278 */,
-/* 279 */,
-/* 280 */,
-/* 281 */,
-/* 282 */,
-/* 283 */,
-/* 284 */,
-/* 285 */,
-/* 286 */,
-/* 287 */,
-/* 288 */,
-/* 289 */,
-/* 290 */,
-/* 291 */,
-/* 292 */,
-/* 293 */,
-/* 294 */,
-/* 295 */,
-/* 296 */,
-/* 297 */,
-/* 298 */,
-/* 299 */,
-/* 300 */,
-/* 301 */,
-/* 302 */,
-/* 303 */,
-/* 304 */,
-/* 305 */
+/* 440 */,
+/* 441 */,
+/* 442 */,
+/* 443 */,
+/* 444 */,
+/* 445 */,
+/* 446 */,
+/* 447 */,
+/* 448 */,
+/* 449 */,
+/* 450 */,
+/* 451 */,
+/* 452 */,
+/* 453 */,
+/* 454 */,
+/* 455 */,
+/* 456 */,
+/* 457 */,
+/* 458 */,
+/* 459 */,
+/* 460 */,
+/* 461 */,
+/* 462 */,
+/* 463 */,
+/* 464 */,
+/* 465 */,
+/* 466 */,
+/* 467 */,
+/* 468 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-divider/props.js ***!
   \*************************************************************************************************************/
@@ -22418,42 +22623,42 @@ exports.fetchCancelCollect = function (token, id) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */,
-/* 314 */,
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */,
-/* 321 */,
-/* 322 */,
-/* 323 */,
-/* 324 */,
-/* 325 */,
-/* 326 */,
-/* 327 */,
-/* 328 */,
-/* 329 */,
-/* 330 */,
-/* 331 */,
-/* 332 */,
-/* 333 */,
-/* 334 */,
-/* 335 */,
-/* 336 */,
-/* 337 */,
-/* 338 */,
-/* 339 */,
-/* 340 */,
-/* 341 */
+/* 469 */,
+/* 470 */,
+/* 471 */,
+/* 472 */,
+/* 473 */,
+/* 474 */,
+/* 475 */,
+/* 476 */,
+/* 477 */,
+/* 478 */,
+/* 479 */,
+/* 480 */,
+/* 481 */,
+/* 482 */,
+/* 483 */,
+/* 484 */,
+/* 485 */,
+/* 486 */,
+/* 487 */,
+/* 488 */,
+/* 489 */,
+/* 490 */,
+/* 491 */,
+/* 492 */,
+/* 493 */,
+/* 494 */,
+/* 495 */,
+/* 496 */,
+/* 497 */,
+/* 498 */,
+/* 499 */,
+/* 500 */,
+/* 501 */,
+/* 502 */,
+/* 503 */,
+/* 504 */
 /*!**************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \**************************************************************************************************************/
@@ -23629,49 +23834,49 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     "unicode_decimal": 58929 }] };exports.default = _default;
 
 /***/ }),
-/* 342 */,
-/* 343 */,
-/* 344 */,
-/* 345 */,
-/* 346 */,
-/* 347 */,
-/* 348 */,
-/* 349 */,
-/* 350 */,
-/* 351 */,
-/* 352 */,
-/* 353 */,
-/* 354 */,
-/* 355 */,
-/* 356 */,
-/* 357 */,
-/* 358 */,
-/* 359 */,
-/* 360 */,
-/* 361 */,
-/* 362 */,
-/* 363 */,
-/* 364 */,
-/* 365 */,
-/* 366 */,
-/* 367 */,
-/* 368 */,
-/* 369 */,
-/* 370 */,
-/* 371 */,
-/* 372 */,
-/* 373 */,
-/* 374 */,
-/* 375 */,
-/* 376 */,
-/* 377 */,
-/* 378 */,
-/* 379 */,
-/* 380 */,
-/* 381 */,
-/* 382 */,
-/* 383 */,
-/* 384 */
+/* 505 */,
+/* 506 */,
+/* 507 */,
+/* 508 */,
+/* 509 */,
+/* 510 */,
+/* 511 */,
+/* 512 */,
+/* 513 */,
+/* 514 */,
+/* 515 */,
+/* 516 */,
+/* 517 */,
+/* 518 */,
+/* 519 */,
+/* 520 */,
+/* 521 */,
+/* 522 */,
+/* 523 */,
+/* 524 */,
+/* 525 */,
+/* 526 */,
+/* 527 */,
+/* 528 */,
+/* 529 */,
+/* 530 */,
+/* 531 */,
+/* 532 */,
+/* 533 */,
+/* 534 */,
+/* 535 */,
+/* 536 */,
+/* 537 */,
+/* 538 */,
+/* 539 */,
+/* 540 */,
+/* 541 */,
+/* 542 */,
+/* 543 */,
+/* 544 */,
+/* 545 */,
+/* 546 */,
+/* 547 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-tabs/props.js ***!
   \**********************************************************************************************************/
@@ -23738,14 +23943,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 385 */,
-/* 386 */,
-/* 387 */,
-/* 388 */,
-/* 389 */,
-/* 390 */,
-/* 391 */,
-/* 392 */
+/* 548 */,
+/* 549 */,
+/* 550 */,
+/* 551 */,
+/* 552 */,
+/* 553 */,
+/* 554 */,
+/* 555 */
 /*!****************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/button.js ***!
   \****************************************************************************************************/
@@ -23766,7 +23971,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     openType: String } };exports.default = _default;
 
 /***/ }),
-/* 393 */
+/* 556 */
 /*!******************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/libs/mixin/openType.js ***!
   \******************************************************************************************************/
@@ -23799,7 +24004,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     } } };exports.default = _default;
 
 /***/ }),
-/* 394 */
+/* 557 */
 /*!************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-button/props.js ***!
   \************************************************************************************************************/
@@ -23968,14 +24173,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 395 */,
-/* 396 */,
-/* 397 */,
-/* 398 */,
-/* 399 */,
-/* 400 */,
-/* 401 */,
-/* 402 */
+/* 558 */,
+/* 559 */,
+/* 560 */,
+/* 561 */,
+/* 562 */,
+/* 563 */,
+/* 564 */,
+/* 565 */
 /*!**************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-back-top/props.js ***!
   \**************************************************************************************************************/
@@ -24037,14 +24242,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 403 */,
-/* 404 */,
-/* 405 */,
-/* 406 */,
-/* 407 */,
-/* 408 */,
-/* 409 */,
-/* 410 */
+/* 566 */,
+/* 567 */,
+/* 568 */,
+/* 569 */,
+/* 570 */,
+/* 571 */,
+/* 572 */,
+/* 573 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-modal/props.js ***!
   \***********************************************************************************************************/
@@ -24136,14 +24341,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 411 */,
-/* 412 */,
-/* 413 */,
-/* 414 */,
-/* 415 */,
-/* 416 */,
-/* 417 */,
-/* 418 */
+/* 574 */,
+/* 575 */,
+/* 576 */,
+/* 577 */,
+/* 578 */,
+/* 579 */,
+/* 580 */,
+/* 581 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-popup/props.js ***!
   \***********************************************************************************************************/
@@ -24230,14 +24435,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 419 */,
-/* 420 */,
-/* 421 */,
-/* 422 */,
-/* 423 */,
-/* 424 */,
-/* 425 */,
-/* 426 */
+/* 582 */,
+/* 583 */,
+/* 584 */,
+/* 585 */,
+/* 586 */,
+/* 587 */,
+/* 588 */,
+/* 589 */
 /*!*****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-radio-group/props.js ***!
   \*****************************************************************************************************************/
@@ -24330,14 +24535,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 427 */,
-/* 428 */,
-/* 429 */,
-/* 430 */,
-/* 431 */,
-/* 432 */,
-/* 433 */,
-/* 434 */
+/* 590 */,
+/* 591 */,
+/* 592 */,
+/* 593 */,
+/* 594 */,
+/* 595 */,
+/* 596 */,
+/* 597 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-radio/props.js ***!
   \***********************************************************************************************************/
@@ -24409,14 +24614,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 435 */,
-/* 436 */,
-/* 437 */,
-/* 438 */,
-/* 439 */,
-/* 440 */,
-/* 441 */,
-/* 442 */
+/* 598 */,
+/* 599 */,
+/* 600 */,
+/* 601 */,
+/* 602 */,
+/* 603 */,
+/* 604 */,
+/* 605 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/icons.js ***!
   \**********************************************************************************************************/
@@ -24639,7 +24844,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
   'uicon-en': "\uE692" };exports.default = _default;
 
 /***/ }),
-/* 443 */
+/* 606 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-icon/props.js ***!
   \**********************************************************************************************************/
@@ -24736,14 +24941,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 444 */,
-/* 445 */,
-/* 446 */,
-/* 447 */,
-/* 448 */,
-/* 449 */,
-/* 450 */,
-/* 451 */
+/* 607 */,
+/* 608 */,
+/* 609 */,
+/* 610 */,
+/* 611 */,
+/* 612 */,
+/* 613 */,
+/* 614 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-input/props.js ***!
   \***********************************************************************************************************/
@@ -24933,12 +25138,12 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 452 */,
-/* 453 */,
-/* 454 */,
-/* 455 */,
-/* 456 */,
-/* 457 */
+/* 615 */,
+/* 616 */,
+/* 617 */,
+/* 618 */,
+/* 619 */,
+/* 620 */
 /*!**********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-line/props.js ***!
   \**********************************************************************************************************/
@@ -24979,21 +25184,21 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 458 */,
-/* 459 */,
-/* 460 */,
-/* 461 */,
-/* 462 */,
-/* 463 */,
-/* 464 */,
-/* 465 */,
-/* 466 */,
-/* 467 */,
-/* 468 */,
-/* 469 */,
-/* 470 */,
-/* 471 */,
-/* 472 */
+/* 621 */,
+/* 622 */,
+/* 623 */,
+/* 624 */,
+/* 625 */,
+/* 626 */,
+/* 627 */,
+/* 628 */,
+/* 629 */,
+/* 630 */,
+/* 631 */,
+/* 632 */,
+/* 633 */,
+/* 634 */,
+/* 635 */
 /*!**********************************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uni-transition/components/uni-transition/createAnimation.js ***!
   \**********************************************************************************************************************************/
@@ -25132,19 +25337,19 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 473 */,
-/* 474 */,
-/* 475 */,
-/* 476 */,
-/* 477 */,
-/* 478 */,
-/* 479 */,
-/* 480 */,
-/* 481 */,
-/* 482 */,
-/* 483 */,
-/* 484 */,
-/* 485 */
+/* 636 */,
+/* 637 */,
+/* 638 */,
+/* 639 */,
+/* 640 */,
+/* 641 */,
+/* 642 */,
+/* 643 */,
+/* 644 */,
+/* 645 */,
+/* 646 */,
+/* 647 */,
+/* 648 */
 /*!***********************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-badge/props.js ***!
   \***********************************************************************************************************/
@@ -25224,14 +25429,14 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 486 */,
-/* 487 */,
-/* 488 */,
-/* 489 */,
-/* 490 */,
-/* 491 */,
-/* 492 */,
-/* 493 */
+/* 649 */,
+/* 650 */,
+/* 651 */,
+/* 652 */,
+/* 653 */,
+/* 654 */,
+/* 655 */,
+/* 656 */
 /*!******************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-loading-icon/props.js ***!
   \******************************************************************************************************************/
@@ -25298,14 +25503,14 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 494 */,
-/* 495 */,
-/* 496 */,
-/* 497 */,
-/* 498 */,
-/* 499 */,
-/* 500 */,
-/* 501 */
+/* 657 */,
+/* 658 */,
+/* 659 */,
+/* 660 */,
+/* 661 */,
+/* 662 */,
+/* 663 */,
+/* 664 */
 /*!****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/props.js ***!
   \****************************************************************************************************************/
@@ -25337,7 +25542,7 @@ function createAnimation(option, _this) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 502 */
+/* 665 */
 /*!*********************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/transition.js ***!
   \*********************************************************************************************************************/
@@ -25348,7 +25553,7 @@ function createAnimation(option, _this) {
 Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));
 
 
-var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 503));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
+var _nvueAniMap = _interopRequireDefault(__webpack_require__(/*! ./nvue.ani-map.js */ 666));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} // 定义一个一定时间后自动成功的promise，让调用nextTick方法处，进入下一个then方法
 var nextTick = function nextTick() {return new Promise(function (resolve) {return setTimeout(resolve, 1000 / 50);});}; // nvue动画模块实现细节抽离在外部文件
 
 // 定义类名，通过给元素动态切换类名，赋予元素一定的css动画样式
@@ -25500,7 +25705,7 @@ var getClassNames = function getClassNames(name) {return {
     } } };exports.default = _default;
 
 /***/ }),
-/* 503 */
+/* 666 */
 /*!***********************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-transition/nvue.ani-map.js ***!
   \***********************************************************************************************************************/
@@ -25576,14 +25781,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
     'leave-to': { opacity: 0, transform: 'scale(0.95)' } } };exports.default = _default;
 
 /***/ }),
-/* 504 */,
-/* 505 */,
-/* 506 */,
-/* 507 */,
-/* 508 */,
-/* 509 */,
-/* 510 */,
-/* 511 */
+/* 667 */,
+/* 668 */,
+/* 669 */,
+/* 670 */,
+/* 671 */,
+/* 672 */,
+/* 673 */,
+/* 674 */
 /*!*************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-overlay/props.js ***!
   \*************************************************************************************************************/
@@ -25615,14 +25820,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 512 */,
-/* 513 */,
-/* 514 */,
-/* 515 */,
-/* 516 */,
-/* 517 */,
-/* 518 */,
-/* 519 */
+/* 675 */,
+/* 676 */,
+/* 677 */,
+/* 678 */,
+/* 679 */,
+/* 680 */,
+/* 681 */,
+/* 682 */
 /*!****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-status-bar/props.js ***!
   \****************************************************************************************************************/
@@ -25638,14 +25843,14 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
-/* 520 */,
-/* 521 */,
-/* 522 */,
-/* 523 */,
-/* 524 */,
-/* 525 */,
-/* 526 */,
-/* 527 */
+/* 683 */,
+/* 684 */,
+/* 685 */,
+/* 686 */,
+/* 687 */,
+/* 688 */,
+/* 689 */,
+/* 690 */
 /*!*****************************************************************************************************************!*\
   !*** C:/Users/weng/Desktop/自己/uniapp/mdmeimall - 最新修改版本/uni_modules/uview-ui/components/u-safe-bottom/props.js ***!
   \*****************************************************************************************************************/

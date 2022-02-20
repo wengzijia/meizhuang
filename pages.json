@@ -13,6 +13,14 @@
 			}
 		},
 		{
+			"path": "components/coupon/coupon",
+			"style": {
+				"navigationBarTitleText": "优惠券",
+				"navigationBarBackgroundColor": "#2b2e3f",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
 			"path": "pages/sort/sort",
 			"style": {
 				"navigationBarTitleText": "分类",
@@ -96,7 +104,7 @@
 			}
 		},
 		{
-			"path": "pages/orderpage/orderpage",
+			"path": "pages/orderList/orderList",
 			"style": {
 				"navigationBarTitleText": "订单列表",
 				"navigationBarBackgroundColor":"#2b2e3d",
@@ -106,7 +114,7 @@
 		
 		},
 		{
-			"path": "pages/ordedetli/ordedetli",
+			"path": "pages/orderDetails/orderDetails",
 			"style": {
 				"navigationBarTitleText": "订单详情",
 				"navigationBarBackgroundColor": "#2b2e3d",
