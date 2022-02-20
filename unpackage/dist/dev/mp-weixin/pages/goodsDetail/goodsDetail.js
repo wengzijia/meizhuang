@@ -496,12 +496,10 @@ var that;var _default =
                     sumnumber = item.number;
                   }
                 });
-                sumnumber += selectShop.buy_num;
-                console.log(_this2.token, selectShop._id, sumnumber);_context2.next = 13;return (
+                sumnumber += selectShop.buy_num;_context2.next = 12;return (
 
 
-                  fetchAddCart(_this2.token, selectShop._id, sumnumber));case 13:_yield$fetchAddCart = _context2.sent;code = _yield$fetchAddCart.code;
-                console.log(code);
+                  fetchAddCart(_this2.token, selectShop._id, sumnumber));case 12:_yield$fetchAddCart = _context2.sent;code = _yield$fetchAddCart.code;
                 if (code === 2000) {
                   uni.showToast({
                     title: '加入购物车成功' });
@@ -519,7 +517,7 @@ var that;var _default =
 
                 // 	}
                 // });
-              case 18:case "end":return _context2.stop();}}}, _callee2);}))();},
+              case 16:case "end":return _context2.stop();}}}, _callee2);}))();},
     // 立即购买
     buyNow: function buyNow(selectShop) {
       console.log("监听 - 立即购买");

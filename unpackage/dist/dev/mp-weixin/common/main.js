@@ -12,17 +12,11 @@
 
 
 var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 3));
-var _index = _interopRequireDefault(__webpack_require__(/*! ./store/index */ 17));
 var _uviewUi = _interopRequireDefault(__webpack_require__(/*! @/uni_modules/uview-ui */ 19));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function ownKeys(object, enumerableOnly) {var keys = Object.keys(object);if (Object.getOwnPropertySymbols) {var symbols = Object.getOwnPropertySymbols(object);if (enumerableOnly) symbols = symbols.filter(function (sym) {return Object.getOwnPropertyDescriptor(object, sym).enumerable;});keys.push.apply(keys, symbols);}return keys;}function _objectSpread(target) {for (var i = 1; i < arguments.length; i++) {var source = arguments[i] != null ? arguments[i] : {};if (i % 2) {ownKeys(Object(source), true).forEach(function (key) {_defineProperty(target, key, source[key]);});} else if (Object.getOwnPropertyDescriptors) {Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));} else {ownKeys(Object(source)).forEach(function (key) {Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));});}}return target;}function _defineProperty(obj, key, value) {if (key in obj) {Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true });} else {obj[key] = value;}return obj;}wx.__webpack_require_UNI_MP_PLUGIN__ = __webpack_require__;
 _vue.default.config.productionTip = false;
-_vue.default.prototype.$store = _index.default;
 _App.default.mpType = 'app';
-
 _vue.default.use(_uviewUi.default);
-
-
-var app = new _vue.default(_objectSpread({
-  store: _index.default },
+var app = new _vue.default(_objectSpread({},
 _App.default));
 
 createApp(app).$mount();
@@ -96,53 +90,10 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));
-
-var _login = __webpack_require__(/*! ./api/login.js */ 12);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var _default =
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default =
 {
   onLaunch: function onLaunch() {
     console.log('App Launch');
-
-    var _this = this;
-
-
-
-    wx.login({
-      success: function success(res) {return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:
-                  // 在真机里,res会多出来一个clientInfo属性,会影响到登录,用delete删除该属性
-                  delete res.clientInfo;
-                  if (res.code) {
-                    // 登录获取token
-                    (0, _login.autologin)(res, true);
-
-                    // 证明是第一次登录			
-                    // 	if(result.userInfo.nickname == null){
-                    // 	wx.getSetting({
-                    // 		success(e){
-                    // 			console.log(e.authSetting.scope.userInfo)
-                    // 			if(!e.authSetting.scope.userInfo){
-                    // 		}
-                    // 	})
-
-                    // 	}else{
-                    // 		// Toast("不是第一次登录")
-                    // 		wx.setStorageSync("token",result.token)
-                    // 		wx.setStorageSync("userInfo",result.userInfo)
-                    // 	}
-
-                  }case 2:case "end":return _context.stop();}}}, _callee);}))();
-
-      },
-      fail: function fail() {
-        // uni.navigateTo({
-        //     url: './pages/login/login'
-        // });
-      } });
-
-
-
-
-
   },
   onShow: function onShow() {
     console.log('App Show');

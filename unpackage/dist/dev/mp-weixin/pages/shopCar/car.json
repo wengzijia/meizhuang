@@ -1,10 +1,14 @@
 {
   "navigationBarTitleText": "购物车",
   "enablePullDownRefresh": false,
+<<<<<<< HEAD
   "usingComponents": {
     "u-checkbox-group": "/uni_modules/uview-ui/components/u-checkbox-group/u-checkbox-group",
     "u-checkbox": "/uni_modules/uview-ui/components/u-checkbox/u-checkbox",
     "u-number-box": "/uni_modules/uview-ui/components/u-number-box/u-number-box",
     "u-button": "/uni_modules/uview-ui/components/u-button/u-button"
   }
+=======
+  "usingComponents": {}
+>>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
 }

@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
   "component": true,
   "usingComponents": {}
+=======
+  "usingComponents": {},
+  "component": true
+>>>>>>> c8d2394130a945ab67adeea8d2841611ac2633b4
 }

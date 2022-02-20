@@ -96,7 +96,7 @@ var components
 try {
   components = {
     clToast: function() {
-      return Promise.all(/*! import() | node-modules/cl-uni/components/cl-toast/cl-toast */[__webpack_require__.e("common/vendor"), __webpack_require__.e("node-modules/cl-uni/components/cl-toast/cl-toast")]).then(__webpack_require__.bind(null, /*! cl-uni/components/cl-toast/cl-toast.vue */ 369))
+      return __webpack_require__.e(/*! import() | node-modules/cl-uni/components/cl-toast/cl-toast */ "node-modules/cl-uni/components/cl-toast/cl-toast").then(__webpack_require__.bind(null, /*! cl-uni/components/cl-toast/cl-toast.vue */ 369))
     }
   }
 } catch (e) {

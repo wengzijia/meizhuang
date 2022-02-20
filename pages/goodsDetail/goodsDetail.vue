@@ -336,11 +336,9 @@
 					}
 				})
 				sumnumber += selectShop.buy_num
-				console.log(this.token, selectShop._id, sumnumber)
 				let {
 					code
 				} = await fetchAddCart(this.token, selectShop._id, sumnumber)
-				console.log(code)
 				if (code === 2000) {
 					uni.showToast({
 						title: '加入购物车成功'
@@ -725,7 +723,7 @@
 			}
 			.end{
 					text-align: center; 
-				    padding-bottom: 90px;
+				    padding-bottom: 140rpx;
 					color: #C0C0C0;
 			}
 		}

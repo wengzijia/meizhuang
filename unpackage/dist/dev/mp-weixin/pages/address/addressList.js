@@ -127,68 +127,9 @@ __webpack_require__.r(__webpack_exports__);
   !*** ./node_modules/babel-loader/lib!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader??ref--12-1!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js!./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib??vue-loader-options!./node_modules/@dcloudio/webpack-uni-mp-loader/lib/style.js!D:/uniapp/美妆项目/meizhuan/mdmeimall/pages/address/addressList.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 9));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _address = __webpack_require__(/*! api/address.js */ 206);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var _default =
-
-
-{
-  data: function data() {
-    return {
-      addressData: {} };
-
-  },
-  methods: {
-    addressAxios: function addressAxios() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$getAddress, data;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
-
-                  (0, _address.getAddress)());case 2:_yield$getAddress = _context.sent;data = _yield$getAddress.data;
-
-                // data.items.map(function(a){
-                // return a.addressMessage = a.province+a.city+a.area+a.address	  
-                // })
-
-                _this.addressData = data;case 5:case "end":return _context.stop();}}}, _callee);}))();
-    } },
-
-  created: function created() {
-    this.addressAxios();
-  } };exports.default = _default;
+throw new Error("Module build failed (from ./node_modules/@dcloudio/webpack-uni-mp-loader/lib/script.js):\nSyntaxError: Unexpected token (36:0)\n    at Object._raise (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:746:17)\n    at Object.raiseWithData (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:739:17)\n    at Object.raise (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:733:17)\n    at Object.unexpected (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:8807:16)\n    at Object.parseExprAtom (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:10130:20)\n    at Object.parseExprSubscripts (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9656:23)\n    at Object.parseMaybeUnary (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9636:21)\n    at Object.parseMaybeUnary (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:6877:20)\n    at Object.parseExprOps (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9506:23)\n    at Object.parseMaybeConditional (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9479:23)\n    at Object.parseMaybeAssign (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9434:21)\n    at Object.parseMaybeAssign (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:6822:20)\n    at Object.parseExpression (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:9386:23)\n    at Object.parseStatementContent (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11285:23)\n    at Object.parseStatementContent (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:6575:18)\n    at Object.parseStatement (D:\\Software\\i4Tools7\\HBuilderX.3.1.18.20210609.full\\HBuilderX\\plugins\\uniapp-cli\\node_modules\\@babel\\parser\\lib\\index.js:11156:17)");
 
 /***/ }),
 

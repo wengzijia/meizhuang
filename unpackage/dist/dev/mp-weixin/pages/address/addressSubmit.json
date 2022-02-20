@@ -1,8 +1,5 @@
 {
   "navigationBarTitleText": "",
   "enablePullDownRefresh": false,
-  "usingComponents": {
-    "cl-input": "/node-modules/cl-uni/components/cl-input/cl-input",
-    "cl-select-region": "/node-modules/cl-uni/components/cl-select-region/cl-select-region"
-  }
+  "usingComponents": {}
 }
