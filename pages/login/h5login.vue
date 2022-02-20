@@ -210,7 +210,7 @@
 		position: absolute;
 		height: 38px;
 		right: 0px;
-		font-size: 14px;
+		font-size: 12rpx;
 		color: white;
 		width: 100px;
 		display: flex;
