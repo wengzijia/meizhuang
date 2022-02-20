@@ -4,7 +4,7 @@
 
 		<view class="content">
 			<!--  v-for="(item,index) in cartGoodslist" :key="item.id" -->
-			<view class="project">
+			<view class="project" v-for="(item,index) in cartGoodslist" :key="index">
 				<view class="go">
 					<u-checkbox-group>
 						<u-checkbox v-model="checked" activeColor="#2b303d" shape="circle" @change="selected">
@@ -12,61 +12,41 @@
 					</u-checkbox-group>
 
 				</view>
-				<image class="Priceimg"  mode=""> </image>
-				<!--  :src="item.good.image" -->
+				<image class="Priceimg" :src="item.good.image" mode=""> </image>
+				
 				<view class="tetx_content">
 					<view class="tetx">
-						<!-- {{item.good.goods_name}} -->
-						商品名称
+						{{item.good.goods_name}}
+						
 					</view>
 					<view class="details">
-						<!-- {{item.good.sku_name_arr[0]}} -->
-						 <text class="sku">sku</text>
+						{{item.good.sku_name_arr[0]}}
 					</view>
 					<view class="Price_quantity">
+						
 						<view class="Price">
-							<!-- $ {{item.good.price}} -->
-							价格
+							￥{{item.good.price}}
 						</view>
-						<u-number-box :disabledInput="true"
-						 v-model="value"
+						
+						<u-number-box 
+						 v-model="item.number"
 						 color="#ffffff"
-						 bgColor="#ff94b0"
-						 iconStyle="color: #fff"
-						 ></u-number-box>
-						<!--  "item.number-->
-						<!-- <cl-input-number v-model="checked"  class="Stepper"></cl-input-number> -->
+						 bgColor="#ebecee"
+						 button-size="24"
+						 >
+						 
+						<view class="inputNumber" slot="input">
+							{{item.number}}
+						</view>
+						 
+						 </u-number-box>
+						 
+						 
 					</view>
 				</view>
 			</view>
 		</view>
 
-		<!-- #ifdef MP-WEIXIN -->
-		<view class="purchase">
-
-			<view class="Select_all">
-				<u-checkbox-group @change="allchange">
-					<u-checkbox v-model="checked" :SelectAll="allchecked " shape="circle"></u-checkbox>
-				</u-checkbox-group>
-				<view class="">
-					全选
-				</view>
-
-				<view class="total">
-					合计: $10000000
-				</view>
-				<view class="">
-					<u-button type="primary" size="small" shape="circle" color="#e94242" 
-						@click="delCartGoods(item.id,index)">删除</u-button>
-				</view>
-				<view class="settlement">
-					<u-button type="primary" size="small" text="结算" shape="circle" @onSubmit="onSubmit"></u-button>
-				</view>
-			</view>
-		</view>
-		<!-- #endif -->
-
-		<!-- #ifdef H5 -->
 		<view class=" dibu">
 			<view class="quanx">
 				<u-checkbox-group v-model="checked">
@@ -82,10 +62,9 @@
 			</view>
 
 			<view class="jiesuan">
-				<u-button type="primary" color="#2b2d3c" @onSubmit="onSubmit">去结算(3)</u-button>
+				<u-button type="primary" color="#2b2d3c" @onSubmit="onSubmit">去结算</u-button>
 			</view>
 		</view>
-		<!-- #endif -->
 
 	</view>
 </template>
@@ -98,12 +77,10 @@
 	export default {
 		data() {
 			return {
-				value:1,
 				cartGoodslist: [], // 商品列表
 				cartData: [], // 购
 				checked: [],
 				allchecked: true,
-				token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTYsImNyZWF0ZVRpbWUiOiIyMDIyLTAxLTIxIDIyOjEwOjI4IiwidXBkYXRlVGltZSI6IjIwMjItMDEtMjMgMTM6MzE6NTEiLCJ1c2VybmFtZSI6bnVsbCwicGFzc3dvcmQiOm51bGwsImdlbmRlciI6MCwibGFzdExvZ2luVGltZSI6bnVsbCwibGFzdExvZ2luSXAiOm51bGwsInVzZXJMZXZlbCI6MCwibmlja25hbWUiOiJBbGxlbiIsIm1vYmlsZSI6IjE1OTE3OTAyODM4IiwiYXZhdGFyIjoiaHR0cHM6Ly90aGlyZHd4LnFsb2dvLmNuL21tb3Blbi92aV8zMi9RMGo0VHdHVGZUSkh1UXc1NHpSaWEyOGtxN1JBRWtpY0tjTUNoakM3b1A4RGZEUXd2MlZ0RG1xeGlhQjUxSTdleVdDZE5VRnRzYjFEMTdmVjl2UXhvZ3o1dy8xMzIiLCJzZXNzaW9uX2tleSI6bnVsbCwic2hhcmVVc2VySWQiOiIxIiwid2VpeGluT3BlbmlkIjoibzAxcjA1Q3ROTUFJNFJ4c1k0Rkh1NDU0eHBXZyIsImNsb3VkSUQiOiI1M19MLVN1c3NNNC1RZEM0dTVodnlHWFhha1V1WXlsdktsMHZfWEhET1U4aDJ1dkF1WWlBcmd6dEtTS1lCRSIsImVuY3J5cHRlZERhdGEiOiJEaWc4aEM2eS9qbWRjWVFIVUlWSGs2RkdtdldETXRjMnRSeHVheHI4NldkVkZqL0o1TE9YaDcvN1lEUnFseFJ6U0hUd2JXdERCZG9iSFJab1FPenUxVjhacGE0RmxhUlhtN2NtM0xKZUlDVWp3MVZZdnFjMTV1UG5QQ0hCNkRQd1B4UmtSQTVneC9tR3BDMG1DTkZPUS8yTEZQTEFXdVVodzhPRnB2SkFsbUtCWVZFTkRIbk5JRVBnM1NDc3QxcjlYc3lPVStWWlVoSHpoWXUrV2NUYmdBdlk5eUN6OFkvVmh1NDdhMGV1c0M5TnMzNGhxNmFvZmNBQmhiU29SVndrdldobTNodEoydUhYajBmNTBWOEJwL1pqWERmMGVPcGFoYkpTTmdCL05oZWlpZWs4Rnp4em1sUzNSVkpOU21YOVpPcCt1RXpWR2R2NUJnWGhSR1lrZXZwTjhqcFlxS0NoL2tRaVVvdnpNRVQvQ0IzenpPRXF0WUZ2bkhPbEYxZmhzYUFVYzY2dU5hWU1VaDBDblp6NjZRPT0iLCJpdiI6InNWYk55VStweEtiZ1U5NHlQbzR1K2c9PSIsInNpZ25hdHVyZSI6IjIyY2VkM2I0YjUyODI3NTg5YTg2YmVhOGI3ZmE3MDQ3NjExMTBiNWYiLCJzdGF0dXMiOiIwIiwiZGVsZXRlZCI6ZmFsc2UsImlhdCI6MTY0NTExMTIxNywiZXhwIjoxNjQ1MTk3NjE3fQ.-zeOXwr7XwH1JRh54mIQP0Gtzl-PxpYbJmmCTzQFQUw"
 			}
 		},
 		
@@ -114,15 +91,16 @@
 		methods: {
 			// 获取购物车商品
 			async ShopCar() {
-				uni.setStorageSync('token', this.token);
-				let result = await fetch_ShopCar(this.token)
-				console.log(result);
-				this.cartGoodslist = result.data;
+				let token = uni.getStorageSync('token');
+				
+				let {data} = await fetch_ShopCar(token)
+				console.log(data);
+				this.cartGoodslist = data;
 			},
 
 			// 设置步进器的数量
 			valChange(e) {
-			
+				
 			},
 
 			// 删除商品
@@ -152,11 +130,18 @@
 	}
 
 	.dibu {
-		font-size: 16rpx;
+		
 		width: 100%;
 		background-color: #ffffff;
 		position: fixed;
-		bottom: 92upx;
+		/* #ifdef H5 */
+		bottom: 50px;
+		font-size: 20rpx;
+		/* #endif */
+		/* #ifdef MP-WEIXIN */
+		bottom: 0;
+		font-size: 30rpx;
+		/* #endif */
 		display: flex;
 		align-items: center;
 /* 		flex-wrap: nowrap;
@@ -207,6 +192,7 @@
 	.content {
 		display: flex;
 		justify-content: center;
+		flex-wrap: wrap;
 		margin-bottom: 10upx;
 	}
 
@@ -345,5 +331,13 @@
 	.settlement {
 		margin-left: 20upx;
 
+	}
+	
+	.inputNumber{
+		width: 30px;
+		height: 100%;
+		background-color: #ebecee;
+		text-align: center;
+		margin: 0 2px;
 	}
 </style>

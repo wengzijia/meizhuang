@@ -28,8 +28,6 @@
 .box {
   width: 90%;
   margin: auto;
-  border-bottom: 1px solid #f6f7f8;
-  height: 25px;
   padding: 10px 0px;
 }
 .box text {
@@ -39,24 +37,21 @@
   float: left;
 }
 .box input {
-  width: 65%;
+  border: 0;
   font-size: 14px;
-  margin-left: 100px;
 }
-.addressBtn {
-  position: relative;
+.shenSi {
+  width: 90%;
+  padding: 0px 0px;
+  margin: auto;
+  font-size: 14px;
 }
-.addressBtn .addressCover {
-  height: 100%;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-}
-.addressBtn .addressCover:active {
-  background-color: rgba(0, 0, 0, 0.1);
+.shenSi text {
+  display: inline-block;
+  font-size: 14px;
+  height: 25px;
+  line-height: 25px;
+  color: #808080;
 }
 .addressSubmit {
   width: 100%;

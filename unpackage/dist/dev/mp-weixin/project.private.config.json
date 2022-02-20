@@ -4,7 +4,7 @@
       "list": [
         {
           "name": "",
-          "pathName": "pages/login/login",
+          "pathName": "pages/address/addressSubmit",
           "query": "",
           "scene": null,
           "launchMode": "default"

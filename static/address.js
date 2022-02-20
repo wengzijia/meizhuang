@@ -1,4 +1,4 @@
-[
+export let address = [
   {
     "value": "110000",
     "label": "北京市",

@@ -4,69 +4,40 @@
 		
 			<view class="box">
 				
-			<text>姓名</text>
+			<cl-input v-model="name" placeholder="收货人姓名"></cl-input>
 			
-			<input
-		    placeholder="收货人姓名"
-			v-model="name"
-			/>	
 			</view>
 		  
 		  
 		  <view class="box">
 			  
-			  <text>电话</text>
-			  
-		  <input
-		    placeholder="收货人手机号"
-			v-model="number"
-		  />
+			  <cl-input v-model="number" placeholder="收货人手机号"></cl-input>
+		
 		  </view>
 		  
 		  
-		  <view class="addressBtn">
-		  <cl-select-region v-model="val"></cl-select-region>
-		  <van-field
-		  	label="地区"
-		    placeholder="选择省/市/区"
-			readonly="true"
-			class="addressChoice"
-			:value="diquData"
-		  >
-			      <icon slot="button" class="iconfont icon-zhankai"></icon>
-					
-		  </van-field>
-		  
-		  <view class="addressCover"  @click="areaListShow = true"></view>
+		 <view class="shenSi">
+		   
+		  <cl-select-region :options="address"></cl-select-region>
 		  
 		  </view>
+		  
 		  
 		   <view class="box">
-			   
-			<text>详细地址</text>
-			   
-		  <input
-		    placeholder="街道门牌,楼层房间号等信息"
-			v-model="detailed"
-		  />
+			  
+			<cl-input v-model="detailed" placeholder="街道门牌,楼层房间号等信息"></cl-input>
+			
 		  </view>
 		
 		<button class="addressSubmit" @click="submit">添加</button>
-		
-		
-		<!-- 遮盖层 -->
-		<view class="cover" v-if="areaListShow"></view>
-		<!-- 选择省市区 -->
-		<view class="areaList">
-
-		</view>
+	
 		
 		
 	</view>
 </template>
 
 <script>
-	
+	import {address} from "static/address.js"
 		
 		export default {
 			
@@ -76,24 +47,10 @@
 						number: '',
 						diquData: '',
 						detailed: '',
-						
-						// areaList,
-						// areaListShow: false,
+						address: '',
 				}
 			},
 			methods:{
-
-			queren({detail}){
-				let data = '';
-				
-				detail.values.map(function(a){
-					return data += a.name
-					
-				})
-				this.diquData = data
-				this.areaListShow = false
-			},
-			
 			submit(){
 				console.log(this.name)
 				console.log(this.number)
@@ -102,6 +59,10 @@
 			}
 			
 			},
+			created(){
+				this.address = address
+				console.log(address)
+			}
 		};
 </script>
 
@@ -109,8 +70,6 @@
 	.box {
 		width: 90%;
 		margin: auto;
-		border-bottom: 1px solid #f6f7f8;
-		height: 25px;
 		padding: 10px 0px;
 		// border: 2px solid black;
 
@@ -123,32 +82,26 @@
 		}
 
 		input {
-			width: 65%;
+			border: 0;
+			// width: 65%;
 			font-size: 14px;
-			// float: left;
-			// border: 2px solid red;
-			margin-left: 100px;
 		}
 	}
-
-	.addressBtn {
-		position: relative;
-
-		.addressCover {
-			height: 100%;
-			width: 100%;
-			background-color: rgba(0, 0, 0, 0);
-			position: absolute;
-			top: 0;
-			left: 0;
-			z-index: 2;
-		}
-
-		.addressCover:active {
-			background-color: rgba(0, 0, 0, 0.1);
+	
+	.shenSi{
+		width: 90%;
+		padding: 0px 0px;
+		margin: auto;
+		font-size: 14px;
+		text{
+			display: inline-block;
+			font-size: 14px;
+			height: 25px;
+			line-height: 25px;
+			color: #808080;
 		}
 	}
-
+	
 	.addressSubmit {
 		width: 100%;
 		position: fixed;

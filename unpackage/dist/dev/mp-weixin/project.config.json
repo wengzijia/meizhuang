@@ -1,7 +1,6 @@
 {
   "description": "项目配置文件。",
   "packOptions": {
-<<<<<<< HEAD
     "ignore": [],
     "include": []
   },
@@ -20,36 +19,22 @@
     "uploadWithSourceMap": true,
     "compileHotReLoad": false,
     "useMultiFrameRuntime": true,
-    "useApiHook": true,
-    "useApiHostProcess": true,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     },
-    "useIsolateContext": true,
     "packNpmManually": false,
     "packNpmRelationList": [],
     "minifyWXSS": true,
-    "minifyWXML": true,
     "disableUseStrict": false,
     "useStaticServer": true,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false
+    "useCompilerPlugins": false,
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
   "libVersion": "2.22.0",
-=======
-    "ignore": []
-  },
-  "setting": {
-    "urlCheck": false,
-    "minified": true,
-    "es6": true
-  },
-  "compileType": "miniprogram",
-  "libVersion": "",
->>>>>>> master
   "appid": "wx462bc4b528a13c96",
   "projectname": "zlemei",
   "condition": {
@@ -69,7 +54,6 @@
       "current": -1,
       "list": []
     }
-<<<<<<< HEAD
   },
   "scripts": {},
   "watchOptions": {
@@ -80,7 +64,5 @@
   },
   "staticServerOptions": {
     "servePath": ""
-=======
->>>>>>> master
   }
 }

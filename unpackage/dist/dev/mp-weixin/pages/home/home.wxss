@@ -40,11 +40,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-<<<<<<< HEAD
-  width: 1380rpx;
-=======
   width: 1600rpx;
->>>>>>> master
 }
 .home-container .recommend.data-v-92bb8f34 {
   display: flex;

@@ -3,7 +3,7 @@
 		
 		
 
-	<view v-for="item in data.items" :key="item.id" class="addressFor">
+	<view v-for="item in addressData.items" :key="item.id" class="addressFor">
 		
 		<view class="addressBox">
 			
@@ -33,68 +33,25 @@
 </template>
 
 <script>
+import {getAddress} from "api/address.js"
 
-	import Toast from 'wxcomponents/vant/toast/toast.js';
 
 	export default {
 		data() {
 			return {
-				data: {
-				        "total": 3,
-				        "items": [
-				            {
-				                "area": "古冶区",
-				                "isDefault": true,
-				                "areaId": 431,
-				                "address": "测试",
-				                "province": "河北省",
-				                "city": "唐山市",
-				                "name": "sad",
-				                "mobile": "13433334444",
-				                "id": 13,
-				                "cityId": 35,
-				                "userId": 46,
-				                "provinceId": 3
-				            },
-				            {
-				                "area": "开平区",
-				                "isDefault": false,
-				                "areaId": 432,
-				                "address": "1313",
-				                "province": "河北省",
-				                "city": "唐山市",
-				                "name": "陈",
-				                "mobile": "15917903777",
-				                "id": 12,
-				                "cityId": 35,
-				                "userId": 46,
-				                "provinceId": 3
-				            },
-				            {
-				                "area": "宝安区",
-				                "isDefault": true,
-				                "areaId": 2124,
-				                "address": "龙华新区龙华汽车站综合楼101",
-				                "province": "广东省",
-				                "city": "深圳市",
-				                "name": "李小姐",
-				                "mobile": "15817438225",
-				                "id": 11,
-				                "cityId": 231,
-				                "userId": 47,
-				                "provinceId": 19
-				            }
-				        ]
-				    },
+				addressData: {},
 			};
 		},
 		methods:{
-			addressAxios(){
+			async addressAxios(){
 				
-				this.data.items.map(function(a){
-				return a.addressMessage = a.province+a.city+a.area+a.address		  
-				})
+				let {data} = await getAddress()
 				
+				// data.items.map(function(a){
+				// return a.addressMessage = a.province+a.city+a.area+a.address	  
+				// })
+				
+				this.addressData = data
 			}
 		},
 		created(){

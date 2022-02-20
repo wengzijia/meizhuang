@@ -45,10 +45,6 @@
   },
   "usingComponents": {
     "van-area": "wxcomponents/vant/area/index"
-<<<<<<< HEAD
   },
-  "sitemapLocation": "sitemap.json"
-=======
-  }
->>>>>>> master
+  "sitemapLocation": "sitemap54.json"
 }

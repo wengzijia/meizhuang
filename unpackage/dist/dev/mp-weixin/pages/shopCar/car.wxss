@@ -119,28 +119,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	/* @import "cl-uni/index.scss"; */
 .Stepper {
 		background-color: #f498b2;
@@ -150,11 +128,18 @@
 		margin: 10rpx 0rpx;
 }
 .dibu {
-		font-size: 16rpx;
+		
 		width: 100%;
 		background-color: #ffffff;
 		position: fixed;
-		bottom: 92rpx;
+
+
+
+
+
+		bottom: 0;
+		font-size: 30rpx;
+
 		display: flex;
 		align-items: center;
 /* 		flex-wrap: nowrap;
@@ -195,6 +180,7 @@ page {
 .content {
 		display: flex;
 		justify-content: center;
+		flex-wrap: wrap;
 		margin-bottom: 10rpx;
 }
 .go {
@@ -314,5 +300,12 @@ page {
 }
 .settlement {
 		margin-left: 20rpx;
+}
+.inputNumber{
+		width: 30px;
+		height: 100%;
+		background-color: #ebecee;
+		text-align: center;
+		margin: 0 2px;
 }
 

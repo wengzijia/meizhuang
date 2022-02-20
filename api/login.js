@@ -9,7 +9,7 @@ export  async  function  autologin(wxCode,auto=false){
 		data:wxCode
 		
 	})
-	console.log(result)
+	
 	wx.setStorageSync('token',result.token)
 		uni.setStorageSync('token',result.token)
 	    wx.setStorageSync("userInfo",JSON.stringify(result.userInfo) )
@@ -18,7 +18,6 @@ export  async  function  autologin(wxCode,auto=false){
 			return
 		}
 		
-			console.log( result.userInfo.nickname)
 		if( !result.userInfo.nickname){
 				console.log("第一次登录")
 			// wx.getSetting({
@@ -28,7 +27,6 @@ export  async  function  autologin(wxCode,auto=false){
 					wx.getUserProfile({
 						desc:"获取昵称等基本信息",
 						async success(res){
-							console.log(res)
 							let {code} = await newlogin(res)
 							if(code == 20000){
 								
