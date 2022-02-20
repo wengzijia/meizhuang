@@ -97,15 +97,6 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  if (!_vm._isMounted) {
-    _vm.e0 = function($event) {
-      _vm.areaListShow = true
-    }
-
-    _vm.e1 = function($event) {
-      _vm.areaListShow = false
-    }
-  }
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -180,23 +171,7 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-var _areaData = __webpack_require__(/*! wxcomponents/vant/area-data */ 192);
-
-
-var _toast = _interopRequireDefault(__webpack_require__(/*! wxcomponents/vant/toast/toast.js */ 193));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} //
+var _address = __webpack_require__(/*! static/address.js */ 281); //
 //
 //
 //
@@ -235,21 +210,7 @@ var _toast = _interopRequireDefault(__webpack_require__(/*! wxcomponents/vant/to
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default = { data: function data() {return { name: '', number: '', diquData: '', detailed: '', areaList: _areaData.areaList, areaListShow: false };}, methods: { queren: function queren(_ref) {var detail = _ref.detail;var data = '';detail.values.map(function (a) {return data += a.name;});this.diquData = data;this.areaListShow = false;}, submit: function submit() {console.log(this.name);console.log(this.number);console.log(this.diquData);console.log(this.detailed);} } };exports.default = _default;
+var _default = { data: function data() {return { name: '', number: '', diquData: '', detailed: '', areaList: areaList, areaListShow: false };}, methods: { submit: function submit() {console.log(this.name);console.log(this.number);console.log(this.diquData);console.log(this.detailed);} }, created: function created() {this.address = _address.address;console.log(_address.address);} };exports.default = _default;
 
 /***/ }),
 

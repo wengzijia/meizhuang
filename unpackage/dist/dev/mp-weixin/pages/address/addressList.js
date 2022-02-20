@@ -130,7 +130,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;
+Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 34));
 
 
 
@@ -165,66 +165,24 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 
 
 
-var _toast = _interopRequireDefault(__webpack_require__(/*! wxcomponents/vant/toast/toast.js */ 193));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };} //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var _default = { data: function data() {return { data: { "total": 3, "items": [{ "area": "古冶区", "isDefault": true, "areaId": 431, "address": "测试", "province": "河北省", "city": "唐山市", "name": "sad", "mobile": "13433334444", "id": 13, "cityId": 35, "userId": 46, "provinceId": 3 }, { "area": "开平区", "isDefault": false, "areaId": 432, "address": "1313", "province": "河北省", "city": "唐山市", "name": "陈", "mobile": "15917903777", "id": 12, "cityId": 35, "userId": 46, "provinceId": 3 },
-        {
-          "area": "宝安区",
-          "isDefault": true,
-          "areaId": 2124,
-          "address": "龙华新区龙华汽车站综合楼101",
-          "province": "广东省",
-          "city": "深圳市",
-          "name": "李小姐",
-          "mobile": "15817438225",
-          "id": 11,
-          "cityId": 231,
-          "userId": 47,
-          "provinceId": 19 }] } };
+var _address = __webpack_require__(/*! api/address.js */ 282);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var _default =
 
-
-
+{
+  data: function data() {
+    return {
+      addressData: {} };
 
   },
   methods: {
-    addressAxios: function addressAxios() {
+    addressAxios: function addressAxios() {var _this = this;return _asyncToGenerator( /*#__PURE__*/_regenerator.default.mark(function _callee() {var _yield$getAddress, data;return _regenerator.default.wrap(function _callee$(_context) {while (1) {switch (_context.prev = _context.next) {case 0:_context.next = 2;return (
 
-      this.data.items.map(function (a) {
-        return a.addressMessage = a.province + a.city + a.area + a.address;
-      });
+                  (0, _address.getAddress)());case 2:_yield$getAddress = _context.sent;data = _yield$getAddress.data;
 
+                // data.items.map(function(a){
+                // return a.addressMessage = a.province+a.city+a.area+a.address	  
+                // })
+
+                _this.addressData = data;case 5:case "end":return _context.stop();}}}, _callee);}))();
     } },
 
   created: function created() {

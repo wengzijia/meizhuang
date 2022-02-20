@@ -1,7 +1,9 @@
 {
 	"easycom": {
-
-		"^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
+	"autoscan": true,
+		"custom": {
+            "cl-(.*)": "cl-uni/components/cl-$1/cl-$1.vue"
+		}
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
@@ -173,11 +175,6 @@
 
 		"backgroundColor": "#F8F8F8",
 		"usingComponents": {
-			// #ifdef MP-WEIXIN
-			"van-area": "wxcomponents/vant/area/index",
-			"van-toast": "wxcomponents/vant/toast/index",
-			"van-field": "wxcomponents/vant/field/index"
-			// #endif
 		}
 
 	}
