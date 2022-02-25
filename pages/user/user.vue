@@ -29,7 +29,9 @@
 
 					</view>
 					<uni-list class="allOrder">
+						<navigator open-type="navigate" url="../orderList/orderList">
 						<uni-list-item title="我的订单" link rightText="查看全部订单" class="label"></uni-list-item>
+						</navigator>
 						<view class="myOrder">
 							<uni-grid :column="5" :showBorder="false" :square="false" class="allTransport">
 								<uni-grid-item class="transport">

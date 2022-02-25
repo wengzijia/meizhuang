@@ -1,24 +1,32 @@
 <template>
-	<view>
-		<view class="zhifu"><view class="text">等待付款</view></view>
-
+	<view class="detailContainer">
+		<!-- <view class="zhifu"><view class="text">等待付款</view></view> -->
+		<view class="logisticsContainer" @click="open" v-if="expressMessage.length">
+			<view class="iconfont icon-wuliu truck"></view>
+			<view class="logisticsInfo">
+				<view class="info text-ellipsisl1">{{newInfo}}</view>
+				<view class="time">{{newInfoTime}}</view>
+			</view>
+			<view class="iconfont icon-qianjin advance"></view>
+		</view>
 		<view class="header">
 			<view class="ordde">
-				<view class="sit">蒋雪峰 152****8227</view>
-				<view>北京市 北京市 东城区 110</view>
+				<view class="sit">{{OrderInfo.consignee}}{{OrderInfo.mobile}}</view>
+				<view>{{OrderInfo.address}}</view>
 			</view>
 		</view>
+		<block v-for="(item,index) in orderItemlist" :key="item.id">
 		<view class="ani">
 			<view class="check">
-				<view class="Img"><image src="http://test.w0824.com/xmnote2.png" style="width: 200rpx; height: 200rpx;" mode=""></image></view>
+				<view class="Img"><image :src="item.productImage" style="width: 200rpx; height: 200rpx;" mode=""></image></view>
 				<view class="SBle">
 					<view class="textte">
-						<view class="SBleft">你好呀</view>
-						<view ><text class="colors">慧大师大大加快大家看到</text></view>
+						<view class="SBleft">{{item.productName}}</view>
+						<view ><text class="colors">{{item.producspec}}</text></view>
 					</view>
 						<view class="pay">
-							<view>￥2.00</view>
-							<view>x1</view>
+							<view>￥{{item.currentUnitPrice}}</view>
+							<view>x{{item.quantity}}</view>
 						</view>
 				</view>
 			</view>
@@ -29,42 +37,55 @@
 			</view>
 			<view class="SNTop">
 				<view>优惠金额</view>
-				<view>0.00</view>
+				<view style="color:#f35a1d;">{{OrderInfo.coupon_amount}}</view>
 			</view>
 			<view class="shiwu time-hide-second">
 				<text>实付款：</text>
-				<text style="color: red;">￥2.00</text>
+				<text style="color: red;">￥{{OrderInfo.actualPrice}}</text>
 			</view>
 		</view>
 
 		<view class="tab">
 			<view class="dingdan">
 				<view class="fex">订单编号</view>
-				<view class="nube">121564564564654654156454</view>
+				<view class="nube">{{item.orderSn}}</view>
 				<view class="buttos"@click="copy">复制</view>
 			</view>
 
 			<view class="dingdans">
 				<view>支付方式</view>
-				<view class="time-hide-second">无</view>
+				<view class="time-hide-second">微信支付</view>
 			</view>
 			<view class="dingdans">
 				<view>下单时间</view>
-				<view class="time-hide-second">2022-01-22 14：48：00</view>
+				<view class="time-hide-second">{{item.createTime}}</view>
 			</view>
 		</view>
 
 		<view class="dingdansm">
 			<view class="heji">
 				合计：
-				<text style="color: red;">￥2.00</text>
+				<text style="color: red;">￥{{OrderInfo.actualPrice}}</text>
 			</view>
 			<view class="butto">
 				<!-- <button type="default" size="mini" @click="open">取消订单</button> -->
-				<u-button @click="show = true" size="small" type="info" text="取消订单"></u-button>
-				<u-button type="info" size="small" text="去付款"></u-button>
+				<!-- <u-button @click="show = true" size="small" type="info" text="取消订单"></u-button>
+				<u-button type="info" size="small" text="去付款"></u-button> -->
+				<block v-if="OrderInfo.status === 0">
+				<u-button class="cancel" @click="cancelOrder" size="small" type="info" text="取消订单"></u-button>
+				<u-button shape="circle"  @click="obligationOrder" color="#2b2e3d" size="small" type="info" class="obligation" text="待付款"></u-button>
+				</block>
+				<u-button shape="circle" v-if="OrderInfo.status === 1" @click="toSendGoodsOrder" color="#2b2e3d" class="toSendGoods" text="待发货"></u-button>
+				<u-button shape="circle" v-if="OrderInfo.status === 2" @click="shippedOrder" color="#2b2e3d" class="shipped" text="已发货"></u-button>
+				<block v-if="OrderInfo.status === 3">
+				<u-button shape="circle"  @click="deleteOrder" color="#2b2e3d" class="delete" text="删除订单"></u-button>
+				<u-button shape="circle"  @click="doneOrder" color="#2b2e3d" class="done" text="已完成"></u-button>
+				</block>
+				<u-button shape="circle" v-if="OrderInfo.status === 4" @click="closeOrder" color="#2b2e3d" class="close" text="已关闭"></u-button>
+				<u-button shape="circle" v-if="OrderInfo.status === 5" @click="invalidOrder" color="#2b2e3d" class="invalid" text="无效订单"></u-button>
 			</view>
 		</view>
+		</block>
 		<u-popup :show="show" @close="close" @open="open" mode="bottom" :round="20">			
 					<view class="u-demo-block">
 							<view class="content">取消订单</view>
@@ -103,14 +124,36 @@
 				</view>
 			</view>
 		</u-popup>
+		<!-- 弹出物流信息 -->
+		<uni-popup ref="popup" type="bottom" background-color="#ffffff" class="popup" >
+			<scroll-view scroll-y="true" style="height: 60vh;" >
+			<view class="info">
+			<u-steps current="9" direction="column">
+					<u-steps-item v-for="item in expressMessage" :key="item.AcceptTime" :title="item.AcceptStation" :desc="item.AcceptTime">
+					</u-steps-item>
+			</u-steps>
+		</view>
+		</scroll-view>
+		<view class="close" @click="close">X</view>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
+const {  fetchOrderDetail } = require('../../api/orderDetail.js')
+	const {
+		fetchCancelOrder,fetchDeleteOrder,fetchPayAgain
+	} = require('../../api/order.js')
 export default {
 	data() {
 		return {
+			orderSn:"",  // 订单号 
 			show: false,
+			OrderInfo:{}, // 详情地址数据
+			expressMessage:[], // 物流信息
+			orderItemlist:[],  // 详情数据
+			newInfo:"",  //  最新物流信息
+			newInfoTime:"",  //  最新物流时间
 			radiolist1: [
 				{
 					name: '价格有点贵',
@@ -138,13 +181,39 @@ export default {
 		}
 	},
 	methods: {
-	
+		// 弹出物流
 		open() {
-			// console.log('open');
+			this.$refs.popup.open()
 		},
+		// 关闭物流
 		close() {
 			this.show = false;
+			this.$refs.popup.close()
 			// console.log('close');
+		},
+		// 取消订单
+		async cancelOrder(){
+			let {code} = await fetchCancelOrder(this.orderSn);
+			if(code === 1000){
+				uni.navigateTo({
+					url:"../orderList/orderList"
+				})
+				uni.showToast({
+					title:"取消成功"
+				})
+			}
+		},
+		// 删除订单
+		async deleteOrder(){
+			let {code} = await fetchDeleteOrder(this.orderSn);
+			if(code === 1000){
+				uni.navigateTo({
+					url:"../orderList/orderList"
+				})
+				uni.showToast({
+					title:"删除成功"
+				})
+			}
 		},
 		groupChange(n) {
 			// console.log('groupChange', n);
@@ -152,12 +221,85 @@ export default {
 		radioChange(n) {
 			// console.log('radioChange', n);
 		}
+	},
+	async onLoad(option){
+		this.orderSn = option.orderSn 
+		console.log(this.orderSn)
+		let { data } = await fetchOrderDetail(this.orderSn)
+		this.OrderInfo = data.OrderInfo
+		this.orderItemlist = data.OrderInfo.orderItemlist
+		this.expressMessage = data.express_message
+		console.log(this.OrderInfo,'132',this.expressMessage,this.orderItemlist)
+		this.newInfo = this.expressMessage.length ?  this.expressMessage[this.expressMessage.length - 1].AcceptStation :""
+		this.newInfoTime = this.expressMessage.length ?  this.expressMessage[this.expressMessage.length - 1].AcceptTime  : ""
 	}
 };
 </script>
 
 <style lang="scss">
-	
+	  /* 单行显示省略号 */
+	        .text-ellipsisl1{
+	              /*1.先强制一行内显示文本*/
+	             white-space: nowrap;
+	            /*2.超出的部分隐藏*/
+	           overflow: hidden;
+	         /*3.文字用省略号替代超出的部分*/
+	         text-overflow: ellipsis;
+	        }
+	.detailContainer{
+		.logisticsContainer{
+			margin: 10px 10px;
+			padding: 0  20rpx;
+			background-color: #FFFFFF;
+			display: flex;
+			align-items: center;
+			height: 160rpx;
+			.truck{
+				color: #4baa41;
+				font-size: 50rpx;
+			}
+			.logisticsInfo{
+				margin: 0 20rpx;
+				.info{
+					width: 500rpx;
+					color: #4baa41;
+					font-size: 30rpx;
+				}
+				.time{
+					color: #C0C0C0;
+					margin-top: 10rpx;
+					font-size: 26rpx;
+				}
+			}
+			.advance{
+				margin-left: 40rpx;
+			}
+		}
+	  ::v-deep	.uni-popup__wrapper{
+			border-radius: 20rpx;
+			// height: 60vh;
+			overflow-y: auto; 
+			
+		}
+		.popup{
+			position: relative;			
+			.info{
+				width: 80vw;
+				padding: 0 10px;
+			}
+			.close{
+				    position: absolute;
+				    top: 10rpx;
+				    right: 20rpx;
+				    width: 50rpx;
+				    height: 50rpx;
+					border-radius: 50%;
+					border: 2rpx solid #C0C0C0;
+					text-align: center;
+					color:#f3591d ;
+			}
+		}
+	}
 	.heji{
 		line-height: 80rpx;
 	}
@@ -241,14 +383,15 @@ export default {
 }
 .dingdansm {
 	padding-left: 20rpx;
-	height: 90rpx;
+	height: 120rpx;
 	margin-top: 100rpx;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	background-color: #ffffff;
-	    position: absolute;
-	    bottom: 0;
-		width: 100%;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 .dingdans {
 	display: flex;
@@ -301,7 +444,7 @@ page {
 	justify-content: space-between;
 	margin: 20rpx 15rpx;
 	color: #c8c8c8;
-	font-size: 16rpx;
+	font-size: 22rpx;
 }
 
 

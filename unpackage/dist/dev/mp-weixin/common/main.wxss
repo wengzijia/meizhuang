@@ -31,9 +31,9 @@
 /* 引入vant组件里的css样式,不然vant组件样式会失效 */
 @font-face {
   font-family: "iconfont"; /* Project id 3152755 */
-  src: url('//at.alicdn.com/t/font_3152755_xf7pktuh72c.woff2?t=1644972372192') format('woff2'),
-       url('//at.alicdn.com/t/font_3152755_xf7pktuh72c.woff?t=1644972372192') format('woff'),
-       url('//at.alicdn.com/t/font_3152755_xf7pktuh72c.ttf?t=1644972372192') format('truetype');
+  src: url('//at.alicdn.com/t/font_3152755_zjfw3v7i9t.woff2?t=1645669363898') format('woff2'),
+       url('//at.alicdn.com/t/font_3152755_zjfw3v7i9t.woff?t=1645669363898') format('woff'),
+       url('//at.alicdn.com/t/font_3152755_zjfw3v7i9t.ttf?t=1645669363898') format('truetype');
 }
 .iconfont {
   font-family: "iconfont" !important;
@@ -41,6 +41,12 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.icon-qianjin:before {
+  content: "\e613";
+}
+.icon-wuliu:before {
+  content: "\e75f";
 }
 .icon-shoucang:before {
   content: "\e604";

@@ -15,9 +15,17 @@
 			}
 		},
 		{
-			"path": "components/coupon/coupon",
+			"path": "pages/preferentialPrice/preferential",
 			"style": {
 				"navigationBarTitleText": "优惠券",
+				"navigationBarBackgroundColor": "#2b2e3f",
+				"navigationBarTextStyle": "white"
+			}
+		},
+		{
+			"path": "pages/preferentialPrice/receiveaCoupon",
+			"style": {
+				"navigationBarTitleText": "领券中心",
 				"navigationBarBackgroundColor": "#2b2e3f",
 				"navigationBarTextStyle": "white"
 			}
@@ -62,28 +70,35 @@
 		{
 			"path": "pages/address/addressSubmit",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "提交地址",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/address/addressList",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "地址列表",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
+					"path": "pages/address/addressChange",
+					"style": {
+						"navigationBarTitleText": "修改地址",
+						"enablePullDownRefresh": false
+					}
+		},
+		{
 			"path": "pages/login/h5login",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "登录",
 				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/login/login",
 			"style": {
-				"navigationBarTitleText": "",
+				"navigationBarTitleText": "登录",
 				"enablePullDownRefresh": false
 			}
 		},

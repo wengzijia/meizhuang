@@ -1,16 +1,19 @@
 <template>
 	<view>
-		<navigator open-type="navigate" url="../address/addressList">
-		<view class="header">
-			<view class="ordde">
-				<view class="sit">{{order.consignee}} {{order.mobile}}</view>
-				<view class="site"><view class="default">默认</view>  {{order.address}}</view>
+		<view class="header" @click="jumpAddress">
+			<view class="addressBox" v-if="!nullAddress.length">
+				<text class="address">你还没有地址哦,请添加地址</text>
+				<text class="rightArrow">></text>
 			</view>
-			<view class="jiantou">
-				<u-icon name="arrow-right"></u-icon>
+			<view class="addressContainer" v-if="nullAddress.length">
+			
+			<view class="ordde" v-for="item in nullAddress" :key="item.id">
+				<view class="sit">{{item.name}} {{item.mobile}}</view>
+				<view class="site"><text class="default" v-if="isDefault">默认</text>{{item.city}}{{item.province}}{{item.area}}{{item.address}}</view>
+			</view>
+			<view class="rArrow">></view>
 			</view>
 		</view>
-		</navigator>
 		<view class="ani" v-for="item in orderItemlist" :key="item._id">
 			<view class="check">
 				<view class="Img"><image :src="item.image" style="width: 200rpx; height: 200rpx;" mode=""></image></view>
@@ -31,14 +34,14 @@
 				<view class="SNTop1">
 					<text class="contents">备注</text>  
 					 <u--input
-                     placeholder="请输入内容"
+                     placeholder="选填,请先和商家协商一致"
                      border="surround"
                      v-model="message">
 					 </u--input>
 					</view>
 			<view class="shiwu time-hide-second">
 				<text>实付款：</text>
-				<text style="color: red;">￥{{order.actualPrice}}</text>
+				<text style="color: red;">￥{{order.actualPrice - usedAmount}}</text>
 			</view>
 		</view>
 
@@ -46,7 +49,7 @@
 		<view class="dingdansm">
 			<view class="heji">
 				合计：
-				<text style="color: red;">￥{{totalPrice}}</text>
+				<text style="color: red;">￥{{order.actualPrice  - usedAmount}}</text>
 			</view>
 			<view class="butto" @click="submitOrder">
 				<u-button  size="primary" type="info" text="提交订单"color="#2b2e3d"></u-button>
@@ -61,10 +64,11 @@
 				<u-icon name="arrow-right"></u-icon>
 				</view>
 			</view>
-			<navigator open-type="navigate" url="../../components/coupon/coupon">
+			<navigator open-type="navigate" url="../preferentialPrice/preferential">
 			<view class="dingdans">
 				<view>优惠券</view>
 					<view class="time-hide-second" >
+						已使用¥{{usedAmount}}
 					<u-icon name="arrow-right"></u-icon>				
 					</view>
 			</view>
@@ -80,7 +84,7 @@ const { fetchcreateOrder,fetchSubmitOrder,fetchAddress } = require("../../api/or
 export default {
 	data() {
 		return {
-			message:'选填,请先和商家协商一致', // 备注信息
+			message:"", // 备注信息
 			show: false,
 			order:"",  // 地址 以及优惠后的价格
 			orderItemlist:"",   // sku数据
@@ -111,7 +115,13 @@ export default {
 			],
 			// u-radio-group的v-model绑定的值如果设置为某个radio的name，就会被默认选中
 			radiovalue1: '价格有点贵',
-			token:""  // 用户凭证
+			token:"",  // 用户凭证
+			nullAddress:"", // 空地址
+			isDefault:false ,// 是否显示默认
+			id:"",  // 地址id
+			coupon:""  ,// 优惠券
+			usedAmount:""  ,// 优惠券金额
+			couponId:""  // 优惠券ID
 		}
 	},
 	methods: {
@@ -128,7 +138,18 @@ export default {
 		radioChange(n) {
 			// console.log('radioChange', n);
 		},
+		// 跳转地址
+		jumpAddress(){
+			uni.navigateTo({
+				url:"../address/addressList?select=true"
+			})
+		},
 	    async submitOrder(){
+			this.reqData = {
+				...this.reqData,
+				address_id:this.id,
+				coupon_id:this.couponId ? this.couponId : 0
+			}
 			// #ifdef H5
 			this.submitOrderData = {
 				...this.reqData,
@@ -174,7 +195,9 @@ export default {
 					},
 					// 成功 失败都会触发
 					complete(res){
-						
+						uni.navigateTo({
+							url:"../orderList/orderList"
+						})
 					}
 				})
 				// #endif
@@ -182,47 +205,113 @@ export default {
 			
 		}
 	},
-	async onLoad(option) {
+  async	onShow() {
+		console.log('11')
 		this.token = uni.getStorageSync('token');
 		let {code,data} = await fetchAddress(this.token);
-		let id = data[0].id;
-		// console.log(option)
+		console.log(data)
+		this.id  = uni.getStorageSync('id')
+		this.nullAddress = data.filter(item=>{
+			return item.id == this.id
+		})
+		this.isDefault = this.nullAddress[0].isDefault
+		console.log('123321',this.nullAddress)
 		
-		
+		// 优惠券
+		this.coupon = uni.getStorageSync('coupon');
+		if(this.totalPrice >= this.coupon.amount){
+			this.usedAmount = this.coupon.usedAmount
+			this.couponId = this.coupon.couponId
+		}else{
+			this.usedAmount = 0
+		}
+		console.log(this.coupon)
+	},
+	async onLoad(option) {
 		this.reqData = JSON.parse(decodeURIComponent(option.createOrderData)); // 请求数据
 		this.reqData = {
 			...this.reqData,
-			address_id:id
+			address_id:0,
+			coupon_id:0
 		}
-		
 		let {orderItemlist,order} = await fetchcreateOrder(this.reqData);
+		uni.setStorageSync('orderItemlist',orderItemlist)
+		uni.setStorageSync('order',order)
+		orderItemlist = uni.getStorageSync('orderItemlist')
+		order = uni.getStorageSync('order')
 		orderItemlist.forEach(item=>{
 			this.totalPrice = item.totalPrice
 		})
 		this.order= order;
 		this.orderItemlist = orderItemlist;
 		
-		console.log(order,orderItemlist)
+		console.log('3423',order,orderItemlist)
+		// let id = this.nullAddress[0].id;
+		// console.log(id)
+		
 	}
 };
 </script>
 
 <style lang="scss">
-	.site{
+	.header{
+		margin-top: 20rpx;
+		color: #000000;
+		background-color: #ffffff;
+		padding-left: 25rpx;
+		height: 150rpx;
+		margin: 20rpx 20rpx;
+		border-radius: 25rpx;
+		padding-left: 30rpx;
+		padding-top: 20rpx;
 		display: flex;
 		align-items: center;
+		font-size: 28rpx;
+		.addressBox{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			
+			.address{
+				padding-left: 20rpx;
+			}
+			.rightArrow{
+				padding-right: 40rpx;
+			}
+		}
+		.addressContainer{
+			display: flex;
+			width: 90vw;
+			justify-content: space-between;
+			align-items: center;
+			.ordde {
+				height: 150rpx;
+				line-height: 52rpx;
+				color: #444444;
+				.sit{}
+				.site{
+					display: flex;
+					align-items: center;
+					.default{
+						background-color:#2b2e3d; 
+						color: #FFFFFF; 
+						border-radius: 25rpx; 
+						font-size: 24rpx;
+						margin-right: 10rpx;
+						width: 120rpx;
+						height: 40rpx;
+						line-height: 40rpx;
+						text-align: center;
+					}
+				}
+			}
+			.rArrow{
+				padding-right: 40rpx;
+			}
+		}
 	}
-	.default{
-		background-color:#2b2e3d; 
-		color: #FFFFFF; 
-		border-radius: 25rpx; 
-		font-size: 12rpx;
-		margin-right: 10rpx;
-		width: 100rpx;
-		height: 40rpx;
-		line-height: 40rpx;
-		text-align: center;
-	}
+
+
 	
 	.SNTop1{
 		text-align: center;
@@ -410,24 +499,8 @@ page {
 	margin-bottom: 10rpx;
 	color: #444444;
 }
-.header {
-	margin-top: 20rpx;
-	color: #c8c8c8;
-	background-color: #ffffff;
-	padding-left: 25rpx;
-	height: 150rpx;
-	margin: 20rpx 20rpx;
-	padding: 15rpx 15rpx;
-	border-radius: 25rpx;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-.ordde {
-	height: 150rpx;
-	line-height: 70rpx;
-	color: #444444;
-}
+
+
 ::v-deep .uni-page-head .uni-page-head__title {
 	color: #a7a8ae;
 }

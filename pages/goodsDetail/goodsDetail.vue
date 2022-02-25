@@ -119,10 +119,13 @@
 						<view class="serviceIcon iconfont icon-kefu"></view>
 						<view class="serviceTitle">客服</view>
 					</view> -->
+					
+					<navigator open-type="switchTab" url="../shopCar/car">
 					<view class="shopping">
 						<view class="cartIcon iconfont icon-gouwuche"></view>
 						<view class="cartTitle">购物车</view>
 					</view>
+					</navigator>
 					<view class="collect" @click="collect">
 						<view
 							:class="isCollect ? 'collectIcon iconfont icon-shoucang' : 'collectIcon iconfont icon-shoucang1'">
@@ -362,7 +365,7 @@
 				console.log("监听 - 立即购买");
 				console.log(selectShop);
 				let createOrderData = {
-					coupon_id:6,
+					// coupon_id:6,
 					sku_list:[
 						{
 						_id:selectShop._id,

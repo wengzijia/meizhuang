@@ -96,16 +96,16 @@ var components
 try {
   components = {
     uSticky: function() {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-sticky/u-sticky */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-sticky/u-sticky")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-sticky/u-sticky.vue */ 278))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-sticky/u-sticky */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-sticky/u-sticky")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-sticky/u-sticky.vue */ 297))
     },
     uSearch: function() {
-      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-search/u-search */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-search/u-search")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-search/u-search.vue */ 286))
+      return Promise.all(/*! import() | uni_modules/uview-ui/components/u-search/u-search */[__webpack_require__.e("common/vendor"), __webpack_require__.e("uni_modules/uview-ui/components/u-search/u-search")]).then(__webpack_require__.bind(null, /*! @/uni_modules/uview-ui/components/u-search/u-search.vue */ 305))
     },
     sort: function() {
-      return __webpack_require__.e(/*! import() | components/sort/sort */ "components/sort/sort").then(__webpack_require__.bind(null, /*! @/components/sort/sort.vue */ 294))
+      return __webpack_require__.e(/*! import() | components/sort/sort */ "components/sort/sort").then(__webpack_require__.bind(null, /*! @/components/sort/sort.vue */ 313))
     },
     good: function() {
-      return __webpack_require__.e(/*! import() | components/good/good */ "components/good/good").then(__webpack_require__.bind(null, /*! @/components/good/good.vue */ 301))
+      return __webpack_require__.e(/*! import() | components/good/good */ "components/good/good").then(__webpack_require__.bind(null, /*! @/components/good/good.vue */ 320))
     }
   }
 } catch (e) {
@@ -199,7 +199,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var _home = __webpack_require__(/*! ../../api/home.js */ 146);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var good_swiper = function good_swiper() {__webpack_require__.e(/*! require.ensure | components/swiper/swiper */ "components/swiper/swiper").then((function () {return resolve(__webpack_require__(/*! ../../components/swiper/swiper */ 308));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var good = function good() {__webpack_require__.e(/*! require.ensure | components/good/good */ "components/good/good").then((function () {return resolve(__webpack_require__(/*! ../../components/good/good */ 301));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var sort = function sort() {__webpack_require__.e(/*! require.ensure | components/sort/sort */ "components/sort/sort").then((function () {return resolve(__webpack_require__(/*! ../../components/sort/sort */ 294));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+var _home = __webpack_require__(/*! ../../api/home.js */ 146);function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};}var good_swiper = function good_swiper() {__webpack_require__.e(/*! require.ensure | components/swiper/swiper */ "components/swiper/swiper").then((function () {return resolve(__webpack_require__(/*! ../../components/swiper/swiper */ 327));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var good = function good() {__webpack_require__.e(/*! require.ensure | components/good/good */ "components/good/good").then((function () {return resolve(__webpack_require__(/*! ../../components/good/good */ 320));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var sort = function sort() {__webpack_require__.e(/*! require.ensure | components/sort/sort */ "components/sort/sort").then((function () {return resolve(__webpack_require__(/*! ../../components/sort/sort */ 313));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 {

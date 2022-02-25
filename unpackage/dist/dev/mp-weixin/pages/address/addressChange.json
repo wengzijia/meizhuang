@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "修改地址",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "cl-select-region": "/node-modules/cl-uni/components/cl-select-region/cl-select-region",
+    "u-switch": "/uni_modules/uview-ui/components/u-switch/u-switch",
+    "cl-toast": "/node-modules/cl-uni/components/cl-toast/cl-toast"
+  }
+}

@@ -27,20 +27,59 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.site {
+.header {
+  margin-top: 20rpx;
+  color: #000000;
+  background-color: #ffffff;
+  padding-left: 25rpx;
+  height: 150rpx;
+  margin: 20rpx 20rpx;
+  border-radius: 25rpx;
+  padding-left: 30rpx;
+  padding-top: 20rpx;
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+}
+.header .addressBox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header .addressBox .address {
+  padding-left: 20rpx;
+}
+.header .addressBox .rightArrow {
+  padding-right: 40rpx;
+}
+.header .addressContainer {
+  display: flex;
+  width: 90vw;
+  justify-content: space-between;
+  align-items: center;
+}
+.header .addressContainer .ordde {
+  height: 150rpx;
+  line-height: 52rpx;
+  color: #444444;
+}
+.header .addressContainer .ordde .site {
   display: flex;
   align-items: center;
 }
-.default {
+.header .addressContainer .ordde .site .default {
   background-color: #2b2e3d;
   color: #FFFFFF;
   border-radius: 25rpx;
-  font-size: 12rpx;
+  font-size: 24rpx;
   margin-right: 10rpx;
-  width: 100rpx;
+  width: 120rpx;
   height: 40rpx;
   line-height: 40rpx;
   text-align: center;
+}
+.header .addressContainer .rArrow {
+  padding-right: 40rpx;
 }
 .SNTop1 {
   text-align: center;
@@ -205,24 +244,6 @@ page {
 .SBleft {
   margin-right: 10rpx;
   margin-bottom: 10rpx;
-  color: #444444;
-}
-.header {
-  margin-top: 20rpx;
-  color: #c8c8c8;
-  background-color: #ffffff;
-  padding-left: 25rpx;
-  height: 150rpx;
-  margin: 20rpx 20rpx;
-  padding: 15rpx 15rpx;
-  border-radius: 25rpx;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.ordde {
-  height: 150rpx;
-  line-height: 70rpx;
   color: #444444;
 }
  .uni-page-head .uni-page-head__title {

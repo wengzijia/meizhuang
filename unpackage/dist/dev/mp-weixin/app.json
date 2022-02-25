@@ -1,7 +1,8 @@
 {
   "pages": [
     "pages/home/home",
-    "components/coupon/coupon",
+    "pages/preferentialPrice/preferential",
+    "pages/preferentialPrice/receiveaCoupon",
     "pages/sort/sort",
     "pages/shopCar/car",
     "pages/user/user",
@@ -9,6 +10,7 @@
     "pages/search/classification",
     "pages/address/addressSubmit",
     "pages/address/addressList",
+    "pages/address/addressChange",
     "pages/login/h5login",
     "pages/login/login",
     "pages/goodsDetail/goodsDetail",
